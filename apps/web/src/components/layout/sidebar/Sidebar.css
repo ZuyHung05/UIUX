@@ -1,9 +1,9 @@
 .app-sidebar {
   position: fixed;
-  inset: 11px auto 11px 18px;
-  z-index: 20;
+  inset: 6px auto 6px 8px;
+  z-index: 10px;
   width: var(--sidebar-width);
-  min-height: calc(100vh - 22px);
+  min-height: calc(100vh - 16px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -14,14 +14,14 @@
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 23px 30px 0;
+  gap: 6px;
+  margin: 22px 17px 0;
 }
 
 .brand strong {
   display: block;
   color: #244a6b;
-  font-size: 18.6px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1.1;
 }
@@ -36,13 +36,13 @@
 }
 
 .sidebar-logo {
-  width: 36px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   flex: 0 0 auto;
 }
 
 .sidebar-search {
-  height: 36px;
+  height: 32px;
   margin: 21px 12px 0;
   display: flex;
   align-items: center;
@@ -53,8 +53,8 @@
 }
 
 .sidebar-search svg {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   flex: 0 0 auto;
   fill: none;
   stroke: #7f9dbb;
@@ -82,7 +82,7 @@
   min-height: 0;
   margin-top: 36px;
   margin-bottom: 16px;
-  padding: 0 8px 0 12px;
+  padding: 0 6px 0 6px;
   overflow-y: auto;
   scrollbar-color: rgba(36, 74, 107, 0.14) transparent;
   scrollbar-width: thin;
@@ -139,7 +139,7 @@
   padding: 6px 18px;
   color: #244a6b;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   line-height: 1.25;
   transition:
@@ -166,8 +166,8 @@
 }
 
 .nav-item:hover::before {
-  background: rgba(243, 246, 255, 0.62);
-  box-shadow: 0 8px 18px rgba(141, 193, 255, 0.14);
+  background: rgba(255, 255, 255, 0.4);
+  box-shadow: none;
 }
 
 .nav-item.active {
@@ -176,9 +176,7 @@
 
 .nav-item.active::before {
   background: #ffffff;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.72),
-    0 10px 22px rgba(141, 193, 255, 0.18);
+  box-shadow: none;
 }
 
 .sidebar-icon {

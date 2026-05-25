@@ -1,8 +1,8 @@
 .app-header {
   position: fixed;
-  top: 11px;
-  right: 18px;
-  left: calc(18px + var(--sidebar-width) + var(--surface-gap));
+  top: 6px;
+  right: 6px;
+  left: calc(8px + var(--sidebar-width) + var(--surface-gap));
   z-index: 10;
   height: var(--header-height);
   border-radius: 28px;

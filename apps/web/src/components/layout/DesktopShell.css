@@ -1,7 +1,7 @@
 .desktop-shell-page {
-  --sidebar-width: 242px;
-  --surface-gap: 18px;
-  --header-height: 75px;
+  --sidebar-width: 220px;
+  --surface-gap: 6px;
+  --header-height: 60px;
   min-height: 100vh;
   background: #fafafa;
   color: #244a6b;
@@ -10,10 +10,10 @@
 
 .desktop-shell-main {
   position: fixed;
-  top: calc(11px + var(--header-height) + 20px);
-  right: 18px;
-  bottom: 12px;
-  left: calc(18px + var(--sidebar-width) + var(--surface-gap));
+  top: calc(6px + var(--header-height) + 6px);
+  right: 6px;
+  bottom: 8px;
+  left: calc(8px + var(--sidebar-width) + var(--surface-gap));
   overflow: auto;
   border-radius: 28px;
   background: #fff;
@@ -21,33 +21,44 @@
   scrollbar-width: thin;
 }
 
-.desktop-shell-main::-webkit-scrollbar {
+*::-webkit-scrollbar {
   width: 3px;
   height: 3px;
 }
 
-.desktop-shell-main::-webkit-scrollbar-button {
-  display: none;
-  width: 0;
-  height: 0;
+*::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
-.desktop-shell-main::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.desktop-shell-main::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   border-radius: 999px;
-  background: rgba(36, 74, 107, 0.12);
+  background: rgba(141, 193, 255, 0.4);
 }
 
-.desktop-shell-main:hover::-webkit-scrollbar-thumb {
-  background: rgba(36, 74, 107, 0.22);
+*:hover::-webkit-scrollbar-thumb {
+  background: rgba(141, 193, 255, 0.7);
 }
 
 @media (max-width: 900px) {
   .desktop-shell-page {
     min-width: 900px;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

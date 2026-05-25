@@ -18,7 +18,8 @@ import '../../components/layout/DesktopShell.css'
 import { managerSidebarConfig } from './managerSidebarConfig'
 import './ManagerDashboardPage.css'
 
-type MetricIconName = 'message' | 'clock' | 'pulse' | 'currency'
+import { MetricCard, type MetricIconName } from '../../components/ui/MetricCard'
+import { FilterButton } from '../../components/ui/FilterButton'
 
 const metrics: Array<{
   label: string
@@ -99,27 +100,7 @@ const symptoms = [
   '#Chóng mặt',
 ]
 
-function MetricIcon({ icon }: { icon: MetricIconName }) {
-  const paths = {
-    message: <path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v6A2.5 2.5 0 0 1 16.5 15H10l-5 4V6.5Z" />,
-    clock: (
-      <>
-        <circle cx="12" cy="12" r="8.5" />
-        <path d="M12 7.5v4.8l3.2 1.9" />
-      </>
-    ),
-    pulse: <path d="M4 13h3.5l2-6 4 11 2.3-5H20" />,
-    currency: (
-      <path d="M12 4v16M16 8.5c-.9-1-2.2-1.5-3.8-1.5-2 0-3.4 1-3.4 2.5 0 3.8 7.4 1.8 7.4 5.8 0 1.7-1.5 2.8-3.8 2.8-1.9 0-3.4-.6-4.4-1.8" />
-    ),
-  }
 
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      {paths[icon]}
-    </svg>
-  )
-}
 
 function metricFormatter(value: number | string, name: string) {
   const labels: Record<string, string> = {
@@ -144,29 +125,19 @@ export function ManagerDashboardPage() {
               <h1>Dashboard</h1>
               <p>Trang xem thống kê dữ liệu theo thời gian thực của hệ thống Chatbot.</p>
             </div>
-            <button className="date-filter-button" type="button">
-              <svg className="date-filter-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M5 7h14M5 12h10M5 17h14" />
-              </svg>
-              <span>Hôm nay</span>
-              <svg className="date-filter-chevron" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </button>
+            <FilterButton label="Hôm nay" />
           </div>
 
           <div className="metrics-grid">
             {metrics.map((metric) => (
-              <article className="metric-card" key={metric.label}>
-                <div className={`metric-icon metric-icon-${metric.tone}`}>
-                  <MetricIcon icon={metric.icon} />
-                </div>
-                <div>
-                  <p>{metric.label}</p>
-                  <strong>{metric.value}</strong>
-                  <span>{metric.delta}</span>
-                </div>
-              </article>
+              <MetricCard
+                key={metric.label}
+                label={metric.label}
+                value={metric.value}
+                delta={metric.delta}
+                tone={metric.tone}
+                icon={metric.icon}
+              />
             ))}
           </div>
 

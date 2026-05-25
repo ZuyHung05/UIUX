@@ -13,6 +13,7 @@ export type SidebarIconName =
 export type SidebarItem = {
   label: string
   icon: SidebarIconName
+  href?: string
 }
 
 export type SidebarGroup = {

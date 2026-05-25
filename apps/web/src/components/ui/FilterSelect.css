@@ -1,0 +1,26 @@
+.filter-select-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.filter-select-native {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  appearance: none;
+  z-index: 1;
+}
+
+/* Ensure the button behind gets the hover effect when the invisible select is hovered */
+.filter-select-wrapper:hover .date-filter-button {
+  background: #cfe5ff;
+  box-shadow: 0 10px 20px rgba(141, 193, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.filter-select-native:focus-visible + .date-filter-button {
+  box-shadow: 0 0 0 3px rgba(141, 193, 255, 0.4);
+}

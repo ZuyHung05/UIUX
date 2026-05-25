@@ -6,7 +6,7 @@ export const managerSidebarConfig: SidebarConfig = {
   groups: [
     {
       title: 'Tổng quan',
-      items: [{ label: 'Dashboard', icon: 'grid' }],
+      items: [{ label: 'Dashboard', icon: 'grid', href: '/manager/dashboard' }],
     },
     {
       title: 'Quản trị',
@@ -30,7 +30,7 @@ export const managerSidebarConfig: SidebarConfig = {
     },
     {
       title: 'Báo cáo - Thống kê',
-      items: [{ label: 'Báo cáo - Thống kê', icon: 'chart' }],
+      items: [{ label: 'Báo cáo - Thống kê', icon: 'chart', href: '/manager/report' }],
     },
   ],
 }

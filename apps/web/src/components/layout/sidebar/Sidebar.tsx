@@ -1,3 +1,4 @@
+import { Link, useLocation } from 'react-router-dom'
 import { SidebarIcon } from './SidebarIcon'
 import { SidebarLogo } from './SidebarLogo'
 import type { SidebarConfig } from './types'
@@ -5,10 +6,11 @@ import './Sidebar.css'
 
 type SidebarProps = {
   config: SidebarConfig
-  onItemClick?: (label: string) => void
 }
 
-export function Sidebar({ config, onItemClick }: SidebarProps) {
+export function Sidebar({ config }: SidebarProps) {
+  const location = useLocation()
+
   return (
     <aside className="app-sidebar">
       <div className="brand">
@@ -33,23 +35,17 @@ export function Sidebar({ config, onItemClick }: SidebarProps) {
             <h2>{group.title}</h2>
             <div className="nav-items">
               {group.items.map((item) => {
-                const isActive = item.label === config.activeLabel
+                const isActive = item.href ? location.pathname.startsWith(item.href) : false
 
                 return (
-                  <a
+                  <Link
+                    to={item.href || '#'}
                     className={isActive ? 'nav-item active' : 'nav-item'}
-                    href="#"
                     key={item.label}
-                    onClick={(e) => {
-                      e.preventDefault()
-                      if (onItemClick) {
-                        onItemClick(item.label)
-                      }
-                    }}
                   >
                     <SidebarIcon name={item.icon} />
                     <span>{item.label}</span>
-                  </a>
+                  </Link>
                 )
               })}
             </div>
