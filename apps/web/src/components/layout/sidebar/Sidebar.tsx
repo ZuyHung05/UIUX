@@ -5,9 +5,10 @@ import './Sidebar.css'
 
 type SidebarProps = {
   config: SidebarConfig
+  onItemClick?: (label: string) => void
 }
 
-export function Sidebar({ config }: SidebarProps) {
+export function Sidebar({ config, onItemClick }: SidebarProps) {
   return (
     <aside className="app-sidebar">
       <div className="brand">
@@ -35,7 +36,17 @@ export function Sidebar({ config }: SidebarProps) {
                 const isActive = item.label === config.activeLabel
 
                 return (
-                  <a className={isActive ? 'nav-item active' : 'nav-item'} href="#" key={item.label}>
+                  <a
+                    className={isActive ? 'nav-item active' : 'nav-item'}
+                    href="#"
+                    key={item.label}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      if (onItemClick) {
+                        onItemClick(item.label)
+                      }
+                    }}
+                  >
                     <SidebarIcon name={item.icon} />
                     <span>{item.label}</span>
                   </a>
