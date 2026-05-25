@@ -15,7 +15,12 @@ type RouteName = keyof typeof routeMap
 function getCurrentRoute(): RouteName {
   const pathname = window.location.pathname.replace(/^\/+/, '').trim()
 
-  if (pathname === 'login' || pathname === 'register' || pathname === 'doctor' || pathname === 'manager') {
+  if (
+    pathname === 'login' ||
+    pathname === 'register' ||
+    pathname === 'doctor' ||
+    pathname === 'manager'
+  ) {
     return pathname
   }
 

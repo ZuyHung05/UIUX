@@ -8,7 +8,14 @@
   padding: 0;
   background: #fff;
   color: #244a6b;
-  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial;
   overflow-x: hidden;
 }
 

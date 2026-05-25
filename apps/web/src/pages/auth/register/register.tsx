@@ -42,8 +42,14 @@ export function Register() {
               <p>Tạo tài khoản mới</p>
             </div>
 
-            <form className="register-form" onSubmit={(e) => e.preventDefault()} aria-label="Đăng ký tài khoản">
-              <a className="back-link" href="/login">← Quay lại đăng nhập</a>
+            <form
+              className="register-form"
+              onSubmit={(e) => e.preventDefault()}
+              aria-label="Đăng ký tài khoản"
+            >
+              <a className="back-link" href="/login">
+                ← Quay lại đăng nhập
+              </a>
 
               <RegisterField label="Email">
                 <input type="email" placeholder="Nhập email" />
@@ -60,7 +66,9 @@ export function Register() {
               <RegisterField label="Giới tính">
                 <div className="select-wrap">
                   <select defaultValue="">
-                    <option value="" disabled>Chọn giới tính</option>
+                    <option value="" disabled>
+                      Chọn giới tính
+                    </option>
                     <option value="male">Nam</option>
                     <option value="female">Nữ</option>
                     <option value="other">Khác</option>
@@ -80,7 +88,9 @@ export function Register() {
                 <input type="password" placeholder="Nhập lại mật khẩu" />
               </RegisterField>
 
-              <button className="register-submit" type="submit">Đăng ký</button>
+              <button className="register-submit" type="submit">
+                Đăng ký
+              </button>
             </form>
           </div>
         </main>
