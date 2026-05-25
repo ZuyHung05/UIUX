@@ -1,14 +1,14 @@
 import { useState } from 'react'
+import '../../components/layout/DesktopShell.css'
 import { Header } from '../../components/layout/header/Header'
 import { Sidebar } from '../../components/layout/sidebar/Sidebar'
-import '../../components/layout/DesktopShell.css'
-import { doctorSidebarConfig } from './doctorSidebarConfig'
-import { DashboardTab } from './dashboard/DashboardTab'
-import { LiveConsultationTab } from './consultation/LiveConsultationTab'
-import { PatientListTab } from './patients/PatientListTab'
-import { DoctorScheduleTab } from './schedule/DoctorScheduleTab'
 import { AppointmentListTab } from './appointments/AppointmentListTab'
+import { LiveConsultationTab } from './consultation/LiveConsultationTab'
+import { DashboardTab } from './dashboard/DashboardTab'
 import './DoctorDashboardPage.css'
+import { doctorSidebarConfig } from './doctorSidebarConfig'
+import { PatientListTab } from './patients/PatientListTab'
+import SchedulePage from './schedule/DoctorSchedulePage'
 
 export function DoctorDashboardPage() {
   const [activeTab, setActiveTab] = useState<string>('Dashboard')
@@ -28,7 +28,7 @@ export function DoctorDashboardPage() {
       case 'Danh sách bệnh nhân':
         return <PatientListTab />
       case 'Lịch làm việc':
-        return <DoctorScheduleTab />
+        return <SchedulePage />
       case 'Lịch hẹn khám':
         return <AppointmentListTab />
       default:
