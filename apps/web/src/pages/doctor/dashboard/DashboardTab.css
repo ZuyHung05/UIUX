@@ -388,18 +388,6 @@
   gap: 6px;
   width: 240px;
   z-index: 50;
-  animation: slide-down 0.15s ease-out;
-}
-
-@keyframes slide-down {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .month-popup-item {
