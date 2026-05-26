@@ -215,7 +215,7 @@
 .list-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 /* Patient List Row */
@@ -226,8 +226,7 @@
   padding: 11px 16px 11px 19px; /* Khớp Figma: Top/Bottom 11, Left 19, Right 16 */
   border: 1.7px solid #DCEBFF;  /* Khớp Figma: 1.70px */
   border-radius: 24px;          /* Khớp Figma: 24px */
-  background: #FFFFFF;
-  margin-bottom: 12px;
+  background: #f3f6ff;
   transition: all 0.15s ease;
 }
 .patient-list-row:hover {
@@ -268,11 +267,6 @@
   color: #6B7280;
   padding: 0 20px;
   font-weight: 400;
-}
-
-.patient-list-row:hover {
-  transform: scale(1.01);
-  background: #FAFDFF;
 }
 
 .row-left {
@@ -350,8 +344,8 @@
   padding: 11px 16px 11px 19px;
   border: 1.7px solid #DCEBFF;
   border-radius: 24px;
-  margin-bottom: 12px;
-  background: #FFFFFF;
+  /* margin-bottom: 4px; */
+  background: #f3f6ff;
   transition: transform 0.15s ease, background 0.15s ease;
 }
 

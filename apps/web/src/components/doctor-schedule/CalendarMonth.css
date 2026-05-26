@@ -8,7 +8,8 @@
 .calendar-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 24px;
+  align-items: center;
+  margin-bottom: 16px;
 }
 .month-select {
   width: fit-content;
@@ -24,6 +25,9 @@
   grid-template-columns: repeat(7, 1fr);
   gap: 8px;
   text-align: center;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
 }
 .day-name {
   color: #6A7282;
@@ -31,7 +35,8 @@
   margin-bottom: 16px;
 }
 .calendar-day {
-  height: 60px;
+  height: auto;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -41,13 +46,16 @@
   cursor: pointer;
   position: relative;
   color: #6A7282;
+  aspect-ratio: 1 / 1;
+  font-size: 14px;
 }
 .calendar-day.selected {
   background: #91C3FF;
   color: #101828;
+  border-color: #91C3FF;
 }
 .calendar-day.has-event {
-  background: #F3F6FF;
+  background: #DCEBFF;
   color: #101828;
 }
 .event-dot {
@@ -58,7 +66,9 @@
   margin-top: 4px;
 }
 .empty-cell {
-    height: 60px;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    height: auto;
     border: 1px solid transparent; 
 }
 /* khi dùng ở dashboard, cần bỏ border và padding để đồng bộ với style của dashboard */
@@ -66,7 +76,4 @@
     border: none;
     padding: 0;
     background: transparent;
-}
-.dashboard-version .calendar-day {
-    height: 45px;
 }

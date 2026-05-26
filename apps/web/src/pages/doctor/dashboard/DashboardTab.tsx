@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import CalendarMonth from '../../../components/doctor-schedule/CalendarMonth'
+import { FilterSelect } from '../../../components/ui/FilterSelect'
 import { MetricCard } from '../../../components/ui/MetricCard'
 import { SCHEDULE_DATA } from '../../../data/scheduleData'
 import './DashboardTab.css'
@@ -10,18 +11,6 @@ type MetricCardProps = {
   color: string
   iconType: 'calendar' | 'clock' | 'message' | 'check'
 }
-
-// return (
-//   <article className="figma-metric-card">
-//     <div className="card-icon-container" style={{ borderColor: `${color}40`, backgroundColor: `${color}0A`, color }}>
-//       {iconPaths[iconType]}
-//     </div>
-//     <div className="card-info">
-//       <span className="card-label">{title}</span>
-//       <strong className="card-number">{value}</strong>
-//     </div>
-//   </article>
-// )
 
 const ChevronIcon = () => (
   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -51,7 +40,29 @@ export function DashboardTab({ onNavigateTab }: { onNavigateTab?: (tab: string) 
     { name: 'Nguyễn Văn A', text: 'Bác sĩ ơi, dạo này tôi hay thấy chóng mặt và suy ...', time: '09:36' },
     { name: 'Nguyễn Thị N', text: 'Xin chào bác sĩ, tôi đang gặp tình trạng đau đầu...', time: '09:36' },
   ]
-
+  const icons = {
+    pulse: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 13h3.5l2-6 4 11 2.3-5H20" />
+      </svg>
+    ),
+    clock: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </svg>
+    ),
+    message: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+    ),
+    star: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+      </svg>
+    ),
+  };
   // Programmatically generate calendar rows for selectedMonth in 2026
   const getCalendarRows = (month: number) => {
     const year = 2026
@@ -93,32 +104,18 @@ export function DashboardTab({ onNavigateTab }: { onNavigateTab?: (tab: string) 
           <p>Trang xem thống kê của bác sĩ</p>
         </div>
 
-        <div className="filter-container">
-          <button className="filter-dropdown" onClick={() => setIsFilterPickerOpen(!isFilterPickerOpen)}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="dropdown-filter-icon">
-              <line x1="4" y1="21" x2="4" y2="14" /><line x1="4" y1="10" x2="4" y2="3" /><line x1="12" y1="21" x2="12" y2="12" /><line x1="12" y1="8" x2="12" y2="3" /><line x1="20" y1="21" x2="20" y2="16" /><line x1="20" y1="12" x2="20" y2="3" /><line x1="1" y1="14" x2="7" y2="14" /><line x1="9" y1="8" x2="15" y2="8" /><line x1="17" y1="16" x2="23" y2="16" />
-            </svg>
-            <span>{selectedFilter}</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="dropdown-arrow-icon"><polyline points="6 9 12 15 18 9" /></svg>
-          </button>
-          {isFilterPickerOpen && (
-            <div className="filter-dropdown-popup">
-              {filterOptions.map(opt => (
-                <button key={opt} className={`filter-popup-item ${selectedFilter === opt ? 'active' : ''}`} onClick={() => { setSelectedFilter(opt); setIsFilterPickerOpen(false) }}>
-                  {opt}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        <FilterSelect
+          value={selectedFilter}
+          options={filterOptions.map(opt => ({ label: opt, value: opt }))}
+          onChange={(e) => setSelectedFilter(e.target.value)}
+        />
       </header>
 
-      {/* REUSE METRIC CARD: Sử dụng đúng Component bạn D đã tạo */}
       <section className="figma-metrics-row">
-        <MetricCard label="Tổng số lịch hẹn" value={12} delta="+2%" tone="blue" icon="pulse" />
-        <MetricCard label="Ca chờ tư vấn" value={8} delta="-1" tone="yellow" icon="clock" />
-        <MetricCard label="Ca đang xử lý" value={5} delta="+0" tone="pink" icon="message" />
-        <MetricCard label="Ca hoàn thành" value={5} delta="+12%" tone="green" icon="star" />
+        <MetricCard label="Tổng số lịch hẹn" value={12} delta="+2%" icon={icons.pulse} iconClassName="metric-icon-blue" />
+        <MetricCard label="Ca chờ tư vấn" value={8} delta="-1" icon={icons.clock} iconClassName="metric-icon-yellow" />
+        <MetricCard label="Ca đang xử lý" value={5} delta="+0" icon={icons.message} iconClassName="metric-icon-pink" />
+        <MetricCard label="Ca hoàn thành" value={5} delta="+12%" icon={icons.star} iconClassName="metric-icon-green" />
       </section>
 
       <div className="figma-dashboard-grid">

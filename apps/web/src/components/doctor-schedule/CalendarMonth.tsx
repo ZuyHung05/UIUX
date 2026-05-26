@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SCHEDULE_DATA } from '../../data/scheduleData';
+import { FilterSelect } from '../ui/FilterSelect';
 import './CalendarMonth.css';
 
 interface CalendarMonthProps {
@@ -24,16 +25,15 @@ const CalendarMonth = ({ selectedDate, onDateSelect, className }: CalendarMonthP
         <div className={`calendar-container ${className || ''}`}>
 
             <div className="calendar-header">
-                <h3>Lịch làm việc tháng</h3>
-                <select
-                    className="month-select"
-                    value={currentMonth}
+                <h2 style={{ fontSize: '18px', fontWeight: '600' }}>Lịch làm việc tháng</h2>
+                <FilterSelect
+                    value={currentMonth.toString()}
+                    options={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(m => ({
+                        label: `Tháng ${m}`,
+                        value: m.toString()
+                    }))}
                     onChange={(e) => setViewDate(new Date(currentYear, parseInt(e.target.value), 1))}
-                >
-                    {Array.from({ length: 12 }, (_, i) => (
-                        <option key={i} value={i}>Tháng {i + 1}</option>
-                    ))}
-                </select>
+                />
             </div>
 
             <div className="calendar-grid-header">
