@@ -46,6 +46,21 @@ Khi chạy từ root, frontend vẫn dùng cổng mặc định:
 http://localhost:5173
 ```
 
+
+```txt
+login: http://localhost:5173/login
+```
+
+```txt
+Màn hình Bác sĩ: http://localhost:5173/doctor
+```
+
+```txt
+Màn hình Quản lý: http://localhost:5173/manager
+```
+
+
+
 ## Kiểm tra frontend
 
 ```bash

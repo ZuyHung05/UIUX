@@ -44,17 +44,9 @@ export const Login = (): React.ReactElement => {
                 <span className="field-label">Email / Số điện thoại</span>
                 <div className="input-with-icon">
                   <span className="icon email-icon" aria-hidden>
-                    <svg viewBox="0 0 20 20" width="18" height="18">
-                      <rect
-                        x="3"
-                        y="5"
-                        width="14"
-                        height="10"
-                        rx="3"
-                        stroke="#94A3B8"
-                        fill="none"
-                        strokeWidth="1.4"
-                      />
+                    <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M2.5 5h15c.8 0 1.5.7 1.5 1.5v8c0 .8-.7 1.5-1.5 1.5h-15C1.7 16 1 15.3 1 14.5v-8c0-.8.7-1.5 1.5-1.5z" />
+                      <path d="M3 6l7 5 7-5" />
                     </svg>
                   </span>
                   <input
@@ -71,25 +63,9 @@ export const Login = (): React.ReactElement => {
                 <span className="field-label">Mật khẩu</span>
                 <div className="input-with-icon">
                   <span className="icon lock-icon" aria-hidden>
-                    <svg viewBox="0 0 20 20" width="18" height="18">
-                      <path
-                        d="M6 8V6a4 4 0 0 1 8 0v2"
-                        stroke="#94A3B8"
-                        fill="none"
-                        strokeWidth="1.4"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <rect
-                        x="4"
-                        y="8"
-                        width="12"
-                        height="8"
-                        rx="2"
-                        stroke="#94A3B8"
-                        fill="none"
-                        strokeWidth="1.4"
-                      />
+                    <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M2.5 5h15c.8 0 1.5.7 1.5 1.5v8c0 .8-.7 1.5-1.5 1.5h-15C1.7 16 1 15.3 1 14.5v-8c0-.8.7-1.5 1.5-1.5z" />
+                      <path d="M3 6l7 5 7-5" />
                     </svg>
                   </span>
                   <input

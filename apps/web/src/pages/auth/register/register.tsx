@@ -1,5 +1,5 @@
 import registerHero from '../../../assets/images/register.png'
-import registerIcon from '../../../assets/icons/register_icon.svg'
+import registerIcon from '../../../assets/icons/Icon.svg'
 import './register.css'
 
 import type { ReactNode } from 'react'

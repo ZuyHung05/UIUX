@@ -1,176 +1,191 @@
+/* Base styles */
 .register-page {
   width: 100vw;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
   display: flex;
   align-items: stretch;
   justify-content: flex-start;
-  margin: 0;
-  padding: 0;
-  background: #fff;
+  overflow: hidden;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   color: #244a6b;
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial;
-  overflow-x: hidden;
+  background: #ffffff;
 }
 
 .register-shell {
-  width: 100%;
+  width: 100vw;
   min-height: 100vh;
   display: flex;
-  align-items: stretch;
-  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  max-width: none;
 }
 
-.register-visual {
+.register-visual,
+.register-form-area {
   flex: 1;
-  min-width: 0;
-  background: linear-gradient(
-    116.3deg,
-    rgba(240, 249, 255, 1) 6.1%,
-    rgba(241, 249, 253, 1) 12.4%,
-    rgba(242, 248, 251, 1) 18.7%,
-    rgba(243, 248, 249, 1) 24.9%,
-    rgba(244, 247, 247, 1) 31.2%,
-    rgba(245, 247, 245, 1) 37.5%,
-    rgba(246, 247, 243, 1) 43.7%,
-    rgba(247, 246, 241, 1) 50%,
-    rgba(248, 246, 239, 1) 56.3%,
-    rgba(249, 245, 236, 1) 62.5%,
-    rgba(250, 245, 234, 1) 68.8%,
-    rgba(251, 244, 232, 1) 75.1%,
-    rgba(252, 244, 230, 1) 81.3%,
-    rgba(253, 243, 228, 1) 87.6%,
-    rgba(254, 243, 226, 1) 93.9%
-  );
+  width: 50vw;
+  min-height: 100vh;
+}
+
+/* Left panel: Visual & Hero content */
+.register-visual {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px;
+  padding: 64px 48px;
   box-sizing: border-box;
+  background: linear-gradient(
+    117deg,
+    rgba(240, 249, 255, 1) 0%,
+    rgba(241, 249, 253, 1) 7%,
+    rgba(242, 248, 251, 1) 14%,
+    rgba(243, 248, 249, 1) 21%,
+    rgba(244, 247, 247, 1) 29%,
+    rgba(245, 247, 245, 1) 36%,
+    rgba(246, 247, 243, 1) 43%,
+    rgba(247, 246, 241, 1) 50%,
+    rgba(248, 246, 239, 1) 57%,
+    rgba(249, 245, 236, 1) 64%,
+    rgba(250, 245, 234, 1) 71%,
+    rgba(251, 244, 232, 1) 79%,
+    rgba(252, 244, 230, 1) 86%,
+    rgba(253, 243, 228, 1) 93%,
+    rgba(254, 243, 226, 1) 100%
+  );
 }
 
 .register-hero {
   width: 100%;
-  max-width: 280px;
+  max-width: 380px;
   text-align: center;
 }
 
 .register-illustration {
-  width: 220px;
+  width: 250px;
   height: auto;
   display: block;
-  margin: 0 auto 12px;
-  filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.08));
+  margin: 0 auto 24px;
+  filter: drop-shadow(0 20px 30px rgba(34, 74, 107, 0.12));
 }
 
 .register-brand {
-  margin: 0 0 4px;
-  color: #4a90e2;
-  font-size: 18px;
+  margin: 0 0 10px;
+  color: #1e3a8a;
+  font-size: 32px;
   font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .register-copy {
-  margin: 0 auto 16px;
-  max-width: 250px;
+  margin: 0 auto 28px;
+  max-width: 320px;
   color: #64748b;
-  font-size: 13px;
-  line-height: 20px;
+  font-size: 14px;
+  line-height: 22px;
 }
 
 .register-pills {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .register-pill {
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  padding: 8px 16px;
   border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  color: #334155;
+  font-size: 13px;
+  font-weight: 500;
   line-height: 1;
-  box-shadow:
-    0 1px 2px -1px rgba(0, 0, 0, 0.1),
-    0 1px 3px rgba(0, 0, 0, 0.08);
+  white-space: nowrap;
 }
 
+/* Right panel: Form area */
 .register-form-area {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 0;
-  padding: 40px;
+  padding: 48px 40px;
   box-sizing: border-box;
+  background: #ffffff;
 }
 
 .register-card {
   width: 100%;
-  max-width: 450px;
+  max-width: 440px;
 }
 
 .register-header {
   text-align: center;
-  margin-bottom: 14px;
+  margin-bottom: 24px;
 }
 
 .register-icon {
-  width: 64px;
-  height: 64px;
+  width: 70px;
+  height: auto;
+  margin: 0 auto 16px;
   display: block;
-  margin: 0 auto 8px;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.04));
 }
 
 .register-header h1 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 700;
-  color: #000;
-  line-height: 1.2;
+  margin: 0 0 8px;
+  color: #1e293b;
+  font-size: 22px;
+  line-height: 1.3;
+  font-weight: 750;
+  letter-spacing: -0.3px;
 }
 
 .register-header p {
-  margin: 4px 0 0;
+  margin: 0;
+  color: #64748b;
   font-size: 14px;
-  color: #000;
-  opacity: 0.85;
 }
 
+/* Form Container */
 .register-form {
-  background: #f5f9f9;
-  border-radius: 28px;
-  padding: 24px;
+  background: #f1f4fb;
+  border-radius: 36px; /* Soft, smooth, organic curved edges! */
+  padding: 36px 32px;
   box-sizing: border-box;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
 }
 
 .back-link {
-  display: inline-block;
-  margin-bottom: 10px;
-  color: #718096;
-  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
   text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.back-link:hover {
+  color: #1e293b;
+  text-decoration: underline;
 }
 
 .register-field {
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
+  margin-bottom: 24px; /* Airy, premium space between fields */
 }
 
 .register-field span {
   display: block;
-  margin-bottom: 4px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #000;
+  margin-bottom: 8px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .register-field input,
@@ -178,57 +193,90 @@
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  height: 40px;
-  border: 1.35px solid #f1f3f7;
-  border-radius: 28px;
-  background: #fff;
-  padding: 0 14px;
-  font: inherit;
-  font-size: 13px;
-  color: #0a0a0a;
+  height: 52px; /* Taller, premium input height */
+  border: 1px solid #cbd5e1;
+  border-radius: 999px; /* Soft capsule-shape edges */
+  background: #ffffff;
+  padding: 0 22px; /* Spacious horizontal padding */
+  font-family: inherit;
+  font-size: 14px;
+  color: #1e293b;
   outline: none;
-  box-shadow: 0 1px 2px rgba(25, 33, 61, 0.08);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.register-field input:focus,
+.select-wrap select:focus {
+  border-color: #9cb2cd;
+  box-shadow: 0 0 0 3px rgba(156, 178, 206, 0.2);
 }
 
 .register-field input::placeholder {
-  color: rgba(10, 10, 10, 0.5);
+  color: #94a3b8;
 }
 
 .select-wrap {
   position: relative;
 }
 
-.select-wrap::after {
-  content: '';
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  width: 7px;
-  height: 7px;
-  border-right: 2px solid #64748b;
-  border-bottom: 2px solid #64748b;
-  transform: translateY(-70%) rotate(45deg);
-  pointer-events: none;
-}
-
 .select-wrap select {
   appearance: none;
-  padding-right: 40px;
-}
-
-.register-submit {
-  display: block;
-  width: 100%;
-  height: 40px;
-  margin: 12px 0 0;
-  border: 0;
-  border-radius: 28px;
-  background: #a3b8ce;
-  color: #fff;
-  font-size: 14px;
+  padding-right: 48px;
   cursor: pointer;
 }
 
+.select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #64748b;
+  border-bottom: 2px solid #64748b;
+  transform: translateY(-65%) rotate(45deg);
+  pointer-events: none;
+  transition: border-color 0.15s ease;
+}
+
+.select-wrap:focus-within::after {
+  border-color: #1e293b;
+}
+
+/* Date input styling custom touch */
+.register-field input[type="date"] {
+  color: #475569;
+}
+
+/* Submit Button */
+.register-submit {
+  display: block;
+  width: 100%;
+  height: 52px; /* Taller, premium height matching the inputs */
+  margin: 12px 0 0;
+  border: 0;
+  border-radius: 999px; /* Soft, capsule-shaped submit button */
+  background: #9cb2cd;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(156, 178, 206, 0.2);
+  transition: all 0.2s ease;
+}
+
+.register-submit:hover {
+  background: #879fb9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px -2px rgba(156, 178, 206, 0.3);
+}
+
+.register-submit:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
 @media (max-width: 900px) {
   .register-shell {
     flex-direction: column;
@@ -237,20 +285,29 @@
 
   .register-visual,
   .register-form-area {
-    width: 100%;
+    width: 100vw;
     min-height: auto;
+    flex: none;
   }
 
-  .register-page {
-    width: 100%;
+  .register-visual {
+    padding: 48px 24px;
+  }
+
+  .register-hero {
+    max-width: 100%;
+  }
+
+  .register-illustration {
+    width: 180px;
   }
 
   .register-form-area {
-    padding: 24px 16px 32px;
+    padding: 32px 20px 48px;
   }
 
   .register-form {
-    padding: 20px 16px 22px;
+    padding: 28px 20px;
   }
 }
 
@@ -259,28 +316,8 @@
     overflow: auto;
   }
 
-  .register-shell {
-    flex-direction: column;
-  }
-
-  .register-visual {
-    padding: 32px 20px 28px;
-  }
-
-  .register-form-area {
-    padding: 20px 16px 28px;
-  }
-
   .register-card {
     max-width: 100%;
-  }
-
-  .register-hero {
-    max-width: 240px;
-  }
-
-  .register-illustration {
-    width: 180px;
   }
 
   .register-header h1 {
