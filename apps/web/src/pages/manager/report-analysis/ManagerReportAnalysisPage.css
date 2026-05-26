@@ -54,14 +54,11 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 160ms ease;
-  box-shadow: 0 4px 12px rgba(98, 217, 133, 0.15);
+  transition: background 160ms ease, border-color 160ms ease;
 }
 
 .export-excel-button:hover {
   background: #baf3c5;
-  box-shadow: 0 6px 16px rgba(98, 217, 133, 0.25);
-  transform: translateY(-1px);
 }
 
 .report-grid {
@@ -77,7 +74,6 @@
   border-radius: 20px;
   background: #fff;
   padding: 20px 24px;
-  box-shadow: 0 12px 28px rgba(141, 193, 255, 0.06);
 }
 
 .report-card h2 {
@@ -153,11 +149,3 @@
     justify-content: center;
   }
 }
-
-.report-card {
-  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-.branch-performance-card { animation-delay: 0.1s; }
-.chatbot-efficiency-card { animation-delay: 0.2s; }
-.pie-chart-card { animation-delay: 0.3s; }
-.specialty-card { animation-delay: 0.4s; }

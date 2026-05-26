@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState, type ChangeEvent } from 'react'
 import './FilterButton.css'
 import './FilterSelect.css'
 
@@ -11,19 +11,21 @@ export type FilterSelectProps = {
   options: FilterOption[]
   defaultValue?: string
   value?: string
-  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void
+  onChange?: (event: ChangeEvent<HTMLSelectElement>) => void
 }
 
 export function FilterSelect({ options, defaultValue, value, onChange }: FilterSelectProps) {
   const [internalVal, setInternalVal] = useState(defaultValue || options[0]?.value)
   const currentVal = value !== undefined ? value : internalVal
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (value === undefined) setInternalVal(e.target.value)
-    if (onChange) onChange(e)
+  const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    if (value === undefined) {
+      setInternalVal(event.target.value)
+    }
+    onChange?.(event)
   }
 
-  const selectedLabel = options.find((o) => o.value === currentVal)?.label || 'Chọn...'
+  const selectedLabel = options.find((option) => option.value === currentVal)?.label || 'Chọn...'
 
   return (
     <div className="filter-select-wrapper">

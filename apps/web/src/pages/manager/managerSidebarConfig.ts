@@ -11,7 +11,7 @@ export const managerSidebarConfig: SidebarConfig = {
     {
       title: 'Quản trị',
       items: [
-        { label: 'Quản lý bác sĩ', icon: 'users' },
+        { label: 'Quản lý bác sĩ', icon: 'users', href: '/manager/doctors' },
         { label: 'Quản lý bệnh nhân', icon: 'users' },
       ],
     },
@@ -34,4 +34,3 @@ export const managerSidebarConfig: SidebarConfig = {
     },
   ],
 }
-

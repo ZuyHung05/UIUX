@@ -12,49 +12,51 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Header } from '../../components/layout/header/Header'
-import { Sidebar } from '../../components/layout/sidebar/Sidebar'
-import '../../components/layout/DesktopShell.css'
-import { managerSidebarConfig } from './managerSidebarConfig'
+import type { ReactNode } from 'react'
+import { Header } from '../../../components/layout/header/Header'
+import { Sidebar } from '../../../components/layout/sidebar/Sidebar'
+import '../../../components/layout/DesktopShell.css'
+import { managerSidebarConfig } from '../managerSidebarConfig'
 import './ManagerDashboardPage.css'
 
-import { MetricCard, type MetricIconName } from '../../components/ui/MetricCard'
-import { FilterButton } from '../../components/ui/FilterButton'
+import { MetricCard } from '../../../components/ui/MetricCard'
+import { ClockMetricIcon, CurrencyMetricIcon, MessageMetricIcon, PulseMetricIcon } from '../../../components/ui/metricIcons'
+import { FilterButton } from '../../../components/ui/FilterButton'
 
 const metrics: Array<{
   label: string
   value: string
   delta: string
-  tone: string
-  icon: MetricIconName
+  iconClassName: string
+  icon: ReactNode
 }> = [
   {
     label: 'Số lượt tư vấn Chatbot',
     value: '52',
     delta: '+11.3% so với hôm qua',
-    tone: 'blue',
-    icon: 'message',
+    iconClassName: 'metric-icon-blue',
+    icon: <MessageMetricIcon />,
   },
   {
     label: 'Số lịch hẹn',
     value: '37',
     delta: '+5.2% so với hôm qua',
-    tone: 'yellow',
-    icon: 'clock',
+    iconClassName: 'metric-icon-yellow',
+    icon: <ClockMetricIcon />,
   },
   {
     label: 'Tỷ lệ chuyển sang bác sĩ',
     value: '18%',
     delta: '-3.1% so với hôm qua',
-    tone: 'green',
-    icon: 'pulse',
+    iconClassName: 'metric-icon-green',
+    icon: <PulseMetricIcon />,
   },
   {
     label: 'Doanh thu',
     value: '56 trĐ',
     delta: '+8.7% so với hôm qua',
-    tone: 'pink',
-    icon: 'currency',
+    iconClassName: 'metric-icon-pink',
+    icon: <CurrencyMetricIcon />,
   },
 ]
 
@@ -135,8 +137,8 @@ export function ManagerDashboardPage() {
                 label={metric.label}
                 value={metric.value}
                 delta={metric.delta}
-                tone={metric.tone}
                 icon={metric.icon}
+                iconClassName={metric.iconClassName}
               />
             ))}
           </div>
@@ -147,12 +149,6 @@ export function ManagerDashboardPage() {
               <div className="chart-frame">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={consultationData} margin={{ top: 12, right: 18, left: -18, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="consultationFill" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#8dc1ff" stopOpacity={0.32} />
-                        <stop offset="100%" stopColor="#8dc1ff" stopOpacity={0.04} />
-                      </linearGradient>
-                    </defs>
                     <CartesianGrid stroke="#d8d8d8" strokeDasharray="3 4" vertical={false} />
                     <XAxis dataKey="time" tickLine={false} axisLine={false} tick={{ fontSize: 10, fill: '#666' }} />
                     <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 10, fill: '#666' }} ticks={[0, 35, 70, 105, 140]} />
@@ -167,7 +163,8 @@ export function ManagerDashboardPage() {
                       name="Lượt tư vấn"
                       stroke="#4a93ff"
                       strokeWidth={2}
-                      fill="url(#consultationFill)"
+                      fill="#dcebff"
+                      fillOpacity={0.65}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -251,4 +248,3 @@ export function ManagerDashboardPage() {
     </div>
   )
 }
-

@@ -7,7 +7,7 @@ import globeIcon from '../../assets/auth/globe.svg'
 import './AuthPage.css'
 
 type AuthMode = 'login' | 'forgot' | 'signup' | 'forgotLoading' | 'forgotSuccess'
-type AccountRole = 'doctor' | 'admin'
+type AccountRole = 'doctor' | 'manager'
 
 type Account = {
   email: string
@@ -51,11 +51,11 @@ const initialAccounts: Account[] = [
     role: 'doctor',
   },
   {
-    email: 'admin@gmail.com',
+    email: 'manager@gmail.com',
     phone: '0900000002',
-    fullName: 'Admin',
+    fullName: 'Manager',
     password: DEFAULT_PASSWORD,
-    role: 'admin',
+    role: 'manager',
   },
 ]
 

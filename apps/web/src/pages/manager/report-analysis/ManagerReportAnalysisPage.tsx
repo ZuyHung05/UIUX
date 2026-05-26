@@ -12,50 +12,52 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Header } from '../../components/layout/header/Header'
-import { Sidebar } from '../../components/layout/sidebar/Sidebar'
-import '../../components/layout/DesktopShell.css'
-import { managerSidebarConfig } from './managerSidebarConfig'
+import type { ReactNode } from 'react'
+import { Header } from '../../../components/layout/header/Header'
+import { Sidebar } from '../../../components/layout/sidebar/Sidebar'
+import '../../../components/layout/DesktopShell.css'
+import { managerSidebarConfig } from '../managerSidebarConfig'
 import './ManagerReportAnalysisPage.css'
 
-import { MetricCard, type MetricIconName } from '../../components/ui/MetricCard'
-import { FilterButton } from '../../components/ui/FilterButton'
-import { FilterSelect } from '../../components/ui/FilterSelect'
+import { MetricCard } from '../../../components/ui/MetricCard'
+import { ClockMetricIcon, CurrencyMetricIcon, MessageMetricIcon, StarMetricIcon } from '../../../components/ui/metricIcons'
+import { FilterButton } from '../../../components/ui/FilterButton'
+import { FilterSelect } from '../../../components/ui/FilterSelect'
 
 const metrics: Array<{
   label: string
   value: string
   delta: string
-  tone: string
-  icon: MetricIconName
+  iconClassName: string
+  icon: ReactNode
 }> = [
   {
     label: 'Tổng lượt tư vấn Chatbot',
     value: '3,420',
     delta: '+12.5% so với tháng trước',
-    tone: 'blue',
-    icon: 'message',
+    iconClassName: 'metric-icon-blue',
+    icon: <MessageMetricIcon />,
   },
   {
     label: 'Tổng lịch hẹn khám',
     value: '1,284',
     delta: '+8.2% so với tháng trước',
-    tone: 'yellow',
-    icon: 'clock',
+    iconClassName: 'metric-icon-yellow',
+    icon: <ClockMetricIcon />,
   },
   {
     label: 'Doanh thu',
     value: '2.4 Tỷ',
     delta: '+15.4% so với tháng trước',
-    tone: 'pink',
-    icon: 'currency',
+    iconClassName: 'metric-icon-pink',
+    icon: <CurrencyMetricIcon />,
   },
   {
     label: 'Điểm CSAT trung bình',
     value: '4.8/5',
     delta: '+0.2 điểm so với tháng trước',
-    tone: 'green',
-    icon: 'star',
+    iconClassName: 'metric-icon-green',
+    icon: <StarMetricIcon />,
   },
 ]
 
@@ -160,8 +162,8 @@ export function ManagerReportAnalysisPage() {
                 label={metric.label}
                 value={metric.value}
                 delta={metric.delta}
-                tone={metric.tone}
                 icon={metric.icon}
+                iconClassName={metric.iconClassName}
               />
             ))}
           </div>
