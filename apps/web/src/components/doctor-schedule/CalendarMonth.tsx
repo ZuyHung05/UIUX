@@ -1,11 +1,16 @@
 import { useState } from 'react';
+import { SCHEDULE_DATA } from '../../data/scheduleData';
 import './CalendarMonth.css';
 
-const CalendarMonth = () => {
+interface CalendarMonthProps {
+    selectedDate: string;
+    onDateSelect: (date: string) => void;
+}
+
+const CalendarMonth = ({ selectedDate, onDateSelect }: CalendarMonthProps) => {
     const daysOfWeek = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
-    const [viewDate, setViewDate] = useState(new Date(2024, 4, 1));
-    const [selectedDay, setSelectedDay] = useState<number | null>(10);
+    const [viewDate, setViewDate] = useState(new Date(2026, 4, 1));
 
     const currentMonth = viewDate.getMonth();
     const currentYear = viewDate.getFullYear();
@@ -39,10 +44,12 @@ const CalendarMonth = () => {
                 ))}
 
                 {daysArray.map(day => {
-                    const dateObj = new Date(currentYear, currentMonth, day);
-                    const dayOfWeek = dateObj.getDay();
-                    const hasEvent = dayOfWeek !== 0 && dayOfWeek !== 6;
-                    const isSelected = selectedDay === day;
+                    const dateStr = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+                    const dayShifts = SCHEDULE_DATA[dateStr] || [];
+                    const hasEvent = dayShifts.length > 0;
+                    const isSelected = selectedDate === dateStr;
+                    const dayOfWeek = new Date(currentYear, currentMonth, day).getDay();
 
                     return (
                         <div
@@ -52,7 +59,7 @@ const CalendarMonth = () => {
                                 ${hasEvent ? 'has-event' : ''} 
                                 ${(dayOfWeek === 0 || dayOfWeek === 6) ? 'weekend' : ''}`
                             }
-                            onClick={() => setSelectedDay(day)}
+                            onClick={() => onDateSelect(dateStr)}
                         >
                             <span className="day-number">{day}</span>
                             {hasEvent && <div className="event-dot"></div>}

@@ -1,12 +1,20 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import AppointmentList from '../../../components/doctor-schedule/AppointmentList';
 import CalendarMonth from '../../../components/doctor-schedule/CalendarMonth';
 import ShiftCard from '../../../components/doctor-schedule/ShiftCard';
-import { MOCK_SHIFTS, Shift } from '../../../data/scheduleData';
+import { SCHEDULE_DATA, Shift } from '../../../data/scheduleData';
 import './DoctorSchedulePage.css';
 
 const SchedulePage = () => {
+  const [selectedDate, setSelectedDate] = useState('2026-05-10');
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
+  const shiftsOfDay = useMemo(() => {
+    return SCHEDULE_DATA[selectedDate] || [];
+  }, [selectedDate]);
+  const handleDateChange = (dateStr: string) => {
+    setSelectedDate(dateStr);
+    setSelectedShift(null);
+  };
 
   return (
     <div className="schedule-page">
@@ -17,13 +25,16 @@ const SchedulePage = () => {
 
       <main className="schedule-content">
         <div className="left-column">
-          <CalendarMonth />
+          <CalendarMonth
+            selectedDate={selectedDate}
+            onDateSelect={handleDateChange}
+          />
         </div>
 
         <div className="right-column">
           <div className="section-card">
             <h3>Ca làm việc trong ngày</h3>
-            {MOCK_SHIFTS.map((shift) => (
+            {shiftsOfDay.map((shift) => (
               <ShiftCard
                 key={shift.id}
                 title={shift.title}

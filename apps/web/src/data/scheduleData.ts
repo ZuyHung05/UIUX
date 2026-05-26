@@ -51,8 +51,8 @@ export const MOCK_EVENT_DATES = [
 ]
 
 export const SCHEDULE_DATA: Record<string, Shift[]> = {
-  '2024-05-06': [{ id: 'm1', title: 'Ca sáng', time: '08:00 - 12:00', count: 5, patients: [] }],
-  '2024-05-10': [
+  '2026-06-06': [{ id: 'm1', title: 'Ca sáng', time: '08:00 - 12:00', count: 5, patients: [] }],
+  '2026-06-10': [
     {
       id: 'm2',
       title: 'Ca sáng',
@@ -73,6 +73,38 @@ export const SCHEDULE_DATA: Record<string, Shift[]> = {
       ],
     },
   ],
-  '2024-05-15': [{ id: 'a3', title: 'Ca chiều', time: '14:00 - 18:00', count: 3, patients: [] }],
-  // Thêm các ngày khác...
+  '2026-06-15': [{ id: 'a3', title: 'Ca chiều', time: '14:00 - 18:00', count: 3, patients: [] }],
+  '2026-05-06': [{ id: 'm1', title: 'Ca sáng', time: '08:00 - 12:00', count: 5, patients: [] }],
+
+  '2026-05-10': [
+    {
+      id: 'm2',
+      title: 'Ca sáng',
+      time: '08:00 - 12:00',
+      count: 8,
+      status: 'Đang diễn ra',
+      patients: [
+        /* list patients */
+      ],
+    },
+    {
+      id: 'a2',
+      title: 'Ca chiều',
+      time: '14:00 - 18:00',
+      count: 6,
+      patients: [
+        /* list patients */
+      ],
+    },
+  ],
+
+  '2026-05-15': [
+    {
+      id: 'a3',
+      title: 'Ca chiều',
+      time: '14:00 - 18:00',
+      count: 3,
+      patients: [],
+    },
+  ],
 }
