@@ -34,17 +34,23 @@ const SchedulePage = () => {
         <div className="right-column">
           <div className="section-card">
             <h3>Ca làm việc trong ngày</h3>
-            {shiftsOfDay.map((shift) => (
-              <ShiftCard
-                key={shift.id}
-                title={shift.title}
-                time={shift.time}
-                count={shift.count}
-                status={shift.status}
-                onViewDetail={() => setSelectedShift(shift)}
-                isSelected={selectedShift?.id === shift.id}
-              />
-            ))}
+            {shiftsOfDay.length > 0 ? (
+              shiftsOfDay.map((shift) => (
+                <ShiftCard
+                  key={shift.id}
+                  title={shift.title}
+                  time={shift.time}
+                  count={shift.count}
+                  status={shift.status}
+                  onViewDetail={() => setSelectedShift(shift)}
+                  isSelected={selectedShift?.id === shift.id}
+                />
+              ))
+            ) : (
+              <div className="empty-day-container">
+                <p>Không có ca làm việc nào trong ngày hôm nay</p>
+              </div>
+            )}
           </div>
 
           {/* <AppointmentList /> */}

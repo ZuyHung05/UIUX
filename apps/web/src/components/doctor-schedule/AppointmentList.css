@@ -101,3 +101,16 @@
     color: #6A7282;
     font-weight: 500;
 }
+
+.empty-state-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    text-align: center;
+}
+.empty-state-container p {
+    color: #6A7282;
+    font-size: 14px;
+    font-weight: 400;
+}

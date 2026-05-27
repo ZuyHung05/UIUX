@@ -48,14 +48,22 @@
   color: #6A7282;
   aspect-ratio: 1 / 1;
   font-size: 14px;
+  background: white;
 }
 .calendar-day.selected {
   background: #91C3FF;
   color: #101828;
   border-color: #91C3FF;
 }
+.calendar-day.work-day {
+  background: #F3F6FF;
+  color: #101828;     
+}
+.calendar-day.weekend {
+  background: white;
+  color: #A3B8CE;
+}
 .calendar-day.has-event {
-  background: #DCEBFF;
   color: #101828;
 }
 .event-dot {

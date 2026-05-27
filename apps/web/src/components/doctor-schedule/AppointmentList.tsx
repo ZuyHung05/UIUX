@@ -25,16 +25,22 @@ const AppointmentList = ({ shiftTitle, timeRange, count, patients }: Appointment
 
             <p className="list-label">Danh sách lịch hẹn</p>
             <div className="patient-list">
-                {patients.map((p, idx) => (
-                    <div key={idx} className="patient-item">
-                        <div className="patient-avatar"></div>
-                        <div className="patient-info">
-                            <p className="p-name">{p.name}</p>
-                            <p className="p-id">Mã BN: {p.id}</p>
+                {patients.length > 0 ? (
+                    patients.map((p, idx) => (
+                        <div key={idx} className="patient-item">
+                            <div className="patient-avatar"></div>
+                            <div className="patient-info">
+                                <p className="p-name">{p.name}</p>
+                                <p className="p-id">Mã BN: {p.id}</p>
+                            </div>
+                            <span className="p-time">{p.time}</span>
                         </div>
-                        <span className="p-time">{p.time}</span>
+                    ))
+                ) : (
+                    <div className="empty-state-container">
+                        <p>Không có yêu cầu thăm khám nào.</p>
                     </div>
-                ))}
+                )}
             </div>
         </div>
     );

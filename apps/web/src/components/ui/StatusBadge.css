@@ -29,3 +29,22 @@
   background: #f5f7fb;
   color: #718096;
 }
+.status-badge-waiting {
+  background-color: #FFF6D7;
+  color: #2D3748;
+}
+
+.status-badge-completed {
+  background-color: #E5E7EB;
+  color: #2D3748;
+}
+
+.status-badge-in-progress {
+  background-color: #E0FFE6;
+  color: #2D3748;
+}
+
+.status-badge-priority {
+  background-color: #FFF5F5; 
+  color: #E53E3E;
+}
