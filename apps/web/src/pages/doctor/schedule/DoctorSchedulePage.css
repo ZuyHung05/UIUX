@@ -46,5 +46,18 @@
   border-radius: 24px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 6px;
+}
+
+.empty-day-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    text-align: center;
+}
+
+.empty-day-container p {
+    color: #6A7282;
+    font-size: 14px;
 }

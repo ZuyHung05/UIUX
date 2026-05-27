@@ -55,79 +55,52 @@ export const MOCK_EVENT_DATES = [
 ]
 
 export const SCHEDULE_DATA: Record<string, Shift[]> = {
-  '2026-06-06': [
+  '2026-05-06': [
     {
-      id: 'm1',
+      id: 'm06_1',
       title: 'Ca sáng',
       time: '08:00 - 12:00',
-      count: 2,
-      patients: [
-        { name: 'Nguyễn Thị B', id: '#12345', time: '08:00' },
-        { name: 'Trần Văn C', id: '#12346', time: '09:00' },
-      ],
+      count: 3,
+      patients: [{ name: 'Lê Văn C', id: '#12347', time: '09:00' }],
     },
   ],
-  '2026-06-10': [
+
+  // Thứ 2 - Ngày 11/05/2026 (Thay cho ngày 10 cũ)
+  '2026-05-11': [
     {
-      id: 'm2',
+      id: 'm11_morning',
       title: 'Ca sáng',
       time: '08:00 - 12:00',
-      count: 4,
+      count: 8,
       status: 'Đang diễn ra',
       patients: [
         { name: 'Nguyễn Thị B', id: '#12345', time: '08:00' },
         { name: 'Trần Văn C', id: '#12346', time: '09:00' },
-        { name: 'Lê Thị D', id: '#12347', time: '09:30' },
-        { name: 'Phạm Văn E', id: '#12348', time: '10:00' },
       ],
     },
     {
-      id: 'a2',
+      id: 'm11_afternoon',
       title: 'Ca chiều',
       time: '14:00 - 18:00',
-      count: 2,
-      patients: [
-        { name: 'Vũ Văn X', id: '#12399', time: '14:30' },
-        { name: 'Đặng Thị Y', id: '#12400', time: '15:00' },
-      ],
-    },
-  ],
-  '2026-06-15': [{ id: 'a3', title: 'Ca chiều', time: '14:00 - 18:00', count: 3, patients: [] }],
-  '2026-05-06': [{ id: 'm1', title: 'Ca sáng', time: '08:00 - 12:00', count: 5, patients: [] }],
-
-  '2026-05-10': [
-    {
-      id: 'm2',
-      title: 'Ca sáng',
-      time: '08:00 - 12:00',
-      count: 4,
-      status: 'Đang diễn ra',
-      patients: [
-        { name: 'Nguyễn Thị B', id: '#12345', time: '08:00' },
-        { name: 'Trần Văn C', id: '#12346', time: '09:00' },
-        { name: 'Lê Thị D', id: '#12347', time: '09:30' },
-        { name: 'Phạm Văn E', id: '#12348', time: '10:00' },
-      ],
-    },
-    {
-      id: 'a2',
-      title: 'Ca chiều',
-      time: '14:00 - 18:00',
-      count: 2,
-      patients: [{ name: 'Bệnh nhân lẻ', id: '#99999', time: '08:30' }],
+      count: 6,
+      patients: [{ name: 'Phạm Văn E', id: '#12348', time: '14:30' }],
     },
   ],
 
+  // Thứ 6 - Ngày 15/05/2026
   '2026-05-15': [
     {
-      id: 'a3',
+      id: 'a15_1',
       title: 'Ca chiều',
       time: '14:00 - 18:00',
       count: 2,
-      patients: [
-        { name: 'Vũ Văn X', id: '#12399', time: '14:30' },
-        { name: 'Đặng Thị Y', id: '#12400', time: '15:00' },
-      ],
+      patients: [{ name: 'Hoàng Văn A', id: '#12350', time: '15:00' }],
     },
   ],
+
+  // Thứ 4 - Ngày 20/05/2026
+  '2026-05-20': [{ id: 'm20_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 1, patients: [] }],
+
+  // Thứ 4 - Ngày 27/05/2026
+  '2026-05-27': [{ id: 'm27_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 4, patients: [] }],
 }
