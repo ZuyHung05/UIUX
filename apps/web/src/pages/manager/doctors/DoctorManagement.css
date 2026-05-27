@@ -7,7 +7,7 @@
   flex-direction: column;
   gap: 0;
   min-height: 100%;
-  padding: clamp(26px, 3.03vh, 31px) clamp(20px, 2.15vw, 31px);
+  padding: clamp(20px, 3.03vh, 31px) clamp(20px, 2.15vw, 31px);
   color: #244a6b;
 }
 
@@ -36,9 +36,9 @@
 .doctor-form-title-row h1,
 .doctor-detail-title h1 {
   margin: 0;
-  color: #2d3748;
-  font-size: 24px;
-  font-weight: 600;
+  color: #244a6b;
+  font-size: 28px;
+  font-weight: 800;
   line-height: 1.2;
 }
 
@@ -53,10 +53,6 @@
 }
 
 .doctor-metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(220px, 256px));
-  justify-content: space-between;
-  gap: clamp(16px, 1.6vw, 23px);
   margin-top: 18px;
 }
 
@@ -485,7 +481,6 @@
     padding: 28px;
   }
 
-  .doctor-metrics-grid,
   .doctor-quick-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -517,7 +512,6 @@
     flex-direction: column;
   }
 
-  .doctor-metrics-grid,
   .doctor-quick-stats,
   .doctor-form-grid,
   .doctor-info-grid,

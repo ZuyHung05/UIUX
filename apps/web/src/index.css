@@ -1,3 +1,5 @@
+@import './components/ui/ScrollArea.css';
+
 :root {
   color: #244a6b;
   background: #fafafa;

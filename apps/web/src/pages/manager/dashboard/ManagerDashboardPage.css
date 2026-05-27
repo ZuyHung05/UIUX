@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 22px;
-  padding: 28px;
+  padding: 20px;
 }
 
 .dashboard-heading-row {
@@ -14,25 +14,16 @@
 
 .dashboard-heading-row h1 {
   margin: 0;
-  color: #2d3748;
+  color: #244a6b;
   font-size: 28px;
   font-weight: 800;
-  line-height: 1.15;
+  line-height: 1.2;
 }
 
 .dashboard-heading-row p {
   margin: 5px 0 0;
   color: #718096;
   font-size: 12px;
-}
-
-
-
-.metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 25px;
-  width: 100%;
 }
 
 
@@ -213,9 +204,6 @@
 }
 
 @media (max-width: 992px) {
-  .metrics-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
   .result-card-body {
     display: flex;
     flex-direction: column;
@@ -229,9 +217,6 @@
 }
 
 @media (max-width: 600px) {
-  .metrics-grid {
-    grid-template-columns: 1fr;
-  }
   .dashboard-heading-row {
     flex-direction: column;
   }

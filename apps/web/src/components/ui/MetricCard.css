@@ -1,4 +1,14 @@
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 25px;
+  width: 100%;
+}
+
 .metric-card {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   min-height: 88px;
   display: flex;
   align-items: center;
@@ -94,4 +104,16 @@
   color: #244a6b;
   font-size: 11px;
   font-weight: 700;
+}
+
+@media (max-width: 1180px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
 }

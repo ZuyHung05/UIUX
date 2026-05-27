@@ -271,13 +271,13 @@ body {
   left: 50%;
   top: 225px;
   width: 562px;
-  height: 587px;
+  height: 550px;
   transform: translateX(-50%);
   overflow-y: auto;
   overflow-x: hidden;
   border-radius: 28px;
   background: #f3f6ff;
-  padding: 61px 60px;
+  padding: 30px 30px;
   scrollbar-color: rgba(145, 195, 255, 0.7) transparent;
   scrollbar-width: thin;
 }
