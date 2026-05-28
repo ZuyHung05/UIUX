@@ -244,7 +244,7 @@ export function PatientListTab({
     const matchesSearch =
       p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.phone.includes(searchTerm)
-    
+
     const matchesService = serviceFilter === 'Tất cả' || p.appointmentType === serviceFilter
     const matchesStatus = statusFilter === 'Tất cả' || p.status === statusFilter
 
@@ -350,7 +350,7 @@ export function PatientListTab({
                       <li key={idx}>{item}</li>
                     ))}
                   </ul>
-                 </div>
+                </div>
               </div>
             </article>
           </div>
