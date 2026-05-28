@@ -6,7 +6,13 @@ import { SCHEDULE_DATA, Shift } from '../../../data/scheduleData';
 import './DoctorSchedulePage.css';
 
 const SchedulePage = ({ onBackToDashboard }: { onBackToDashboard?: () => void }) => {
-  const [selectedDate, setSelectedDate] = useState('2026-05-10');
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  });
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
   const shiftsOfDay = useMemo(() => {
     return SCHEDULE_DATA[selectedDate] || [];

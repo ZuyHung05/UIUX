@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { ReturnButton } from '../../../components/ui/ReturnButton'
 import './LiveConsultationTab.css'
 
 type ChatMessage = {
@@ -159,12 +158,21 @@ export function LiveConsultationTab({
   }
 
   return (
-    <div className={`consultation-tab-container ${isChatActiveMode ? 'active-chat-mode' : ''}`}>
-      {/* Left Pane: Chat List (Hidden in active chat mode) */}
+    <div className={`consultation-tab-outer ${isChatActiveMode ? 'active-chat-mode' : ''}`} style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', minHeight: '0' }}>
       {!isChatActiveMode && (
-        <div className="consultation-sidebar-pane">
-          <h2 className="consultation-title">Danh sách tư vấn</h2>
-          <div className="consultation-list">
+        <header className="patient-tab-header" style={{ padding: '0 24px 0 24px', flexShrink: 0 }}>
+          <div className="tab-titles">
+            <h1>Danh sách tư vấn</h1>
+            <p>Trang theo dõi và tư vấn sức khỏe trực tuyến cho bệnh nhân.</p>
+          </div>
+        </header>
+      )}
+      <div className={`consultation-tab-container ${isChatActiveMode ? 'active-chat-mode' : ''}`} style={{ flex: 1, minHeight: 0, marginTop: !isChatActiveMode ? '16px' : 0 }}>
+        {/* Left Pane: Chat List (Hidden in active chat mode) */}
+        {!isChatActiveMode && (
+          <div className="consultation-sidebar-pane">
+            <h2 className="consultation-title" style={{ display: 'none' }}>Danh sách tư vấn</h2>
+            <div className="consultation-list">
             {chats.map((chat) => {
               const isActive = chat.id === activeChatId
               return (
@@ -578,6 +586,7 @@ export function LiveConsultationTab({
         </div>,
         document.body
       )}
+      </div>
     </div>
   )
 }

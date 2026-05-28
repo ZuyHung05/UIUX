@@ -73,11 +73,17 @@ const CalendarMonth = ({ selectedDate, onDateSelect, className }: CalendarMonthP
                     // Check if any shift on this day has patients
                     const hasAppointments = dayShifts.some(shift => shift.patients && shift.patients.length > 0);
 
+                    const todayObj = new Date();
+                    const isToday = todayObj.getFullYear() === currentYear &&
+                                    todayObj.getMonth() === currentMonth &&
+                                    todayObj.getDate() === day;
+
                     return (
                         <div
                             key={day}
                             className={`calendar-day 
                                 ${isSelected ? 'selected' : ''} 
+                                ${isToday ? 'today' : ''} 
                                 ${hasWorkSchedule ? 'has-schedule' : ''} 
                                 ${(dayOfWeek === 0 || dayOfWeek === 6) ? 'weekend' : ''}`
                             }

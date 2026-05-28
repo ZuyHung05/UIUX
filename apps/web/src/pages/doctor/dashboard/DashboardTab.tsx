@@ -30,7 +30,13 @@ export function DashboardTab({
   const [selectedMonth, setSelectedMonth] = useState<number>(5)
   const [selectedDay, setSelectedDay] = useState<number>(10)
   const [isMonthPickerOpen, setIsMonthPickerOpen] = useState<boolean>(false)
-  const [selectedDate, setSelectedDate] = useState('2026-05-10');
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  });
 
   // States for Date Filter (Hôm nay, Ngày mai, ...)
   const [selectedFilter, setSelectedFilter] = useState<string>('Hôm nay')

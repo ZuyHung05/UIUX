@@ -36,7 +36,7 @@ export function Sidebar({ config, onItemClick }: SidebarProps) {
             <h2>{group.title}</h2>
             <div className="nav-items">
               {group.items.map((item) => {
-                const isActive = item.href ? location.pathname.startsWith(item.href) : false
+                const isActive = item.label === config.activeLabel || (item.href ? (item.href !== '#' && location.pathname.startsWith(item.href)) : false)
 
                 return (
                   <Link
