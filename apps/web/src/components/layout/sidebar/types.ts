@@ -23,7 +23,7 @@ export type SidebarGroup = {
 
 export type SidebarConfig = {
   profileRole: string
-  activeLabel: string
+  activeLabel?: string
   groups: SidebarGroup[]
 }
 

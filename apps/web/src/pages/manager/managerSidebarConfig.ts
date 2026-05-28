@@ -2,7 +2,6 @@ import type { SidebarConfig } from '../../components/layout/sidebar/types'
 
 export const managerSidebarConfig: SidebarConfig = {
   profileRole: 'Quản lý phòng khám',
-  activeLabel: 'Dashboard',
   groups: [
     {
       title: 'Tổng quan',
