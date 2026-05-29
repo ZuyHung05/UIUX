@@ -7,6 +7,8 @@ import { DoctorDashboardPage } from './pages/doctor/DoctorDashboardPage'
 import { DoctorDetailPage } from './pages/manager/doctors/DoctorDetailPage'
 import { DoctorManagementPage } from './pages/manager/doctors/DoctorManagementPage'
 import { DoctorNewPage } from './pages/manager/doctors/DoctorNewPage'
+import { MobileUserHomePage } from './pages/mobile-user/HomePage'
+import { MobileUserChatPage } from './pages/mobile-user/ChatPage'
 import { DoctorsDataProvider } from './pages/manager/doctors/DoctorsDataContext'
 
 function App() {
@@ -22,6 +24,9 @@ function App() {
         <Route path="/manager/doctors/:doctorId" element={<DoctorDetailPage />} />
         <Route path="/manager/chatbot-monitor" element={<ChatbotMonitorPage />} />
         <Route path="/doctor/dashboard" element={<DoctorDashboardPage />} />
+        <Route path="/mobile-user" element={<Navigate to="/mobile-user/home" replace />} />
+        <Route path="/mobile-user/home" element={<MobileUserHomePage />} />
+        <Route path="/mobile-user/chat" element={<MobileUserChatPage />} />
         {/* Fallback route */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>

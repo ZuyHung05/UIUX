@@ -24,7 +24,13 @@ body {
   overflow: hidden;
   background: #ffffff;
   color: #244a6b;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
 }
 
 .auth-shell {
@@ -42,25 +48,24 @@ body {
   min-width: 0;
   height: 100dvh;
   overflow: hidden;
-  background:
-    linear-gradient(
-      125deg,
-      #f0f9ff 0%,
-      #f1f9fd 7%,
-      #f2f8fb 14%,
-      #f3f8f9 21%,
-      #f4f7f7 29%,
-      #f5f7f5 36%,
-      #f6f7f3 43%,
-      #f7f6f1 50%,
-      #f8f6ef 57%,
-      #f9f5ec 64%,
-      #faf5ea 71%,
-      #fbf4e8 79%,
-      #fcf4e6 86%,
-      #fdf3e4 93%,
-      #fef3e2 100%
-    );
+  background: linear-gradient(
+    125deg,
+    #f0f9ff 0%,
+    #f1f9fd 7%,
+    #f2f8fb 14%,
+    #f3f8f9 21%,
+    #f4f7f7 29%,
+    #f5f7f5 36%,
+    #f6f7f3 43%,
+    #f7f6f1 50%,
+    #f8f6ef 57%,
+    #f9f5ec 64%,
+    #faf5ea 71%,
+    #fbf4e8 79%,
+    #fcf4e6 86%,
+    #fdf3e4 93%,
+    #fef3e2 100%
+  );
 }
 
 .brand-center {
@@ -80,25 +85,24 @@ body {
   width: 192px;
   height: 192px;
   border-radius: 999px;
-  background:
-    linear-gradient(
-      135deg,
-      #4a90e2 0%,
-      #4995e3 7%,
-      #479ae4 14%,
-      #469fe5 21%,
-      #44a3e6 29%,
-      #42a8e7 36%,
-      #40ade8 43%,
-      #3eb2e9 50%,
-      #3bb6e9 57%,
-      #38bbea 64%,
-      #35c0eb 71%,
-      #31c5ec 79%,
-      #2dc9ed 86%,
-      #28ceed 93%,
-      #22d3ee 100%
-    );
+  background: linear-gradient(
+    135deg,
+    #4a90e2 0%,
+    #4995e3 7%,
+    #479ae4 14%,
+    #469fe5 21%,
+    #44a3e6 29%,
+    #42a8e7 36%,
+    #40ade8 43%,
+    #3eb2e9 50%,
+    #3bb6e9 57%,
+    #38bbea 64%,
+    #35c0eb 71%,
+    #31c5ec 79%,
+    #2dc9ed 86%,
+    #28ceed 93%,
+    #22d3ee 100%
+  );
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
@@ -244,8 +248,8 @@ body {
 
 .auth-header-logo {
   display: block;
-  width: 100px;
-  height: 100px;
+  width: 128px;
+  height: 128px;
   margin: 0 auto;
 }
 
@@ -349,7 +353,9 @@ body {
 .auth-field input:focus,
 .auth-field select:focus {
   border-color: #91c3ff;
-  box-shadow: 0 0 0 3px rgba(145, 195, 255, 0.22), 0 1px 4px rgba(25, 33, 61, 0.08);
+  box-shadow:
+    0 0 0 3px rgba(145, 195, 255, 0.22),
+    0 1px 4px rgba(25, 33, 61, 0.08);
 }
 
 .auth-field input.is-invalid,
@@ -686,8 +692,8 @@ body {
   }
 
   .auth-header-logo {
-    width: 76px;
-    height: 76px;
+    width: 96px;
+    height: 96px;
   }
 
   .auth-header h2 {
@@ -746,4 +752,3 @@ body {
     transform: rotate(360deg);
   }
 }
-

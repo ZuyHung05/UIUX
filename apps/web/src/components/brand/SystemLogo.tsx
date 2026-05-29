@@ -6,6 +6,8 @@ export function SystemLogo({ className = 'system-logo' }: SystemLogoProps) {
   return (
     <svg
       className={className}
+      width="100"
+      height="100"
       viewBox="0 0 36 30"
       role="img"
       aria-label="System logo"
