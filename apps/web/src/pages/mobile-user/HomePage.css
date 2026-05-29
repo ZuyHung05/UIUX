@@ -22,7 +22,9 @@
   align-items: center;
   gap: 16px;
   padding: 32px 16px 18px 15px;
-  box-shadow: 0 1px 1.5px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 1px 1.5px rgba(0, 0, 0, 0.1),
+    0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 .mobile-avatar {
@@ -210,6 +212,12 @@
   height: 24px;
 }
 
+/* Ensure icon buttons use fill-based icons (e.g. Mic) */
+.mobile-icon-button svg {
+  fill: currentColor;
+  stroke: none;
+}
+
 .mobile-search-input {
   height: 60px;
   border-radius: 16px;
@@ -220,6 +228,17 @@
   color: #99a1af;
   font-size: 18px;
   line-height: 24px;
+  border: 0;
+  outline: none;
+}
+
+.mobile-search-input::placeholder {
+  color: #99a1af;
+}
+
+/* On focus, input text should be black */
+.mobile-search-input:focus {
+  color: #101828;
 }
 
 .mobile-symptoms-grid {
@@ -235,7 +254,9 @@
   border: 1.3px solid #f3f4f6;
   border-radius: 16px;
   background: #ffffff;
-  box-shadow: 0 1px 1.5px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 1px 1.5px rgba(0, 0, 0, 0.1),
+    0 1px 1px rgba(0, 0, 0, 0.1);
   padding: 0 14px 0 72px;
   display: flex;
   align-items: center;
@@ -286,11 +307,11 @@
   background: transparent;
   color: #6a7282;
   border-radius: 20px;
-  padding: 7px 8px 8px;
+  padding: 8px 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 4px;
   font-size: 14px;
   line-height: 20px;
@@ -302,20 +323,20 @@
   color: #2e3d52;
 }
 
-.mobile-bottom-nav-icon {
-  width: 24px;
-  height: 24px;
-  color: currentColor;
-}
-
+.mobile-bottom-nav-icon,
 .mobile-bottom-nav-icon-profile {
   width: 30px;
   height: 30px;
+  color: currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.mobile-bottom-nav-icon svg,
 .mobile-bottom-nav-icon-profile svg {
-  width: 100%;
-  height: 100%;
+  width: 20px;
+  height: 20px;
 }
 
 @media (max-width: 440px) {

@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import './HomePage.css'
 import {
   AppointmentIcon,
@@ -55,6 +57,17 @@ function IconButton({ children, className = '' }: { children: ReactNode; classNa
   )
 }
 
+function SymptomButton({ label, icon, onSelect }: { label: string; icon: ReactNode; onSelect: (label: string) => void }) {
+  return (
+    <button className="mobile-symptom-card" type="button" onClick={() => onSelect(label)}>
+      <span className="mobile-symptom-icon" aria-hidden="true">
+        {icon}
+      </span>
+      <span>{label}</span>
+    </button>
+  )
+}
+
 function UserAvatar() {
   return (
     <div className="mobile-avatar" aria-hidden="true">
@@ -68,6 +81,21 @@ function UserAvatar() {
 }
 
 export function MobileUserHomePage() {
+  const navigate = useNavigate()
+  const [searchText, setSearchText] = useState('')
+
+  function handleSymptomSelect(label: string) {
+    navigate('/mobile-user/chat', { state: { initialMessage: label } })
+  }
+
+  function handleSearchKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') {
+      const value = searchText.trim()
+      if (!value) return
+      navigate('/mobile-user/chat', { state: { initialMessage: value } })
+    }
+  }
+
   return (
     <main className="mobile-home-page">
       <div className="mobile-home-screen">
@@ -119,19 +147,20 @@ export function MobileUserHomePage() {
           <IconButton>
             <MicIcon />
           </IconButton>
-          <div className="mobile-search-input">
-            <span>Bạn cần tư vấn triệu chứng gì</span>
-          </div>
+          <input
+            className="mobile-search-input"
+            type="text"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
+            placeholder="Bạn cần tư vấn triệu chứng gì"
+            aria-label="Tìm kiếm triệu chứng"
+          />
         </section>
 
         <section className="mobile-symptoms-grid" aria-label="Lựa chọn triệu chứng">
           {symptomCards.map((item) => (
-            <button className="mobile-symptom-card" type="button" key={item.label}>
-              <span className="mobile-symptom-icon" aria-hidden="true">
-                {item.icon}
-              </span>
-              <span>{item.label}</span>
-            </button>
+            <SymptomButton key={item.label} label={item.label} icon={item.icon} onSelect={handleSymptomSelect} />
           ))}
         </section>
 
