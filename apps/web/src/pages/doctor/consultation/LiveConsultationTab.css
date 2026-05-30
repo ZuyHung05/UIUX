@@ -417,8 +417,8 @@
 
 .consultation-card-name {
   font-size: 13.5px;
-  font-weight: 700;
-  color: #2D3748;
+  font-weight: 600;
+  color: #4A5568;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -430,24 +430,48 @@
   flex-shrink: 0;
 }
 
+.consultation-card-message-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
+}
+
 .consultation-card-message {
   font-size: 12px;
   color: #718096;
-  margin-top: 4px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
 }
 
-.consultation-card-badge {
-  align-self: flex-start;
-  background: #8DC1FF;
-  color: #FFFFFF;
-  font-size: 10px;
+.consultation-card-unread-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #3B82F6;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+/* Unread / New Message State like Messenger */
+.consultation-card.unread .consultation-card-name {
+  font-weight: 700;
+  color: #1A202C;
+}
+
+.consultation-card.unread .consultation-card-message {
+  font-weight: 700;
+  color: #1A202C;
+}
+
+.consultation-card.unread .consultation-card-time {
+  color: #3B82F6;
   font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 10px;
-  margin-top: 6px;
 }
 
 /* --- Right Pane: Main Area --- */

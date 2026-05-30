@@ -3,7 +3,7 @@ import '../../components/layout/DesktopShell.css'
 import { Header } from '../../components/layout/header/Header'
 import { Sidebar } from '../../components/layout/sidebar/Sidebar'
 import { AppointmentListTab } from './appointments/AppointmentListTab'
-import { LiveConsultationTab } from './consultation/LiveConsultationTab'
+import { LiveConsultationTab, ChatItem, initialChats } from './consultation/LiveConsultationTab'
 import { DashboardTab } from './dashboard/DashboardTab'
 import './DoctorDashboardPage.css'
 import { doctorSidebarConfig } from './doctorSidebarConfig'
@@ -14,6 +14,9 @@ export function DoctorDashboardPage() {
   const [activeTab, setActiveTab] = useState<string>('Dashboard')
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null)
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null)
+  const [selectedEncounterDate, setSelectedEncounterDate] = useState<string | null>(null)
+  const [referrerTab, setReferrerTab] = useState<string | null>(null)
+  const [chats, setChats] = useState<ChatItem[]>(initialChats)
 
   // Create a customized config where activeLabel matches current activeTab state
   const dynamicSidebarConfig = {
@@ -31,6 +34,7 @@ export function DoctorDashboardPage() {
             onNavigateTab={setActiveTab} 
             onViewPatientProfile={(patientId) => {
               setSelectedPatientId(patientId)
+              setReferrerTab('Dashboard')
               setActiveTab('Danh sách bệnh nhân')
             }}
             onViewChatMessage={(chatId) => {
@@ -43,12 +47,17 @@ export function DoctorDashboardPage() {
         return (
           <LiveConsultationTab 
             onBackToDashboard={handleBackToDashboard} 
-            onViewPatientProfile={(patientId) => {
+            onViewPatientProfile={(patientId, encounterDate) => {
               setSelectedPatientId(patientId)
+              setSelectedChatId(patientId) // Keep track of the active chat ID as well!
+              setSelectedEncounterDate(encounterDate || null)
+              setReferrerTab('Tư vấn trực tiếp')
               setActiveTab('Danh sách bệnh nhân')
             }}
             initialActiveChatId={selectedChatId}
             onClearActiveChat={() => setSelectedChatId(null)}
+            chats={chats}
+            setChats={setChats}
           />
         )
       case 'Danh sách bệnh nhân':
@@ -56,7 +65,19 @@ export function DoctorDashboardPage() {
           <PatientListTab 
             onBackToDashboard={handleBackToDashboard} 
             initialActivePatientId={selectedPatientId}
-            onClearActivePatient={() => setSelectedPatientId(null)}
+            initialSelectedEncounterDate={selectedEncounterDate}
+            onClearActivePatient={() => {
+              setSelectedPatientId(null)
+              setSelectedEncounterDate(null)
+              setReferrerTab(null)
+            }}
+            onBackToReferrer={referrerTab ? () => {
+              setActiveTab(referrerTab)
+              setSelectedPatientId(null)
+              setSelectedEncounterDate(null)
+              setReferrerTab(null)
+            } : undefined}
+            referrerTabName={referrerTab || undefined}
           />
         )
       case 'Lịch làm việc':
@@ -67,6 +88,7 @@ export function DoctorDashboardPage() {
             onBackToDashboard={handleBackToDashboard}
             onViewPatientProfile={(patientId) => {
               setSelectedPatientId(patientId)
+              setReferrerTab('Lịch hẹn khám')
               setActiveTab('Danh sách bệnh nhân')
             }}
           />
@@ -83,6 +105,8 @@ export function DoctorDashboardPage() {
         onItemClick={(tab) => {
           setSelectedPatientId(null)
           setSelectedChatId(null)
+          setSelectedEncounterDate(null)
+          setReferrerTab(null)
           setActiveTab(tab)
         }}
       />

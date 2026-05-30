@@ -11,160 +11,1265 @@ import './AppointmentListTab.css'
 // Clinical-grade patient mock data with EMR elements
 const initialPatients = [
   {
-    id: '2',
-    code: 'BN-2026-002',
-    name: 'Trần Thị B',
-    age: 28,
-    gender: 'Nữ',
-    status: 'Đang chờ',
-    appointmentType: 'Tư vấn',
-    triage: 'Khẩn cấp',
-    lastVisit: '24/05/2026',
-    phone: '0987654321',
-    disease: 'Đau ngực trái kéo dài',
-    bloodType: 'O+',
-    allergies: ['Hải sản'],
-    history: ['Rối loạn lipid máu phát hiện năm 2024', 'Tiền sử gia đình: Bố bị nhồi máu cơ tim ở tuổi 50'],
-    vitals: { bp: '135/85', hr: 104, temp: 36.8, spo2: 98, weight: 55, height: 158, bmi: 22.0 },
-    pastEncounters: [
+    "id": "1",
+    "code": "BN-2026-001",
+    "name": "Nguyễn Văn A",
+    "age": 22,
+    "gender": "Nam",
+    "status": "Đang chờ",
+    "appointmentType": "Tư vấn",
+    "triage": "Cần khám",
+    "lastVisit": "25/05/2026",
+    "phone": "0934567890",
+    "disease": "Sốt cao co giật nhẹ",
+    "bloodType": "A+",
+    "allergies": [
+      "Penicillin",
+      "Aspirin"
+    ],
+    "history": [
+      "Chưa ghi nhận tiền sử bệnh lý mãn tính",
+      "Mổ ruột thừa năm 2021 tại Bệnh viện Bạch Mai"
+    ],
+    "vitals": {
+      "bp": "142/95",
+      "hr": 98,
+      "temp": 39.2,
+      "spo2": 97,
+      "weight": 68,
+      "height": 172,
+      "bmi": 23.0
+    },
+    "pastEncounters": [
       {
-        date: '24/05/2026',
-        doctor: 'BS. Trần Hùng',
-        diagnosis: 'Đau ngực trái không điển hình / Theo dõi thiếu máu cơ tim',
-        symptoms: 'Đau nhói vùng ngực trái kéo dài khoảng 2-3 phút khi gắng sức, lan ra vai trái, không khó thở.',
-        prescription: ['Nitroglycerin 0.5mg - Ngậm dưới lưỡi khi đau ngực dữ dội', 'Atorvastatin 10mg - 1 viên/ngày, uống tối trước đi ngủ', 'Aspirin 81mg - 1 viên/ngày, uống sáng sau ăn']
+        "date": "25/05/2026",
+        "doctor": "BS. Lê Minh",
+        "diagnosis": "Sốt co giật do nhiễm siêu vi cấp tính",
+        "symptoms": "Sốt cao liên tục 39.2 độ, co giật nhẹ cơ face và chi, đau họng, mệt mỏi nhiều.",
+        "prescription": [
+          "Paracetamol 500mg - 3 viên/ngày, uống khi sốt > 38.5 độ",
+          "Oresol - Pha 1 gói với 1 lít nước lọc, uống rải rác",
+          "Hapacol 150mg (sẵn trong tủ thuốc gia đình) - dự phòng"
+        ]
       },
       {
-        date: '10/04/2026',
-        doctor: 'BS. Trần Hùng',
-        diagnosis: 'Rối loạn lipid máu hỗn hợp / Tăng huyết áp độ I',
-        symptoms: 'Khám định kỳ sức khỏe tim mạch, thỉnh thoảng đau đầu nhẹ khi căng thẳng, không đau ngực.',
-        prescription: ['Atorvastatin 10mg - 1 viên/ngày, uống tối trước đi ngủ', 'Amlodipin 5mg - 1 viên/ngày, uống sáng sau ăn']
+        "date": "15/01/2026",
+        "doctor": "BS. Lê Minh",
+        "diagnosis": "Viêm họng cấp tính",
+        "symptoms": "Đau rát họng nuốt vướng, ho khan nhiều về đêm, sốt nhẹ 38.0 °C, mệt mỏi.",
+        "prescription": [
+          "Amoxicillin 500mg - 3 viên/ngày, uống sáng-trưa-tối sau ăn",
+          "Siro ho thảo dược - 10ml/lần, 3 lần/ngày để dịu họng"
+        ]
       }
     ]
   },
   {
-    id: '3',
-    code: 'BN-2026-003',
-    name: 'Lê Văn C',
-    age: 45,
-    gender: 'Nam',
-    status: 'Đã kết thúc',
-    appointmentType: 'Khám trực tiếp',
-    triage: 'Bình thường',
-    lastVisit: '20/05/2026',
-    phone: '0901234567',
-    disease: 'Ho khan kéo dài về đêm',
-    bloodType: 'B+',
-    allergies: [],
-    history: ['Dị ứng thời tiết', 'Trào ngược dạ dày thực quản (GERD)'],
-    vitals: { bp: '118/78', hr: 72, temp: 36.5, spo2: 99, weight: 74, height: 175, bmi: 24.2 },
-    pastEncounters: [
+    "id": "2",
+    "code": "BN-2026-002",
+    "name": "Trần Thị B",
+    "age": 28,
+    "gender": "Nữ",
+    "status": "Đang chờ",
+    "appointmentType": "Tư vấn",
+    "triage": "Khẩn cấp",
+    "lastVisit": "24/05/2026",
+    "phone": "0987654321",
+    "disease": "Đau ngực trái kéo dài",
+    "bloodType": "O+",
+    "allergies": [
+      "Hải sản"
+    ],
+    "history": [
+      "Rối loạn lipid máu phát hiện năm 2024",
+      "Tiền sử gia đình: Bố bị nhồi máu cơ tim ở tuổi 50"
+    ],
+    "vitals": {
+      "bp": "135/85",
+      "hr": 104,
+      "temp": 36.8,
+      "spo2": 98,
+      "weight": 55,
+      "height": 158,
+      "bmi": 22.0
+    },
+    "pastEncounters": [
       {
-        date: '20/05/2026',
-        doctor: 'BS. Lê Minh',
-        diagnosis: 'Ho khan do trào ngược dạ dày thực quản (GERD)',
-        symptoms: 'Ho khan nhiều về đêm và sáng sớm, kèm ợ chua, rát nóng sau xương ức.',
-        prescription: ['Nexium (Esomeprazole) 40mg - 1 viên/ngày, uống trước ăn sáng 30 phút', 'Gaviscon - 3 gói/ngày, uống sau ăn 1 giờ và trước đi ngủ', 'Siro ho Prospan - 5ml/lần, 3 lần/ngày']
+        "date": "24/05/2026",
+        "doctor": "BS. Trần Hùng",
+        "diagnosis": "Đau ngực trái không điển hình / Theo dõi thiếu máu cơ tim",
+        "symptoms": "Đau nhói vùng ngực trái kéo dài khoảng 2-3 phút khi gắng sức, lan ra vai trái, không khó thở.",
+        "prescription": [
+          "Nitroglycerin 0.5mg - Ngậm dưới lưỡi khi đau ngực dữ dội",
+          "Atorvastatin 10mg - 1 viên/ngày, uống tối trước đi ngủ",
+          "Aspirin 81mg - 1 viên/ngày, uống sáng sau ăn"
+        ]
       },
       {
-        date: '05/03/2026',
-        doctor: 'BS. Lê Minh',
-        diagnosis: 'Viêm phế quản cấp tính trên nền trào ngược GERD',
-        symptoms: 'Ho khạc đờm trắng đục nhiều ngày, mệt mỏi, đau rát cổ họng, sốt nhẹ 37.8 °C.',
-        prescription: ['Augmentin 1g - 2 viên/ngày, uống sáng-tối sau ăn', 'Paracetamol 500mg - 3 viên/ngày khi sốt > 38.5 °C', 'Acetylcystein 200mg - 3 gói/ngày, uống sau ăn']
+        "date": "10/04/2026",
+        "doctor": "BS. Trần Hùng",
+        "diagnosis": "Rối loạn lipid máu hỗn hợp / Tăng huyết áp độ I",
+        "symptoms": "Khám định kỳ sức khỏe tim mạch, thỉnh thoảng đau đầu nhẹ khi căng thẳng, không đau ngực.",
+        "prescription": [
+          "Atorvastatin 10mg - 1 viên/ngày, uống tối trước đi ngủ",
+          "Amlodipin 5mg - 1 viên/ngày, uống sáng sau ăn"
+        ]
       }
     ]
   },
   {
-    id: '4',
-    code: 'BN-2026-004',
-    name: 'Phạm Thị D',
-    age: 50,
-    gender: 'Nữ',
-    status: 'Đang khám',
-    appointmentType: 'Cả hai',
-    triage: 'Khẩn cấp',
-    lastVisit: '18/05/2026',
-    phone: '0923456789',
-    disease: 'Tiền sử huyết áp cao',
-    bloodType: 'O+',
-    allergies: [],
-    history: ['Tăng huyết áp vô căn (đã 5 năm, đang uống thuốc duy trì)', 'Gút mãn tính'],
-    vitals: { bp: '128/82', hr: 76, temp: 36.6, spo2: 97, weight: 80, height: 170, bmi: 27.7 },
-    pastEncounters: [
+    "id": "3",
+    "code": "BN-2026-003",
+    "name": "Lê Văn C",
+    "age": 45,
+    "gender": "Nam",
+    "status": "Đã kết thúc",
+    "appointmentType": "Khám trực tiếp",
+    "triage": "Bình thường",
+    "lastVisit": "20/05/2026",
+    "phone": "0901234567",
+    "disease": "Ho khan kéo dài về đêm",
+    "bloodType": "B+",
+    "allergies": [],
+    "history": [
+      "Dị ứng thời tiết",
+      "Trào ngược dạ dày thực quản (GERD)"
+    ],
+    "vitals": {
+      "bp": "118/78",
+      "hr": 72,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 74,
+      "height": 175,
+      "bmi": 24.2
+    },
+    "pastEncounters": [
       {
-        date: '18/05/2026',
-        doctor: 'BS. Nguyễn An',
-        diagnosis: 'Tăng huyết áp vô căn - Giai đoạn 2 ổn định / Rối loạn acid uric máu',
-        symptoms: 'Khám định kỳ, không đau đầu, không chóng mặt. Acid uric tăng nhẹ.',
-        prescription: ['Amlodipin 5mg - 1 viên/ngày, uống sáng', 'Allopurinol 300mg - 1 viên/ngày, uống sáng sau ăn']
+        "date": "20/05/2026",
+        "doctor": "BS. Lê Minh",
+        "diagnosis": "Ho khan do trào ngược dạ dày thực quản (GERD)",
+        "symptoms": "Ho khan nhiều về đêm và sáng sớm, kèm ợ chua, rát nóng sau xương ức.",
+        "prescription": [
+          "Nexium (Esomeprazole) 40mg - 1 viên/ngày, uống trước ăn sáng 30 phút",
+          "Gaviscon - 3 gói/ngày, uống sau ăn 1 giờ và trước đi ngủ",
+          "Siro ho Prospan - 5ml/lần, 3 lần/ngày"
+        ]
       },
       {
-        date: '12/02/2026',
-        doctor: 'BS. Nguyễn An',
-        diagnosis: 'Cơn gút cấp tính khớp cổ chân trái',
-        symptoms: 'Khớp cổ chân trái sưng nóng đỏ và đau dữ dội sau khi ăn lẩu hải sản, hạn chế đi lại.',
-        prescription: ['Colchicine 1mg - ngày 1 uống 3 viên (sáng-trưa-tối), ngày 2 uống 2 viên', 'Meloxicam 7.5mg - 1 viên/ngày, uống sau ăn trưa để giảm đau kháng viêm']
+        "date": "05/03/2026",
+        "doctor": "BS. Lê Minh",
+        "diagnosis": "Viêm phế quản cấp tính trên nền trào ngược GERD",
+        "symptoms": "Ho khạc đờm trắng đục nhiều ngày, mệt mỏi, đau rát cổ họng, sốt nhẹ 37.8 °C.",
+        "prescription": [
+          "Augmentin 1g - 2 viên/ngày, uống sáng-tối sau ăn",
+          "Paracetamol 500mg - 3 viên/ngày khi sốt > 38.5 °C",
+          "Acetylcystein 200mg - 3 gói/ngày, uống sau ăn"
+        ]
       }
     ]
   },
   {
-    id: '1',
-    code: 'BN-2026-001',
-    name: 'Nguyễn Văn A',
-    age: 22,
-    gender: 'Nam',
-    status: 'Đang chờ',
-    appointmentType: 'Tư vấn',
-    triage: 'Cần khám',
-    lastVisit: '25/05/2026',
-    phone: '0934567890',
-    disease: 'Sốt cao co giật nhẹ',
-    bloodType: 'A+',
-    allergies: ['Penicillin', 'Aspirin'],
-    history: ['Chưa ghi nhận tiền sử bệnh lý mãn tính', 'Mổ ruột thừa năm 2021 tại Bệnh viện Bạch Mai'],
-    vitals: { bp: '142/95', hr: 98, temp: 39.2, spo2: 97, weight: 68, height: 172, bmi: 23.0 },
-    pastEncounters: [
+    "id": "4",
+    "code": "BN-2026-004",
+    "name": "Phạm Thị D",
+    "age": 50,
+    "gender": "Nữ",
+    "status": "Đang khám",
+    "appointmentType": "Cả hai",
+    "triage": "Khẩn cấp",
+    "lastVisit": "18/05/2026",
+    "phone": "0923456789",
+    "disease": "Tiền sử huyết áp cao",
+    "bloodType": "O+",
+    "allergies": [],
+    "history": [
+      "Tăng huyết áp vô căn (đã 5 năm, đang uống thuốc duy trì)",
+      "Gút mãn tính"
+    ],
+    "vitals": {
+      "bp": "128/82",
+      "hr": 76,
+      "temp": 36.6,
+      "spo2": 97,
+      "weight": 80,
+      "height": 170,
+      "bmi": 27.7
+    },
+    "pastEncounters": [
       {
-        date: '25/05/2026',
-        doctor: 'BS. Lê Minh',
-        diagnosis: 'Sốt co giật do nhiễm siêu vi cấp tính',
-        symptoms: 'Sốt cao liên tục 39.2 độ, co giật nhẹ cơ mặt và chi, đau họng, mệt mỏi nhiều.',
-        prescription: ['Paracetamol 500mg - 3 viên/ngày, uống khi sốt > 38.5 độ', 'Oresol - Pha 1 gói với 1 lít nước lọc, uống rải rác', 'Hapacol 150mg (sẵn trong tủ thuốc gia đình) - dự phòng']
+        "date": "18/05/2026",
+        "doctor": "BS. Nguyễn An",
+        "diagnosis": "Tăng huyết áp vô căn - Giai đoạn 2 ổn định / Rối loạn acid uric máu",
+        "symptoms": "Khám định kỳ, không đau đầu, không chóng mặt. Acid uric tăng nhẹ.",
+        "prescription": [
+          "Amlodipin 5mg - 1 viên/ngày, uống sáng",
+          "Allopurinol 300mg - 1 viên/ngày, uống sáng sau ăn"
+        ]
       },
       {
-        date: '15/01/2026',
-        doctor: 'BS. Lê Minh',
-        diagnosis: 'Viêm họng cấp tính',
-        symptoms: 'Đau rát họng nuốt vướng, ho khan nhiều về đêm, sốt nhẹ 38.0 °C, mệt mỏi.',
-        prescription: ['Amoxicillin 500mg - 3 viên/ngày, uống sau ăn', 'Alpha Chymotrypsin - 6 viên/ngày, ngậm dưới lưỡi', 'Siro ho bổ phế - 15ml/lần, 3 lần/ngày']
+        "date": "12/02/2026",
+        "doctor": "BS. Nguyễn An",
+        "diagnosis": "Cơn gút cấp tính khớp cổ chân trái",
+        "symptoms": "Khớp cổ chân trái sưng nóng đỏ và đau dữ dội sau khi ăn lẩu hải sản, hạn chế đi lại.",
+        "prescription": [
+          "Colchicine 1mg - ngày 1 uống 3 viên (sáng-trưa-tối), ngày 2 uống 2 viên",
+          "Meloxicam 7.5mg - 1 viên/ngày, uống sau ăn trưa để giảm đau kháng viêm"
+        ]
       }
     ]
   },
   {
-    id: '5',
-    code: 'BN-2026-005',
-    name: 'Đỗ Thị F',
-    age: 39,
-    gender: 'Nữ',
-    status: 'Đang chờ',
-    appointmentType: 'Khám trực tiếp',
-    triage: 'Bình thường',
-    lastVisit: '27/05/2026',
-    phone: '0945678901',
-    disease: 'Đau khớp gối mãn tính',
-    bloodType: 'AB-',
-    allergies: ['Sulfonamides'],
-    history: ['Thoái hóa khớp gối độ III', 'Loét dạ dày tá tràng đã điều trị ổn định'],
-    vitals: { bp: '130/80', hr: 82, temp: 36.9, spo2: 96, weight: 62, height: 155, bmi: 25.8 },
-    pastEncounters: [
+    "id": "5",
+    "code": "BN-2026-005",
+    "name": "Đỗ Thị F",
+    "age": 39,
+    "gender": "Nữ",
+    "status": "Đã kết thúc",
+    "appointmentType": "Khám trực tiếp",
+    "triage": "Bình thường",
+    "lastVisit": "15/05/2026",
+    "phone": "0945678901",
+    "disease": "Đau khớp gối mãn tính",
+    "bloodType": "AB-",
+    "allergies": [
+      "Sulfonamides"
+    ],
+    "history": [
+      "Thoái hóa khớp gối độ III",
+      "Loét dạ dày tá tràng đã điều trị ổn định"
+    ],
+    "vitals": {
+      "bp": "130/80",
+      "hr": 82,
+      "temp": 36.9,
+      "spo2": 96,
+      "weight": 62,
+      "height": 155,
+      "bmi": 25.8
+    },
+    "pastEncounters": [
       {
-        date: '27/05/2026',
-        doctor: 'BS. Lê Minh',
-        diagnosis: 'Thoái hóa khớp gối hai bên tiến triển nặng',
-        symptoms: 'Đau dữ dội hai khớp gối, sưng đau, hạn chế vận động nhiều.',
-        prescription: ['Meloxicam 7.5mg - 1 viên/ngày, uống trưa sau ăn', 'Glucosamin Sulfat 1500mg - 1 gói/ngày, uống sáng']
+        "date": "15/05/2026",
+        "doctor": "BS. Trần Hùng",
+        "diagnosis": "Thoái hóa khớp gối hai bên tiến triển nặng",
+        "symptoms": "Đau dữ dội hai khớp gối, khớp sưng đau, hạn chế vận động nhiều, khó đứng lên ngồi xuống.",
+        "prescription": [
+          "Meloxicam 7.5mg - 1 viên/ngày, uống trưa sau ăn (dùng ngắn ngày)",
+          "Glucosamin Sulfat 1500mg - 1 gói/ngày, uống sáng",
+          "Esomeprazole 20mg - 1 viên/ngày, uống trước ăn sáng 30 phút để bảo vệ dạ dày"
+        ]
+      },
+      {
+        "date": "20/12/2025",
+        "doctor": "BS. Trần Hùng",
+        "diagnosis": "Viêm loét dạ dày tá tràng đợt cấp tính",
+        "symptoms": "Đau thượng vị âm ỉ kèm ợ nóng rát nhiều sau khi ăn đồ chua cay hoặc khi đói.",
+        "prescription": [
+          "Nexium (Esomeprazole) 40mg - 1 viên/ngày, uống trước ăn sáng 30 phút",
+          "Phosphalugel - 3 gói/ngày, uống khi đau thượng vị nhiều"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "6",
+    "code": "BN-2026-006",
+    "name": "Nguyễn Hoàng G",
+    "age": 34,
+    "gender": "Nam",
+    "status": "Đang chờ",
+    "appointmentType": "Tư vấn",
+    "triage": "Bình thường",
+    "lastVisit": "12/05/2026",
+    "phone": "0912345006",
+    "disease": "Dị ứng phấn hoa",
+    "bloodType": "O+",
+    "allergies": [
+      "Phấn hoa"
+    ],
+    "history": [
+      "Viêm mũi dị ứng"
+    ],
+    "vitals": {
+      "bp": "120/80",
+      "hr": 78,
+      "temp": 36.6,
+      "spo2": 99,
+      "weight": 68,
+      "height": 172,
+      "bmi": 23.0
+    },
+    "pastEncounters": [
+      {
+        "date": "12/05/2026",
+        "doctor": "BS. Lê Minh",
+        "diagnosis": "Viêm mũi dị ứng theo mùa",
+        "symptoms": "Hắt hơi nhiều, ngứa mũi khi tiếp xúc phấn hoa.",
+        "prescription": [
+          "Telfast 180mg - 1 viên/ngày",
+          "Xịt mũi Avamys - 2 xịt/ngày"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "7",
+    "code": "BN-2026-007",
+    "name": "Vũ Thị H",
+    "age": 41,
+    "gender": "Nữ",
+    "status": "Đang khám",
+    "appointmentType": "Khám trực tiếp",
+    "triage": "Khẩn cấp",
+    "lastVisit": "10/05/2026",
+    "phone": "0912345007",
+    "disease": "Đau khớp vai phải",
+    "bloodType": "A+",
+    "allergies": [],
+    "history": [
+      "Thoái hóa khớp vai nhẹ"
+    ],
+    "vitals": {
+      "bp": "125/82",
+      "hr": 80,
+      "temp": 36.7,
+      "spo2": 98,
+      "weight": 58,
+      "height": 160,
+      "bmi": 22.7
+    },
+    "pastEncounters": [
+      {
+        "date": "10/05/2026",
+        "doctor": "BS. Trần Hùng",
+        "diagnosis": "Hội chứng chạm khớp vai / Viêm gân bán phần",
+        "symptoms": "Đau chói khớp vai phải khi nhấc tay lên cao hoặc đưa tay ra sau lưng.",
+        "prescription": [
+          "Voltaren 75mg - 1 viên/ngày uống sau ăn",
+          "Mydocalm 150mg - 2 viên/ngày chia 2 lần"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "8",
+    "code": "BN-2026-008",
+    "name": "Hoàng Văn I",
+    "age": 55,
+    "gender": "Nam",
+    "status": "Đã kết thúc",
+    "appointmentType": "Cả hai",
+    "triage": "Bình thường",
+    "lastVisit": "08/05/2026",
+    "phone": "0912345008",
+    "disease": "Rối loạn tiêu hóa",
+    "bloodType": "B+",
+    "allergies": [],
+    "history": [
+      "Viêm đại tràng co thắt"
+    ],
+    "vitals": {
+      "bp": "122/80",
+      "hr": 74,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 70,
+      "height": 170,
+      "bmi": 24.2
+    },
+    "pastEncounters": [
+      {
+        "date": "08/05/2026",
+        "doctor": "BS. Lê Minh",
+        "diagnosis": "Viêm đại tràng co thắt / Hội chứng ruột kích thích",
+        "symptoms": "Đau quặn bụng dọc khung đại tràng, đầy hơi, đi ngoài nhiều lần sau khi ăn đồ lạ.",
+        "prescription": [
+          "Duspatalin 200mg - 2 viên/ngày uống trước ăn 20 phút",
+          "Biolactovin - 2 lọ/ngày uống sáng-tối"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "9",
+    "code": "BN-2026-009",
+    "name": "Phạm Minh K",
+    "age": 29,
+    "gender": "Nam",
+    "status": "Đang chờ",
+    "appointmentType": "Tư vấn",
+    "triage": "Bình thường",
+    "lastVisit": "06/05/2026",
+    "phone": "0912345009",
+    "disease": "Đau lưng cấp tính",
+    "bloodType": "O+",
+    "allergies": [],
+    "history": [
+      "Chưa ghi nhận bệnh lý"
+    ],
+    "vitals": {
+      "bp": "118/76",
+      "hr": 72,
+      "temp": 36.4,
+      "spo2": 99,
+      "weight": 65,
+      "height": 175,
+      "bmi": 21.2
+    },
+    "pastEncounters": [
+      {
+        "date": "06/05/2026",
+        "doctor": "BS. Nguyễn An",
+        "diagnosis": "Căng cơ thắt lưng cấp do sai tư thế",
+        "symptoms": "Đau mỏi vùng thắt lưng sau khi bê vác vật nặng đột ngột, cúi ngửa khó khăn.",
+        "prescription": [
+          "Mobic 7.5mg - 1 viên/ngày uống sau ăn",
+          "Decontractyl 500mg - 3 viên/ngày chia 3 lần"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "10",
+    "code": "BN-2026-010",
+    "name": "Đặng Thị L",
+    "age": 62,
+    "gender": "Nữ",
+    "status": "Đã kết thúc",
+    "appointmentType": "Khám trực tiếp",
+    "triage": "Cần khám",
+    "lastVisit": "04/05/2026",
+    "phone": "0912345010",
+    "disease": "Mắt nhìn mờ dần",
+    "bloodType": "AB+",
+    "allergies": [],
+    "history": [
+      "Đục thủy tinh thể hai mắt nhẹ"
+    ],
+    "vitals": {
+      "bp": "132/84",
+      "hr": 76,
+      "temp": 36.6,
+      "spo2": 97,
+      "weight": 52,
+      "height": 154,
+      "bmi": 21.9
+    },
+    "pastEncounters": [
+      {
+        "date": "04/05/2026",
+        "doctor": "BS. Nguyễn An",
+        "diagnosis": "Đục thủy tinh thể tuổi già tiến triển độ II",
+        "symptoms": "Nhìn mờ như có màn sương trước mắt, không đau nhức, nhìn rõ hơn lúc ánh sáng dịu.",
+        "prescription": [
+          "Phacophaco - Nhỏ mắt ngày 4 lần",
+          "Tebonin 120mg - 1 viên/ngày uống sáng"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "11",
+    "code": "BN-2026-011",
+    "name": "Bùi Văn M",
+    "age": 47,
+    "gender": "Nam",
+    "status": "Đang chờ",
+    "appointmentType": "Tư vấn",
+    "triage": "Bình thường",
+    "lastVisit": "02/05/2026",
+    "phone": "0912345011",
+    "disease": "Ho kéo dài, rát họng",
+    "bloodType": "O-",
+    "allergies": [
+      "Penicillin"
+    ],
+    "history": [
+      "Viêm họng mãn tính"
+    ],
+    "vitals": {
+      "bp": "120/80",
+      "hr": 78,
+      "temp": 36.7,
+      "spo2": 98,
+      "weight": 70,
+      "height": 171,
+      "bmi": 23.9
+    },
+    "pastEncounters": [
+      {
+        "date": "02/05/2026",
+        "doctor": "BS. Lê Minh",
+        "diagnosis": "Viêm họng hạt mãn tính đợt cấp",
+        "symptoms": "Ngứa rát cổ họng nuốt vướng, ho khan nhiều đờm trong vào buổi sáng.",
+        "prescription": [
+          "Klacid 500mg - 2 viên/ngày chia 2 lần uống sau ăn",
+          "Alpha Chymotrypsin - 4 viên/ngày ngậm dưới lưỡi"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "12",
+    "code": "BN-2026-012",
+    "name": "Ngô Thị N",
+    "age": 31,
+    "gender": "Nữ",
+    "status": "Đang khám",
+    "appointmentType": "Khám trực tiếp",
+    "triage": "Bình thường",
+    "lastVisit": "30/04/2026",
+    "phone": "0912345012",
+    "disease": "Mất ngủ kéo dài",
+    "bloodType": "A-",
+    "allergies": [],
+    "history": [
+      "Suy nhược thần kinh nhẹ"
+    ],
+    "vitals": {
+      "bp": "110/70",
+      "hr": 84,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 48,
+      "height": 156,
+      "bmi": 19.7
+    },
+    "pastEncounters": [
+      {
+        "date": "30/04/2026",
+        "doctor": "BS. Trần Hùng",
+        "diagnosis": "Rối loạn giấc ngủ do căng thẳng kéo dài",
+        "symptoms": "Khó vào giấc ngủ, ngủ chập chờn hay thức giấc giữa đêm, ban ngày mệt mỏi kém tập trung.",
+        "prescription": [
+          "Mimosa - 2 viên uống trước ngủ 30 phút",
+          "Rotunda 30mg - 1 viên khi mất ngủ nhiều"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "13",
+    "code": "BN-2026-013",
+    "name": "Dương Văn P",
+    "age": 38,
+    "gender": "Nam",
+    "status": "Đã kết thúc",
+    "appointmentType": "Tư vấn",
+    "triage": "Bình thường",
+    "lastVisit": "28/04/2026",
+    "phone": "0912345013",
+    "disease": "Đau dạ dày lúc đói",
+    "bloodType": "B-",
+    "allergies": [],
+    "history": [
+      "Viêm loét dạ dày tá tràng năm 2023"
+    ],
+    "vitals": {
+      "bp": "116/78",
+      "hr": 75,
+      "temp": 36.4,
+      "spo2": 99,
+      "weight": 64,
+      "height": 168,
+      "bmi": 22.7
+    },
+    "pastEncounters": [
+      {
+        "date": "28/04/2026",
+        "doctor": "BS. Lê Minh",
+        "diagnosis": "Viêm dạ dày cấp tính tái phát",
+        "symptoms": "Đau rát vùng thượng vị âm ỉ xuất hiện lúc đói hoặc sau ăn chua cay, kèm ợ hơi nhẹ.",
+        "prescription": [
+          "Gastropulgite - 3 gói/ngày uống trước ăn 15 phút",
+          "Esomeprazole 20mg - 1 viên uống trước ăn sáng"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "14",
+    "code": "BN-2026-014",
+    "name": "Đỗ Thị Q",
+    "age": 25,
+    "gender": "Nữ",
+    "status": "Đang chờ",
+    "appointmentType": "Khám trực tiếp",
+    "triage": "Bình thường",
+    "lastVisit": "26/04/2026",
+    "phone": "0912345014",
+    "disease": "Khám thai định kỳ",
+    "bloodType": "AB-",
+    "allergies": [],
+    "history": [
+      "Mang thai lần đầu tuần thứ 12"
+    ],
+    "vitals": {
+      "bp": "115/75",
+      "hr": 82,
+      "temp": 36.8,
+      "spo2": 98,
+      "weight": 50,
+      "height": 158,
+      "bmi": 20.0
+    },
+    "pastEncounters": [
+      {
+        "date": "26/04/2026",
+        "doctor": "BS. Nguyễn An",
+        "diagnosis": "Thai 12 tuần phát triển bình thường",
+        "symptoms": "Khám thai định kỳ, siêu âm đo độ mờ da gáy bình thường, thai phụ khỏe mạnh.",
+        "prescription": [
+          "Obimin Multivitamins - 1 viên/ngày uống sáng sau ăn",
+          "Calcium Corbiere - 1 ống/ngày uống sáng"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "15",
+    "code": "BN-2026-015",
+    "name": "Phan Văn R",
+    "age": 53,
+    "gender": "Nam",
+    "status": "Đang khám",
+    "appointmentType": "Cả hai",
+    "triage": "Khẩn cấp",
+    "lastVisit": "24/04/2026",
+    "phone": "0912345015",
+    "disease": "Tê bì chân tay",
+    "bloodType": "O+",
+    "allergies": [],
+    "history": [
+      "Đái tháo đường Type 2"
+    ],
+    "vitals": {
+      "bp": "135/88",
+      "hr": 80,
+      "temp": 36.6,
+      "spo2": 96,
+      "weight": 75,
+      "height": 172,
+      "bmi": 25.4
+    },
+    "pastEncounters": [
+      {
+        "date": "24/04/2026",
+        "doctor": "BS. Trần Hùng",
+        "diagnosis": "Biến chứng thần kinh ngoại vi do đái tháo đường Type 2",
+        "symptoms": "Tê bì châm chích hai đầu ngón tay ngón chân đối xứng hai bên, tăng nhiều về đêm.",
+        "prescription": [
+          "Neuromultivit - 2 viên/ngày chia 2 lần uống sau ăn",
+          "Glucophage 850mg - 2 viên/ngày uống sáng-tối"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "16",
+    "code": "BN-2026-016",
+    "name": "Nguyễn Văn S",
+    "age": 45,
+    "gender": "Nam",
+    "status": "Đang chờ",
+    "appointmentType": "Khám trực tiếp",
+    "triage": "Bình thường",
+    "lastVisit": "26/05/2026",
+    "phone": "0912345016",
+    "disease": "Trĩ nội độ II chảy máu",
+    "bloodType": "A+",
+    "allergies": [],
+    "history": [
+      "Trĩ nội độ II nhiều năm",
+      "Tăng huyết áp vô căn"
+    ],
+    "vitals": {
+      "bp": "130/80",
+      "hr": 72,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 72,
+      "height": 170,
+      "bmi": 24.9
+    },
+    "pastEncounters": [
+      {
+        "date": "26/05/2026",
+        "doctor": "BS. Trần Hùng",
+        "diagnosis": "Trĩ nội xuất huyết / Tăng huyết áp độ I",
+        "symptoms": "Đại tiện ra máu tươi thành giọt, ngứa rát hậu môn nhiều sau khi ăn đồ cay nóng.",
+        "prescription": [
+          "Daflon 500mg - 4 viên/ngày uống chia 2 lần",
+          "Amlodipin 5mg - 1 viên/ngày uống sáng",
+          "Proctolog - Thoa hậu môn tối"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "17",
+    "code": "BN-2026-017",
+    "name": "Trần Thị T",
+    "age": 32,
+    "gender": "Nữ",
+    "status": "Đang khám",
+    "appointmentType": "Tư vấn",
+    "triage": "Khẩn cấp",
+    "lastVisit": "26/05/2026",
+    "phone": "0912345017",
+    "disease": "Đau thượng vị cấp",
+    "bloodType": "O+",
+    "allergies": [
+      "Aspirin"
+    ],
+    "history": [
+      "Viêm dạ dày tá tràng cấp tính năm 2024"
+    ],
+    "vitals": {
+      "bp": "120/75",
+      "hr": 88,
+      "temp": 37.0,
+      "spo2": 98,
+      "weight": 54,
+      "height": 160,
+      "bmi": 21.1
+    },
+    "pastEncounters": [
+      {
+        "date": "26/05/2026",
+        "doctor": "BS. Lê Minh",
+        "diagnosis": "Viêm dạ dày cấp tính đợt tiến triển",
+        "symptoms": "Đau dữ dội vùng thượng vị lan lên ngực kèm ợ hơi, buồn nôn nhiều sau khi uống cà phê.",
+        "prescription": [
+          "Nexium 40mg - 1 viên/ngày uống trước ăn 30 phút",
+          "Phosphalugel - 3 gói/ngày uống khi đau"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "18",
+    "code": "BN-2026-018",
+    "name": "Lê Văn U",
+    "age": 67,
+    "gender": "Nam",
+    "status": "Đã kết thúc",
+    "appointmentType": "Khám trực tiếp",
+    "triage": "Cần khám",
+    "lastVisit": "26/05/2026",
+    "phone": "0912345018",
+    "disease": "Phì đại tuyến tiền liệt",
+    "bloodType": "B+",
+    "allergies": [],
+    "history": [
+      "Tăng sinh lành tính tuyến tiền liệt vô căn",
+      "Đục thủy tinh thể"
+    ],
+    "vitals": {
+      "bp": "138/85",
+      "hr": 70,
+      "temp": 36.6,
+      "spo2": 97,
+      "weight": 65,
+      "height": 165,
+      "bmi": 23.9
+    },
+    "pastEncounters": [
+      {
+        "date": "26/05/2026",
+        "doctor": "BS. Trần Hùng",
+        "diagnosis": "Tăng sinh lành tính tuyến tiền liệt / Rối loạn tiểu tiện",
+        "symptoms": "Tiểu ngập ngừng, tiểu nhiều lần về đêm (4-5 lần), dòng tiểu yếu, tiểu không hết bãi.",
+        "prescription": [
+          "Xatral XL 10mg - 1 viên/ngày uống tối sau ăn",
+          "Avodart 0.5mg - 1 viên/ngày uống sáng"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "19",
+    "code": "BN-2026-019",
+    "name": "Phạm Thị V",
+    "age": 24,
+    "gender": "Nữ",
+    "status": "Đang chờ",
+    "appointmentType": "Tư vấn",
+    "triage": "Bình thường",
+    "lastVisit": "26/05/2026",
+    "phone": "0912345019",
+    "disease": "Rối loạn kinh nguyệt",
+    "bloodType": "O-",
+    "allergies": [],
+    "history": [
+      "Buồng trứng đa nang (PCOS) phát hiện năm 2025"
+    ],
+    "vitals": {
+      "bp": "110/70",
+      "hr": 75,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 47,
+      "height": 158,
+      "bmi": 18.8
+    },
+    "pastEncounters": [
+      {
+        "date": "26/05/2026",
+        "doctor": "BS. Lê Minh",
+        "diagnosis": "Rối loạn kinh nguyệt do hội chứng buồng trứng đa nang (PCOS)",
+        "symptoms": "Trễ kinh 2 tháng, thường xuyên nổi mụn nội tiết vùng cằm, mệt mỏi căng thẳng kéo dài.",
+        "prescription": [
+          "Duphaston 10mg - 2 viên/ngày uống 10 ngày",
+          "Spironolactone 50mg - 1 viên/ngày",
+          "Sắt Acid Folic - 1 viên/ngày"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "20",
+    "code": "BN-2026-020",
+    "name": "Đỗ Văn X",
+    "age": 58,
+    "gender": "Nam",
+    "status": "Đang khám",
+    "appointmentType": "Cả hai",
+    "triage": "Khẩn cấp",
+    "lastVisit": "26/05/2026",
+    "phone": "0912345020",
+    "disease": "Đau vai gáy tê tay",
+    "bloodType": "AB+",
+    "allergies": [],
+    "history": [
+      "Thoái hóa đốt sống cổ C5-C6",
+      "Rối loạn tuần hoàn não"
+    ],
+    "vitals": {
+      "bp": "130/82",
+      "hr": 78,
+      "temp": 36.4,
+      "spo2": 98,
+      "weight": 70,
+      "height": 168,
+      "bmi": 24.8
+    },
+    "pastEncounters": [
+      {
+        "date": "26/05/2026",
+        "doctor": "BS. Trần Hùng",
+        "diagnosis": "Hội chứng cổ vai cánh tay do thoái hóa cột sống cổ",
+        "symptoms": "Đau nhức ê ẩm vùng cổ gáy, lan xuống bả vai và cánh tay phải kèm cảm giác tê bì 3 ngón tay đầu.",
+        "prescription": [
+          "Mobic 7.5mg - 1 viên/ngày uống sau ăn",
+          "Mydocalm 150mg - 2 viên/ngày chia 2 lần",
+          "Neurobion - 2 viên/ngày chia 2 lần"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "21",
+    "code": "BN-2026-021",
+    "name": "Nguyễn Thị Y",
+    "age": 29,
+    "gender": "Nữ",
+    "status": "Đã kết thúc",
+    "appointmentType": "Khám trực tiếp",
+    "triage": "Bình thường",
+    "lastVisit": "26/05/2026",
+    "phone": "0912345021",
+    "disease": "Khô mắt, mỏi điều tiết",
+    "bloodType": "A-",
+    "allergies": [],
+    "history": [
+      "Chưa ghi nhận bệnh lý đặc biệt"
+    ],
+    "vitals": {
+      "bp": "115/75",
+      "hr": 80,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 50,
+      "height": 162,
+      "bmi": 19.1
+    },
+    "pastEncounters": [
+      {
+        "date": "26/05/2026",
+        "doctor": "BS. Lê Minh",
+        "diagnosis": "Khô mắt thể nhẹ / Mỏi cơ điều tiết mắt do dùng thiết bị điện tử",
+        "symptoms": "Mắt khô rát, cộm đỏ như có cát, mờ nhẹ cuối ngày làm việc trước màn hình máy tính.",
+        "prescription": [
+          "Systane Ultra - Nhỏ mắt ngày 4-5 lần",
+          "Bảo Xuân - 2 viên/ngày uống sáng"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "22",
+    "code": "BN-2026-022",
+    "name": "Hoàng Văn Z",
+    "age": 73,
+    "gender": "Nam",
+    "status": "Đang chờ",
+    "appointmentType": "Tư vấn",
+    "triage": "Cần khám",
+    "lastVisit": "26/05/2026",
+    "phone": "0912345022",
+    "disease": "Đau lưng lan xuống chân",
+    "bloodType": "B-",
+    "allergies": [],
+    "history": [
+      "Thoát vị đĩa đệm L4-L5 đã điều trị nội khoa nhiều đợt"
+    ],
+    "vitals": {
+      "bp": "140/85",
+      "hr": 72,
+      "temp": 36.6,
+      "spo2": 96,
+      "weight": 68,
+      "height": 170,
+      "bmi": 23.5
+    },
+    "pastEncounters": [
+      {
+        "date": "26/05/2026",
+        "doctor": "BS. Trần Hùng",
+        "diagnosis": "Thoát vị đĩa đệm cột sống thắt lưng L4-L5 chèn ép rễ thần kinh tọa",
+        "symptoms": "Đau ê ẩm thắt lưng liên tục, lan xuống mông và mặt sau đùi chân trái, đi lại khó khăn.",
+        "prescription": [
+          "Ultracet - 2 viên/ngày uống khi đau nhiều",
+          "Neurontin 300mg - 1 viên/ngày uống tối trước đi ngủ",
+          "Methycobal 500mcg - 3 viên/ngày chia 3 lần"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "23",
+    "code": "BN-2026-023",
+    "name": "Bùi Thị Lâm",
+    "age": 35,
+    "gender": "Nữ",
+    "status": "Đã kết thúc",
+    "appointmentType": "Khám trực tiếp",
+    "triage": "Bình thường",
+    "lastVisit": "26/05/2026",
+    "phone": "0912345023",
+    "disease": "Viêm xoang sàng dị ứng",
+    "bloodType": "O+",
+    "allergies": [
+      "Sulfa"
+    ],
+    "history": [
+      "Viêm mũi dị ứng từ nhỏ",
+      "Lệch vách ngăn mũi trái"
+    ],
+    "vitals": {
+      "bp": "120/80",
+      "hr": 76,
+      "temp": 36.8,
+      "spo2": 99,
+      "weight": 55,
+      "height": 160,
+      "bmi": 21.5
+    },
+    "pastEncounters": [
+      {
+        "date": "26/05/2026",
+        "doctor": "BS. Lê Minh",
+        "diagnosis": "Viêm xoang sàng cấp tính / Viêm mũi dị ứng mạn",
+        "symptoms": "Đau tức vùng gốc mũi trán, chảy dịch mũi vàng đục ra sau họng gây ho khan, nghẹt mũi.",
+        "prescription": [
+          "Clamentin 625mg - 2 viên/ngày chia 2 lần uống sau ăn",
+          "Xịt mũi Coldy-B - xịt ngày 3 lần",
+          "Telfast 180mg - 1 viên/ngày uống tối"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "24",
+    "code": "BN-2026-024",
+    "name": "Ngô Văn Khánh",
+    "age": 42,
+    "gender": "Nam",
+    "status": "Đang chờ",
+    "appointmentType": "Tư vấn",
+    "triage": "Bình thường",
+    "lastVisit": "26/05/2026",
+    "phone": "0912345024",
+    "disease": "Trào ngược họng thanh quản",
+    "bloodType": "AB-",
+    "allergies": [],
+    "history": [
+      "Trào ngược dạ dày thực quản (GERD) 3 năm"
+    ],
+    "vitals": {
+      "bp": "125/80",
+      "hr": 74,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 74,
+      "height": 172,
+      "bmi": 25.0
+    },
+    "pastEncounters": [
+      {
+        "date": "26/05/2026",
+        "doctor": "BS. Trần Hùng",
+        "diagnosis": "Viêm họng thanh quản do trào ngược dạ dày thực quản (LPR)",
+        "symptoms": "Cảm giác vướng đờm cổ họng liên tục, thường khạc nhổ, ho khan nhiều sau ăn và khàn giọng nhẹ.",
+        "prescription": [
+          "Gastrylgite - 3 gói/ngày uống trước ăn 15 phút",
+          "Nexium 40mg - 1 viên/ngày uống trước ăn sáng",
+          "Singulair 10mg - 1 viên/ngày uống tối"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "25",
+    "code": "BN-2026-025",
+    "name": "Dương Thị Hoa",
+    "age": 51,
+    "gender": "Nữ",
+    "status": "Đang khám",
+    "appointmentType": "Khám trực tiếp",
+    "triage": "Khẩn cấp",
+    "lastVisit": "26/05/2026",
+    "phone": "0912345025",
+    "disease": "Đau quặn hố chậu phải",
+    "bloodType": "O+",
+    "allergies": [],
+    "history": [
+      "U xơ tử cung kích thước nhỏ (theo dõi 2 năm)"
+    ],
+    "vitals": {
+      "bp": "122/78",
+      "hr": 82,
+      "temp": 37.2,
+      "spo2": 98,
+      "weight": 58,
+      "height": 156,
+      "bmi": 23.8
+    },
+    "pastEncounters": [
+      {
+        "date": "26/05/2026",
+        "doctor": "BS. Lê Minh",
+        "diagnosis": "Đau quặn bụng dưới hố chậu phải / Cần loại trừ viêm ruột thừa cấp",
+        "symptoms": "Đau quặn âm ỉ liên tục hố chậu phải tăng dần trong 6 giờ qua, có sốt nhẹ 37.2, không nôn.",
+        "prescription": [
+          "No-Spa 40mg - 2 viên uống giảm co thắt cơ trơn",
+          "Chuyển viện đa khoa tuyến trên chụp CT bụng và theo dõi sát"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "26",
+    "code": "BN-2026-026",
+    "name": "Đặng Văn Hải",
+    "age": 48,
+    "gender": "Nam",
+    "status": "Đã kết thúc",
+    "appointmentType": "Cả hai",
+    "triage": "Bình thường",
+    "lastVisit": "26/05/2026",
+    "phone": "0912345026",
+    "disease": "Mỡ máu cao, gan nhiễm mỡ",
+    "bloodType": "A+",
+    "allergies": [],
+    "history": [
+      "Hút thuốc lá nhiều (20 năm), thừa cân béo phì độ I"
+    ],
+    "vitals": {
+      "bp": "132/88",
+      "hr": 80,
+      "temp": 36.6,
+      "spo2": 97,
+      "weight": 82,
+      "height": 170,
+      "bmi": 28.4
+    },
+    "pastEncounters": [
+      {
+        "date": "26/05/2026",
+        "doctor": "BS. Trần Hùng",
+        "diagnosis": "Rối loạn lipid máu hỗn hợp / Gan nhiễm mỡ độ II trên siêu âm",
+        "symptoms": "Khám sức khỏe định kỳ phát hiện cholesterol và triglycerid tăng cao, gan nhiễm mỡ.",
+        "prescription": [
+          "Lipanthyl Supra 160mg - 1 viên/ngày uống tối sau ăn",
+          "Bổ gan Boganic - 4 viên/ngày chia 2 lần",
+          "Tư vấn bỏ thuốc lá và giảm cân"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "27",
+    "code": "BN-2026-027",
+    "name": "Phan Thị Lan",
+    "age": 60,
+    "gender": "Nữ",
+    "status": "Đang chờ",
+    "appointmentType": "Tư vấn",
+    "triage": "Cần khám",
+    "lastVisit": "26/05/2026",
+    "phone": "0912345027",
+    "disease": "Đau nhức các khớp ngón tay",
+    "bloodType": "B+",
+    "allergies": [],
+    "history": [
+      "Viêm khớp dạng thấp phát hiện năm 2023"
+    ],
+    "vitals": {
+      "bp": "135/82",
+      "hr": 78,
+      "temp": 36.7,
+      "spo2": 98,
+      "weight": 50,
+      "height": 154,
+      "bmi": 21.1
+    },
+    "pastEncounters": [
+      {
+        "date": "26/05/2026",
+        "doctor": "BS. Lê Minh",
+        "diagnosis": "Viêm khớp dạng thấp tiến triển đợt cấp nhẹ",
+        "symptoms": "Các khớp ngón tay hai bên sưng đau đối xứng, cứng khớp buổi sáng kéo dài khoảng 30 phút.",
+        "prescription": [
+          "Medrol 4mg - 1 viên/ngày uống sáng sau ăn",
+          "Celebrex 200mg - 1 viên/ngày uống tối sau ăn",
+          "Glucosamin 1500mg - 1 gói/ngày"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "28",
+    "code": "BN-2026-028",
+    "name": "Vũ Văn Bình",
+    "age": 31,
+    "gender": "Nam",
+    "status": "Đang khám",
+    "appointmentType": "Khám trực tiếp",
+    "triage": "Bình thường",
+    "lastVisit": "26/05/2026",
+    "phone": "0912345028",
+    "disease": "Ù tai, giảm thính lực nhẹ",
+    "bloodType": "O+",
+    "allergies": [],
+    "history": [
+      "Chấn thương âm thanh do tai nghe (nghe nhạc to liên tục)"
+    ],
+    "vitals": {
+      "bp": "118/76",
+      "hr": 74,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 68,
+      "height": 174,
+      "bmi": 22.5
+    },
+    "pastEncounters": [
+      {
+        "date": "26/05/2026",
+        "doctor": "BS. Trần Hùng",
+        "diagnosis": "Ù tai thần kinh thể nhẹ / Mệt mỏi thính giác tạm thời",
+        "symptoms": "Tai phải nghe tiếng ve kêu u u liên tục 3 ngày nay kèm theo mệt mỏi đầu óc nhiều.",
+        "prescription": [
+          "Tanganil 500mg - 4 viên/ngày chia 2 lần uống",
+          "Nootropyl 800mg - 2 viên/ngày chia 2 lần",
+          "Tebonin 120mg - 1 viên/ngày uống sáng"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "29",
+    "code": "BN-2026-029",
+    "name": "Bùi Thị Mai",
+    "age": 27,
+    "gender": "Nữ",
+    "status": "Đã kết thúc",
+    "appointmentType": "Tư vấn",
+    "triage": "Bình thường",
+    "lastVisit": "26/05/2026",
+    "phone": "0912345029",
+    "disease": "Ngứa da nổi sẩn mề đay",
+    "bloodType": "AB+",
+    "allergies": [
+      "Hải sản",
+      "Nhộng tằm"
+    ],
+    "history": [
+      "Mề đay vô căn tái phát nhiều lần"
+    ],
+    "vitals": {
+      "bp": "112/72",
+      "hr": 82,
+      "temp": 36.6,
+      "spo2": 99,
+      "weight": 49,
+      "height": 160,
+      "bmi": 19.1
+    },
+    "pastEncounters": [
+      {
+        "date": "26/05/2026",
+        "doctor": "BS. Lê Minh",
+        "diagnosis": "Mày đay cấp do dị ứng thức ăn (nghi hải sản)",
+        "symptoms": "Nổi sẩn ngứa đỏ hình tròn đa cung rải rác toàn thân sau khi ăn tôm ghẹ khoảng 2 giờ.",
+        "prescription": [
+          "Fexofenadine 180mg (Telfast) - 1 viên/ngày uống tối",
+          "Medrol 4mg - 1 viên/ngày uống sáng (dùng ngắn 3 ngày)",
+          "Kem bôi Gentrisone bôi mỏng vùng ngứa"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "30",
+    "code": "BN-2026-030",
+    "name": "Nguyễn Thị Vân",
+    "age": 64,
+    "gender": "Nữ",
+    "status": "Đang chờ",
+    "appointmentType": "Khám trực tiếp",
+    "triage": "Khẩn cấp",
+    "lastVisit": "26/05/2026",
+    "phone": "0912345030",
+    "disease": "Đau khớp háng trái",
+    "bloodType": "O-",
+    "allergies": [],
+    "history": [
+      "Thoái hóa khớp háng trái độ II"
+    ],
+    "vitals": {
+      "bp": "138/84",
+      "hr": 76,
+      "temp": 36.7,
+      "spo2": 97,
+      "weight": 56,
+      "height": 155,
+      "bmi": 23.3
+    },
+    "pastEncounters": [
+      {
+        "date": "26/05/2026",
+        "doctor": "BS. Trần Hùng",
+        "diagnosis": "Thoái hóa khớp háng trái gây đau hạn chế vận động",
+        "symptoms": "Đau chói khớp háng trái khi đi lại hoặc đứng lâu, đứng lên ngồi xuống rất khó khăn.",
+        "prescription": [
+          "Meloxicam 7.5mg - 1 viên/ngày uống trưa sau ăn",
+          "Diacerein 50mg - 2 viên/ngày chia 2 lần uống",
+          "Esomeprazole 20mg - 1 viên/ngày uống trước ăn sáng"
+        ]
       }
     ]
   }
@@ -172,109 +1277,882 @@ const initialPatients = [
 
 // Premium mock appointments with detailed clinical info
 const initialAppointments = [
-  { 
-    id: '1',
-    patientId: '2',
-    patientName: 'Trần Thị B',
-    patientCode: 'BN-2026-002',
-    phone: '0987654321',
-    age: 28,
-    gender: 'Nữ',
-    bloodType: 'O+',
-    allergies: ['Hải sản'],
-    time: '09:00 - 09:30', 
-    date: '27/05/2026', 
-    type: 'Tư vấn', 
-    reason: 'Đau ngực trái kéo dài', 
-    status: 'Đang chờ',
-    priority: 'Khẩn cấp',
-    history: 'Rối loạn lipid máu phát hiện năm 2024, tiền sử gia đình tim mạch',
-    vitals: { bp: '135/85', hr: 104, temp: 36.8, spo2: 98, weight: 55, height: 158, bmi: 22.0 }
-  },
-  { 
-    id: '2',
-    patientId: '3',
-    patientName: 'Lê Văn C',
-    patientCode: 'BN-2026-003',
-    phone: '0901234567',
-    age: 45,
-    gender: 'Nam',
-    bloodType: 'B+',
-    allergies: [],
-    time: '09:30 - 10:00', 
-    date: '27/05/2026', 
-    type: 'Khám trực tiếp', 
-    reason: 'Ho khan kéo dài về đêm', 
-    status: 'Đã khám',
-    priority: 'Bình thường',
-    history: 'Trào ngược dạ dày thực quản (GERD)',
-    vitals: { bp: '118/78', hr: 72, temp: 36.5, spo2: 99, weight: 74, height: 175, bmi: 24.2 },
-    notes: {
-      symptoms: 'Ho khan nhiều về đêm và sáng sớm, kèm ợ chua, rát nóng sau xương ức.',
-      diagnosis: 'Ho khan do trào ngược dạ dày thực quản (GERD)',
-      prescription: 'Nexium Esomeprazole 40mg - 1 viên/ngày, uống trước ăn sáng 30 phút\nGaviscon - 3 gói/ngày, uống sau ăn 1 giờ và trước đi ngủ'
+  {
+    "id": "1",
+    "patientId": "1",
+    "patientName": "Nguyễn Văn A",
+    "patientCode": "BN-2026-001",
+    "phone": "0934567890",
+    "age": 22,
+    "gender": "Nam",
+    "bloodType": "A+",
+    "allergies": [
+      "Penicillin",
+      "Aspirin"
+    ],
+    "time": "08:00 - 08:30",
+    "date": "27/05/2026",
+    "type": "Tư vấn",
+    "reason": "Sốt cao co giật nhẹ",
+    "status": "Đang chờ",
+    "priority": "Cần khám",
+    "history": "Chưa ghi nhận tiền sử bệnh lý mãn tính, Mổ ruột thừa năm 2021 tại Bệnh viện Bạch Mai",
+    "vitals": {
+      "bp": "142/95",
+      "hr": 98,
+      "temp": 39.2,
+      "spo2": 97,
+      "weight": 68,
+      "height": 172,
+      "bmi": 23.0
     }
   },
-  { 
-    id: '3',
-    patientId: '4',
-    patientName: 'Phạm Thị D',
-    patientCode: 'BN-2026-004',
-    phone: '0923456789',
-    age: 50,
-    gender: 'Nữ',
-    bloodType: 'O+',
-    allergies: [],
-    time: '10:00 - 10:30', 
-    date: '27/05/2026', 
-    type: 'Cả hai', 
-    reason: 'Tiền sử huyết áp cao', 
-    status: 'Đang khám',
-    priority: 'Khẩn cấp',
-    history: 'Tăng huyết áp vô căn (5 năm), Gút mãn tính',
-    vitals: { bp: '148/95', hr: 88, temp: 36.9, spo2: 97, weight: 80, height: 170, bmi: 27.7 }
+  {
+    "id": "2",
+    "patientId": "2",
+    "patientName": "Trần Thị B",
+    "patientCode": "BN-2026-002",
+    "phone": "0987654321",
+    "age": 28,
+    "gender": "Nữ",
+    "bloodType": "O+",
+    "allergies": [
+      "Hải sản"
+    ],
+    "time": "08:30 - 09:00",
+    "date": "27/05/2026",
+    "type": "Tư vấn",
+    "reason": "Đau ngực trái kéo dài",
+    "status": "Đang chờ",
+    "priority": "Khẩn cấp",
+    "history": "Rối loạn lipid máu phát hiện năm 2024, Tiền sử gia đình: Bố bị nhồi máu cơ tim ở tuổi 50",
+    "vitals": {
+      "bp": "135/85",
+      "hr": 104,
+      "temp": 36.8,
+      "spo2": 98,
+      "weight": 55,
+      "height": 158,
+      "bmi": 22.0
+    }
   },
-  { 
-    id: '4',
-    patientId: '1',
-    patientName: 'Nguyễn Văn A',
-    patientCode: 'BN-2026-001',
-    phone: '0934567890',
-    age: 22,
-    gender: 'Nam',
-    bloodType: 'A+',
-    allergies: ['Penicillin', 'Aspirin'],
-    time: '10:30 - 11:00', 
-    date: '27/05/2026', 
-    type: 'Tư vấn', 
-    reason: 'Sốt cao co giật nhẹ', 
-    status: 'Đang chờ',
-    priority: 'Bình thường',
-    history: 'Mổ ruột thừa năm 2021 tại Bệnh viện Bạch Mai',
-    vitals: { bp: '142/95', hr: 98, temp: 39.2, spo2: 97, weight: 68, height: 172, bmi: 23.0 }
+  {
+    "id": "3",
+    "patientId": "3",
+    "patientName": "Lê Văn C",
+    "patientCode": "BN-2026-003",
+    "phone": "0901234567",
+    "age": 45,
+    "gender": "Nam",
+    "bloodType": "B+",
+    "allergies": [],
+    "time": "09:00 - 09:30",
+    "date": "27/05/2026",
+    "type": "Khám trực tiếp",
+    "reason": "Ho khan kéo dài về đêm",
+    "status": "Đã khám",
+    "priority": "Bình thường",
+    "history": "Dị ứng thời tiết, Trào ngược dạ dày thực quản (GERD)",
+    "vitals": {
+      "bp": "118/78",
+      "hr": 72,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 74,
+      "height": 175,
+      "bmi": 24.2
+    },
+    "notes": {
+      "symptoms": "Ho khan nhiều về đêm và sáng sớm, kèm ợ chua, rát nóng sau xương ức.",
+      "diagnosis": "Ho khan do trào ngược dạ dày thực quản (GERD)",
+      "prescription": "Nexium (Esomeprazole) 40mg - 1 viên/ngày, uống trước ăn sáng 30 phút\nGaviscon - 3 gói/ngày, uống sau ăn 1 giờ và trước đi ngủ\nSiro ho Prospan - 5ml/lần, 3 lần/ngày"
+    }
   },
-  { 
-    id: '5',
-    patientId: '5',
-    patientName: 'Đỗ Thị F',
-    patientCode: 'BN-2026-005',
-    phone: '0945678901',
-    age: 39,
-    gender: 'Nữ',
-    bloodType: 'AB-',
-    allergies: ['Sulfonamides'],
-    time: '14:00 - 14:30', 
-    date: '27/05/2026', 
-    type: 'Khám trực tiếp', 
-    reason: 'Đau khớp gối mãn tính', 
-    status: 'Đã khám',
-    priority: 'Bình thường',
-    history: 'Thoái hóa khớp gối độ III, Loét dạ dày tá tràng đã điều trị ổn định',
-    vitals: { bp: '130/80', hr: 82, temp: 36.9, spo2: 96, weight: 62, height: 155, bmi: 25.8 },
-    notes: {
-      symptoms: 'Đau dữ dội hai khớp gối, sưng đau, hạn chế vận động nhiều.',
-      diagnosis: 'Thoái hóa khớp gối hai bên tiến triển nặng',
-      prescription: 'Meloxicam 7.5mg - 1 viên/ngày, uống trưa sau ăn\nGlucosamin Sulfat 1500mg - 1 gói/ngày, uống sáng'
+  {
+    "id": "4",
+    "patientId": "4",
+    "patientName": "Phạm Thị D",
+    "patientCode": "BN-2026-004",
+    "phone": "0923456789",
+    "age": 50,
+    "gender": "Nữ",
+    "bloodType": "O+",
+    "allergies": [],
+    "time": "09:30 - 10:00",
+    "date": "27/05/2026",
+    "type": "Cả hai",
+    "reason": "Tiền sử huyết áp cao",
+    "status": "Đang khám",
+    "priority": "Khẩn cấp",
+    "history": "Tăng huyết áp vô căn (đã 5 năm, đang uống thuốc duy trì), Gút mãn tính",
+    "vitals": {
+      "bp": "128/82",
+      "hr": 76,
+      "temp": 36.6,
+      "spo2": 97,
+      "weight": 80,
+      "height": 170,
+      "bmi": 27.7
+    }
+  },
+  {
+    "id": "5",
+    "patientId": "5",
+    "patientName": "Đỗ Thị F",
+    "patientCode": "BN-2026-005",
+    "phone": "0945678901",
+    "age": 39,
+    "gender": "Nữ",
+    "bloodType": "AB-",
+    "allergies": [
+      "Sulfonamides"
+    ],
+    "time": "10:00 - 10:30",
+    "date": "27/05/2026",
+    "type": "Khám trực tiếp",
+    "reason": "Đau khớp gối mãn tính",
+    "status": "Đã khám",
+    "priority": "Bình thường",
+    "history": "Thoái hóa khớp gối độ III, Loét dạ dày tá tràng đã điều trị ổn định",
+    "vitals": {
+      "bp": "130/80",
+      "hr": 82,
+      "temp": 36.9,
+      "spo2": 96,
+      "weight": 62,
+      "height": 155,
+      "bmi": 25.8
+    },
+    "notes": {
+      "symptoms": "Đau dữ dội hai khớp gối, khớp sưng đau, hạn chế vận động nhiều, khó đứng lên ngồi xuống.",
+      "diagnosis": "Thoái hóa khớp gối hai bên tiến triển nặng",
+      "prescription": "Meloxicam 7.5mg - 1 viên/ngày, uống trưa sau ăn (dùng ngắn ngày)\nGlucosamin Sulfat 1500mg - 1 gói/ngày, uống sáng\nEsomeprazole 20mg - 1 viên/ngày, uống trước ăn sáng 30 phút để bảo vệ dạ dày"
+    }
+  },
+  {
+    "id": "6",
+    "patientId": "6",
+    "patientName": "Nguyễn Hoàng G",
+    "patientCode": "BN-2026-006",
+    "phone": "0912345006",
+    "age": 34,
+    "gender": "Nam",
+    "bloodType": "O+",
+    "allergies": [
+      "Phấn hoa"
+    ],
+    "time": "10:30 - 11:00",
+    "date": "27/05/2026",
+    "type": "Tư vấn",
+    "reason": "Dị ứng phấn hoa",
+    "status": "Đang chờ",
+    "priority": "Bình thường",
+    "history": "Viêm mũi dị ứng",
+    "vitals": {
+      "bp": "120/80",
+      "hr": 78,
+      "temp": 36.6,
+      "spo2": 99,
+      "weight": 68,
+      "height": 172,
+      "bmi": 23.0
+    }
+  },
+  {
+    "id": "7",
+    "patientId": "7",
+    "patientName": "Vũ Thị H",
+    "patientCode": "BN-2026-007",
+    "phone": "0912345007",
+    "age": 41,
+    "gender": "Nữ",
+    "bloodType": "A+",
+    "allergies": [],
+    "time": "14:00 - 14:30",
+    "date": "27/05/2026",
+    "type": "Khám trực tiếp",
+    "reason": "Đau khớp vai phải",
+    "status": "Đang khám",
+    "priority": "Khẩn cấp",
+    "history": "Thoái hóa khớp vai nhẹ",
+    "vitals": {
+      "bp": "125/82",
+      "hr": 80,
+      "temp": 36.7,
+      "spo2": 98,
+      "weight": 58,
+      "height": 160,
+      "bmi": 22.7
+    }
+  },
+  {
+    "id": "8",
+    "patientId": "8",
+    "patientName": "Hoàng Văn I",
+    "patientCode": "BN-2026-008",
+    "phone": "0912345008",
+    "age": 55,
+    "gender": "Nam",
+    "bloodType": "B+",
+    "allergies": [],
+    "time": "14:30 - 15:00",
+    "date": "27/05/2026",
+    "type": "Cả hai",
+    "reason": "Rối loạn tiêu hóa",
+    "status": "Đã khám",
+    "priority": "Bình thường",
+    "history": "Viêm đại tràng co thắt",
+    "vitals": {
+      "bp": "122/80",
+      "hr": 74,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 70,
+      "height": 170,
+      "bmi": 24.2
+    },
+    "notes": {
+      "symptoms": "Đau quặn bụng dọc khung đại tràng, đầy hơi, đi ngoài nhiều lần sau khi ăn đồ lạ.",
+      "diagnosis": "Viêm đại tràng co thắt / Hội chứng ruột kích thích",
+      "prescription": "Duspatalin 200mg - 2 viên/ngày uống trước ăn 20 phút\nBiolactovin - 2 lọ/ngày uống sáng-tối"
+    }
+  },
+  {
+    "id": "9",
+    "patientId": "9",
+    "patientName": "Phạm Minh K",
+    "patientCode": "BN-2026-009",
+    "phone": "0912345009",
+    "age": 29,
+    "gender": "Nam",
+    "bloodType": "O+",
+    "allergies": [],
+    "time": "15:00 - 15:30",
+    "date": "27/05/2026",
+    "type": "Tư vấn",
+    "reason": "Đau lưng cấp tính",
+    "status": "Đang chờ",
+    "priority": "Bình thường",
+    "history": "Chưa ghi nhận bệnh lý",
+    "vitals": {
+      "bp": "118/76",
+      "hr": 72,
+      "temp": 36.4,
+      "spo2": 99,
+      "weight": 65,
+      "height": 175,
+      "bmi": 21.2
+    }
+  },
+  {
+    "id": "10",
+    "patientId": "10",
+    "patientName": "Đặng Thị L",
+    "patientCode": "BN-2026-010",
+    "phone": "0912345010",
+    "age": 62,
+    "gender": "Nữ",
+    "bloodType": "AB+",
+    "allergies": [],
+    "time": "15:30 - 16:00",
+    "date": "27/05/2026",
+    "type": "Khám trực tiếp",
+    "reason": "Mắt nhìn mờ dần",
+    "status": "Đã khám",
+    "priority": "Cần khám",
+    "history": "Đục thủy tinh thể hai mắt nhẹ",
+    "vitals": {
+      "bp": "132/84",
+      "hr": 76,
+      "temp": 36.6,
+      "spo2": 97,
+      "weight": 52,
+      "height": 154,
+      "bmi": 21.9
+    },
+    "notes": {
+      "symptoms": "Nhìn mờ như có màn sương trước mắt, không đau nhức, nhìn rõ hơn lúc ánh sáng dịu.",
+      "diagnosis": "Đục thủy tinh thể tuổi già tiến triển độ II",
+      "prescription": "Phacophaco - Nhỏ mắt ngày 4 lần\nTebonin 120mg - 1 viên/ngày uống sáng"
+    }
+  },
+  {
+    "id": "11",
+    "patientId": "11",
+    "patientName": "Bùi Văn M",
+    "patientCode": "BN-2026-011",
+    "phone": "0912345011",
+    "age": 47,
+    "gender": "Nam",
+    "bloodType": "O-",
+    "allergies": [
+      "Penicillin"
+    ],
+    "time": "16:00 - 16:30",
+    "date": "27/05/2026",
+    "type": "Tư vấn",
+    "reason": "Ho kéo dài, rát họng",
+    "status": "Đang chờ",
+    "priority": "Bình thường",
+    "history": "Viêm họng mãn tính",
+    "vitals": {
+      "bp": "120/80",
+      "hr": 78,
+      "temp": 36.7,
+      "spo2": 98,
+      "weight": 70,
+      "height": 171,
+      "bmi": 23.9
+    }
+  },
+  {
+    "id": "12",
+    "patientId": "12",
+    "patientName": "Ngô Thị N",
+    "patientCode": "BN-2026-012",
+    "phone": "0912345012",
+    "age": 31,
+    "gender": "Nữ",
+    "bloodType": "A-",
+    "allergies": [],
+    "time": "16:30 - 17:00",
+    "date": "27/05/2026",
+    "type": "Khám trực tiếp",
+    "reason": "Mất ngủ kéo dài",
+    "status": "Đang khám",
+    "priority": "Bình thường",
+    "history": "Suy nhược thần kinh nhẹ",
+    "vitals": {
+      "bp": "110/70",
+      "hr": 84,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 48,
+      "height": 156,
+      "bmi": 19.7
+    }
+  },
+  {
+    "id": "13",
+    "patientId": "13",
+    "patientName": "Dương Văn P",
+    "patientCode": "BN-2026-013",
+    "phone": "0912345013",
+    "age": 38,
+    "gender": "Nam",
+    "bloodType": "B-",
+    "allergies": [],
+    "time": "08:00 - 08:30",
+    "date": "27/05/2026",
+    "type": "Tư vấn",
+    "reason": "Đau dạ dày lúc đói",
+    "status": "Đã khám",
+    "priority": "Bình thường",
+    "history": "Viêm loét dạ dày tá tràng năm 2023",
+    "vitals": {
+      "bp": "116/78",
+      "hr": 75,
+      "temp": 36.4,
+      "spo2": 99,
+      "weight": 64,
+      "height": 168,
+      "bmi": 22.7
+    },
+    "notes": {
+      "symptoms": "Đau rát vùng thượng vị âm ỉ xuất hiện lúc đói hoặc sau ăn chua cay, kèm ợ hơi nhẹ.",
+      "diagnosis": "Viêm dạ dày cấp tính tái phát",
+      "prescription": "Gastropulgite - 3 gói/ngày uống trước ăn 15 phút\nEsomeprazole 20mg - 1 viên uống trước ăn sáng"
+    }
+  },
+  {
+    "id": "14",
+    "patientId": "14",
+    "patientName": "Đỗ Thị Q",
+    "patientCode": "BN-2026-014",
+    "phone": "0912345014",
+    "age": 25,
+    "gender": "Nữ",
+    "bloodType": "AB-",
+    "allergies": [],
+    "time": "08:30 - 09:00",
+    "date": "27/05/2026",
+    "type": "Khám trực tiếp",
+    "reason": "Khám thai định kỳ",
+    "status": "Đang chờ",
+    "priority": "Bình thường",
+    "history": "Mang thai lần đầu tuần thứ 12",
+    "vitals": {
+      "bp": "115/75",
+      "hr": 82,
+      "temp": 36.8,
+      "spo2": 98,
+      "weight": 50,
+      "height": 158,
+      "bmi": 20.0
+    }
+  },
+  {
+    "id": "15",
+    "patientId": "15",
+    "patientName": "Phan Văn R",
+    "patientCode": "BN-2026-015",
+    "phone": "0912345015",
+    "age": 53,
+    "gender": "Nam",
+    "bloodType": "O+",
+    "allergies": [],
+    "time": "09:00 - 09:30",
+    "date": "27/05/2026",
+    "type": "Cả hai",
+    "reason": "Tê bì chân tay",
+    "status": "Đang khám",
+    "priority": "Khẩn cấp",
+    "history": "Đái tháo đường Type 2",
+    "vitals": {
+      "bp": "135/88",
+      "hr": 80,
+      "temp": 36.6,
+      "spo2": 96,
+      "weight": 75,
+      "height": 172,
+      "bmi": 25.4
+    }
+  },
+  {
+    "id": "16",
+    "patientId": "16",
+    "patientName": "Nguyễn Văn S",
+    "patientCode": "BN-2026-016",
+    "phone": "0912345016",
+    "age": 45,
+    "gender": "Nam",
+    "bloodType": "A+",
+    "allergies": [],
+    "time": "09:30 - 10:00",
+    "date": "28/05/2026",
+    "type": "Khám trực tiếp",
+    "reason": "Trĩ nội độ II chảy máu",
+    "status": "Đang chờ",
+    "priority": "Bình thường",
+    "history": "Trĩ nội độ II nhiều năm, Tăng huyết áp vô căn",
+    "vitals": {
+      "bp": "130/80",
+      "hr": 72,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 72,
+      "height": 170,
+      "bmi": 24.9
+    }
+  },
+  {
+    "id": "17",
+    "patientId": "17",
+    "patientName": "Trần Thị T",
+    "patientCode": "BN-2026-017",
+    "phone": "0912345017",
+    "age": 32,
+    "gender": "Nữ",
+    "bloodType": "O+",
+    "allergies": [
+      "Aspirin"
+    ],
+    "time": "10:00 - 10:30",
+    "date": "28/05/2026",
+    "type": "Tư vấn",
+    "reason": "Đau thượng vị cấp",
+    "status": "Đang khám",
+    "priority": "Khẩn cấp",
+    "history": "Viêm dạ dày tá tràng cấp tính năm 2024",
+    "vitals": {
+      "bp": "120/75",
+      "hr": 88,
+      "temp": 37.0,
+      "spo2": 98,
+      "weight": 54,
+      "height": 160,
+      "bmi": 21.1
+    }
+  },
+  {
+    "id": "18",
+    "patientId": "18",
+    "patientName": "Lê Văn U",
+    "patientCode": "BN-2026-018",
+    "phone": "0912345018",
+    "age": 67,
+    "gender": "Nam",
+    "bloodType": "B+",
+    "allergies": [],
+    "time": "10:30 - 11:00",
+    "date": "28/05/2026",
+    "type": "Khám trực tiếp",
+    "reason": "Phì đại tuyến tiền liệt",
+    "status": "Đã khám",
+    "priority": "Cần khám",
+    "history": "Tăng sinh lành tính tuyến tiền liệt vô căn, Đục thủy tinh thể",
+    "vitals": {
+      "bp": "138/85",
+      "hr": 70,
+      "temp": 36.6,
+      "spo2": 97,
+      "weight": 65,
+      "height": 165,
+      "bmi": 23.9
+    },
+    "notes": {
+      "symptoms": "Tiểu ngập ngừng, tiểu nhiều lần về đêm (4-5 lần), dòng tiểu yếu, tiểu không hết bãi.",
+      "diagnosis": "Tăng sinh lành tính tuyến tiền liệt / Rối loạn tiểu tiện",
+      "prescription": "Xatral XL 10mg - 1 viên/ngày uống tối sau ăn\nAvodart 0.5mg - 1 viên/ngày uống sáng"
+    }
+  },
+  {
+    "id": "19",
+    "patientId": "19",
+    "patientName": "Phạm Thị V",
+    "patientCode": "BN-2026-019",
+    "phone": "0912345019",
+    "age": 24,
+    "gender": "Nữ",
+    "bloodType": "O-",
+    "allergies": [],
+    "time": "14:00 - 14:30",
+    "date": "28/05/2026",
+    "type": "Tư vấn",
+    "reason": "Rối loạn kinh nguyệt",
+    "status": "Đang chờ",
+    "priority": "Bình thường",
+    "history": "Buồng trứng đa nang (PCOS) phát hiện năm 2025",
+    "vitals": {
+      "bp": "110/70",
+      "hr": 75,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 47,
+      "height": 158,
+      "bmi": 18.8
+    }
+  },
+  {
+    "id": "20",
+    "patientId": "20",
+    "patientName": "Đỗ Văn X",
+    "patientCode": "BN-2026-020",
+    "phone": "0912345020",
+    "age": 58,
+    "gender": "Nam",
+    "bloodType": "AB+",
+    "allergies": [],
+    "time": "14:30 - 15:00",
+    "date": "28/05/2026",
+    "type": "Cả hai",
+    "reason": "Đau vai gáy tê tay",
+    "status": "Đang khám",
+    "priority": "Khẩn cấp",
+    "history": "Thoái hóa đốt sống cổ C5-C6, Rối loạn tuần hoàn não",
+    "vitals": {
+      "bp": "130/82",
+      "hr": 78,
+      "temp": 36.4,
+      "spo2": 98,
+      "weight": 70,
+      "height": 168,
+      "bmi": 24.8
+    }
+  },
+  {
+    "id": "21",
+    "patientId": "21",
+    "patientName": "Nguyễn Thị Y",
+    "patientCode": "BN-2026-021",
+    "phone": "0912345021",
+    "age": 29,
+    "gender": "Nữ",
+    "bloodType": "A-",
+    "allergies": [],
+    "time": "15:00 - 15:30",
+    "date": "28/05/2026",
+    "type": "Khám trực tiếp",
+    "reason": "Khô mắt, mỏi điều tiết",
+    "status": "Đã khám",
+    "priority": "Bình thường",
+    "history": "Chưa ghi nhận bệnh lý đặc biệt",
+    "vitals": {
+      "bp": "115/75",
+      "hr": 80,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 50,
+      "height": 162,
+      "bmi": 19.1
+    },
+    "notes": {
+      "symptoms": "Mắt khô rát, cộm đỏ như có cát, mờ nhẹ cuối ngày làm việc trước màn hình máy tính.",
+      "diagnosis": "Khô mắt thể nhẹ / Mỏi cơ điều tiết mắt do dùng thiết bị điện tử",
+      "prescription": "Systane Ultra - Nhỏ mắt ngày 4-5 lần\nBảo Xuân - 2 viên/ngày uống sáng"
+    }
+  },
+  {
+    "id": "22",
+    "patientId": "22",
+    "patientName": "Hoàng Văn Z",
+    "patientCode": "BN-2026-022",
+    "phone": "0912345022",
+    "age": 73,
+    "gender": "Nam",
+    "bloodType": "B-",
+    "allergies": [],
+    "time": "15:30 - 16:00",
+    "date": "28/05/2026",
+    "type": "Tư vấn",
+    "reason": "Đau lưng lan xuống chân",
+    "status": "Đang chờ",
+    "priority": "Cần khám",
+    "history": "Thoát vị đĩa đệm L4-L5 đã điều trị nội khoa nhiều đợt",
+    "vitals": {
+      "bp": "140/85",
+      "hr": 72,
+      "temp": 36.6,
+      "spo2": 96,
+      "weight": 68,
+      "height": 170,
+      "bmi": 23.5
+    }
+  },
+  {
+    "id": "23",
+    "patientId": "23",
+    "patientName": "Bùi Thị Lâm",
+    "patientCode": "BN-2026-023",
+    "phone": "0912345023",
+    "age": 35,
+    "gender": "Nữ",
+    "bloodType": "O+",
+    "allergies": [
+      "Sulfa"
+    ],
+    "time": "16:00 - 16:30",
+    "date": "28/05/2026",
+    "type": "Khám trực tiếp",
+    "reason": "Viêm xoang sàng dị ứng",
+    "status": "Đã khám",
+    "priority": "Bình thường",
+    "history": "Viêm mũi dị ứng từ nhỏ, Lệch vách ngăn mũi trái",
+    "vitals": {
+      "bp": "120/80",
+      "hr": 76,
+      "temp": 36.8,
+      "spo2": 99,
+      "weight": 55,
+      "height": 160,
+      "bmi": 21.5
+    },
+    "notes": {
+      "symptoms": "Đau tức vùng gốc mũi trán, chảy dịch mũi vàng đục ra sau họng gây ho khan, nghẹt mũi.",
+      "diagnosis": "Viêm xoang sàng cấp tính / Viêm mũi dị ứng mạn",
+      "prescription": "Clamentin 625mg - 2 viên/ngày chia 2 lần uống sau ăn\nXịt mũi Coldy-B - xịt ngày 3 lần\nTelfast 180mg - 1 viên/ngày uống tối"
+    }
+  },
+  {
+    "id": "24",
+    "patientId": "24",
+    "patientName": "Ngô Văn Khánh",
+    "patientCode": "BN-2026-024",
+    "phone": "0912345024",
+    "age": 42,
+    "gender": "Nam",
+    "bloodType": "AB-",
+    "allergies": [],
+    "time": "16:30 - 17:00",
+    "date": "28/05/2026",
+    "type": "Tư vấn",
+    "reason": "Trào ngược họng thanh quản",
+    "status": "Đang chờ",
+    "priority": "Bình thường",
+    "history": "Trào ngược dạ dày thực quản (GERD) 3 năm",
+    "vitals": {
+      "bp": "125/80",
+      "hr": 74,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 74,
+      "height": 172,
+      "bmi": 25.0
+    }
+  },
+  {
+    "id": "25",
+    "patientId": "25",
+    "patientName": "Dương Thị Hoa",
+    "patientCode": "BN-2026-025",
+    "phone": "0912345025",
+    "age": 51,
+    "gender": "Nữ",
+    "bloodType": "O+",
+    "allergies": [],
+    "time": "08:00 - 08:30",
+    "date": "28/05/2026",
+    "type": "Khám trực tiếp",
+    "reason": "Đau quặn hố chậu phải",
+    "status": "Đang khám",
+    "priority": "Khẩn cấp",
+    "history": "U xơ tử cung kích thước nhỏ (theo dõi 2 năm)",
+    "vitals": {
+      "bp": "122/78",
+      "hr": 82,
+      "temp": 37.2,
+      "spo2": 98,
+      "weight": 58,
+      "height": 156,
+      "bmi": 23.8
+    }
+  },
+  {
+    "id": "26",
+    "patientId": "26",
+    "patientName": "Đặng Văn Hải",
+    "patientCode": "BN-2026-026",
+    "phone": "0912345026",
+    "age": 48,
+    "gender": "Nam",
+    "bloodType": "A+",
+    "allergies": [],
+    "time": "08:30 - 09:00",
+    "date": "29/05/2026",
+    "type": "Cả hai",
+    "reason": "Mỡ máu cao, gan nhiễm mỡ",
+    "status": "Đã khám",
+    "priority": "Bình thường",
+    "history": "Hút thuốc lá nhiều (20 năm), thừa cân béo phì độ I",
+    "vitals": {
+      "bp": "132/88",
+      "hr": 80,
+      "temp": 36.6,
+      "spo2": 97,
+      "weight": 82,
+      "height": 170,
+      "bmi": 28.4
+    },
+    "notes": {
+      "symptoms": "Khám sức khỏe định kỳ phát hiện cholesterol và triglycerid tăng cao, gan nhiễm mỡ.",
+      "diagnosis": "Rối loạn lipid máu hỗn hợp / Gan nhiễm mỡ độ II trên siêu âm",
+      "prescription": "Lipanthyl Supra 160mg - 1 viên/ngày uống tối sau ăn\nBổ gan Boganic - 4 viên/ngày chia 2 lần\nTư vấn bỏ thuốc lá và giảm cân"
+    }
+  },
+  {
+    "id": "27",
+    "patientId": "27",
+    "patientName": "Phan Thị Lan",
+    "patientCode": "BN-2026-027",
+    "phone": "0912345027",
+    "age": 60,
+    "gender": "Nữ",
+    "bloodType": "B+",
+    "allergies": [],
+    "time": "09:00 - 09:30",
+    "date": "29/05/2026",
+    "type": "Tư vấn",
+    "reason": "Đau nhức các khớp ngón tay",
+    "status": "Đang chờ",
+    "priority": "Cần khám",
+    "history": "Viêm khớp dạng thấp phát hiện năm 2023",
+    "vitals": {
+      "bp": "135/82",
+      "hr": 78,
+      "temp": 36.7,
+      "spo2": 98,
+      "weight": 50,
+      "height": 154,
+      "bmi": 21.1
+    }
+  },
+  {
+    "id": "28",
+    "patientId": "28",
+    "patientName": "Vũ Văn Bình",
+    "patientCode": "BN-2026-028",
+    "phone": "0912345028",
+    "age": 31,
+    "gender": "Nam",
+    "bloodType": "O+",
+    "allergies": [],
+    "time": "09:30 - 10:00",
+    "date": "29/05/2026",
+    "type": "Khám trực tiếp",
+    "reason": "Ù tai, giảm thính lực nhẹ",
+    "status": "Đang khám",
+    "priority": "Bình thường",
+    "history": "Chấn thương âm thanh do tai nghe (nghe nhạc to liên tục)",
+    "vitals": {
+      "bp": "118/76",
+      "hr": 74,
+      "temp": 36.5,
+      "spo2": 99,
+      "weight": 68,
+      "height": 174,
+      "bmi": 22.5
+    }
+  },
+  {
+    "id": "29",
+    "patientId": "29",
+    "patientName": "Bùi Thị Mai",
+    "patientCode": "BN-2026-029",
+    "phone": "0912345029",
+    "age": 27,
+    "gender": "Nữ",
+    "bloodType": "AB+",
+    "allergies": [
+      "Hải sản",
+      "Nhộng tằm"
+    ],
+    "time": "10:00 - 10:30",
+    "date": "29/05/2026",
+    "type": "Tư vấn",
+    "reason": "Ngứa da nổi sẩn mề đay",
+    "status": "Đã khám",
+    "priority": "Bình thường",
+    "history": "Mề đay vô căn tái phát nhiều lần",
+    "vitals": {
+      "bp": "112/72",
+      "hr": 82,
+      "temp": 36.6,
+      "spo2": 99,
+      "weight": 49,
+      "height": 160,
+      "bmi": 19.1
+    },
+    "notes": {
+      "symptoms": "Nổi sẩn ngứa đỏ hình tròn đa cung rải rác toàn thân sau khi ăn tôm ghẹ khoảng 2 giờ.",
+      "diagnosis": "Mày đay cấp do dị ứng thức ăn (nghi hải sản)",
+      "prescription": "Fexofenadine 180mg (Telfast) - 1 viên/ngày uống tối\nMedrol 4mg - 1 viên/ngày uống sáng (dùng ngắn 3 ngày)\nKem bôi Gentrisone bôi mỏng vùng ngứa"
+    }
+  },
+  {
+    "id": "30",
+    "patientId": "30",
+    "patientName": "Nguyễn Thị Vân",
+    "patientCode": "BN-2026-030",
+    "phone": "0912345030",
+    "age": 64,
+    "gender": "Nữ",
+    "bloodType": "O-",
+    "allergies": [],
+    "time": "10:30 - 11:00",
+    "date": "29/05/2026",
+    "type": "Khám trực tiếp",
+    "reason": "Đau khớp háng trái",
+    "status": "Đang chờ",
+    "priority": "Khẩn cấp",
+    "history": "Thoái hóa khớp háng trái độ II",
+    "vitals": {
+      "bp": "138/84",
+      "hr": 76,
+      "temp": 36.7,
+      "spo2": 97,
+      "weight": 56,
+      "height": 155,
+      "bmi": 23.3
     }
   }
 ]
@@ -301,6 +2179,7 @@ export function AppointmentListTab({
   const [timeFilter, setTimeFilter] = useState<string>('Tuần này')
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
+  const [pageSize, setPageSize] = useState<number>(5)
 
   // Clinical intake form states (for popup modal)
   const [symptoms, setSymptoms] = useState('')
@@ -402,6 +2281,9 @@ export function AppointmentListTab({
     const matchesStatus = statusFilter === 'Tất cả' || a.status === statusFilter
     return matchesSearch && matchesType && matchesStatus
   })
+
+  const paginatedAppointments = filteredAppointments.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+  const totalPages = Math.ceil(filteredAppointments.length / pageSize) || 1
 
   // 1. LOCAL DETAILED EMR VIEW (Visual parity with PatientListTab detail EMR but includes "Ghi nhận đợt khám mới" which triggers EMR popup)
   if (viewingPatientId) {
@@ -863,65 +2745,70 @@ export function AppointmentListTab({
             />
           </div>
         </div>
+
+        {/* Top-Right Toolbar Pagination section */}
+        <div className="patient-toolbar-pagination">
+          <div className="page-size-selector">
+            <span className="page-size-label">Hiển thị:</span>
+            <select 
+              value={pageSize} 
+              onChange={e => {
+                setPageSize(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              className="page-size-select"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+            </select>
+            <span className="page-size-suffix">dòng</span>
+          </div>
+
+          <div className="mini-pagination">
+            <button 
+              className="pag-nav-btn prev" 
+              disabled={currentPage === 1} 
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+              type="button"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="pag-icon">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <button 
+                key={page}
+                className={`pag-num-btn ${currentPage === page ? 'active' : ''}`} 
+                onClick={() => setCurrentPage(page)} 
+                type="button"
+              >
+                {page}
+              </button>
+            ))}
+            <button 
+              className="pag-nav-btn next" 
+              disabled={currentPage === totalPages || totalPages === 0} 
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
+              type="button"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="pag-icon">
+                <polyline points="9 6 15 12 9 18" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* 4. Premium Data Table */}
       <div className="patient-table-frame">
         <DataTable
-          rows={filteredAppointments}
+          rows={paginatedAppointments}
           columns={columns}
           getRowKey={(a) => a.id}
           emptyState="Không tìm thấy lịch hẹn nào phù hợp."
         />
       </div>
-
-      {/* 5. Pagination — matching Patient List */}
-      <footer className="patient-pagination" aria-label="Phân trang">
-        <button
-          className="pag-nav-btn prev"
-          type="button"
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage(1)}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="pag-icon">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-        </button>
-        
-        <button
-          type="button"
-          className={`pag-num-btn ${currentPage === 1 ? 'active' : ''}`}
-          onClick={() => setCurrentPage(1)}
-        >
-          1
-        </button>
-        
-        <button
-          type="button"
-          className={`pag-num-btn ${currentPage === 2 ? 'active' : ''}`}
-          onClick={() => triggerToast('Đây là bản ghi thử nghiệm, trang 2 hiện chưa có dữ liệu lịch hẹn.')}
-        >
-          2
-        </button>
-        
-        <button
-          type="button"
-          className={`pag-num-btn ${currentPage === 3 ? 'active' : ''}`}
-          onClick={() => triggerToast('Đây là bản ghi thử nghiệm, trang 3 hiện chưa có dữ liệu lịch hẹn.')}
-        >
-          3
-        </button>
-
-        <button
-          className="pag-nav-btn next"
-          type="button"
-          onClick={() => triggerToast('Đây là bản ghi thử nghiệm, trang sau hiện chưa có dữ liệu lịch hẹn.')}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="pag-icon">
-            <polyline points="9 6 15 12 9 18" />
-          </svg>
-        </button>
-      </footer>
 
       {/* EMR Popup Modal for writing medical record (rendered directly on top of table) */}
       {activeAppointmentId && activeApp && (
