@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import './LiveConsultationTab.css'
 
-type ChatMessage = {
+import { initialPatients } from '../patients/PatientListTab'
+
+export type ChatMessage = {
   id: string
   sender: 'patient' | 'doctor'
   text: string
 }
 
-type ChatItem = {
+export type ChatItem = {
   id: string
   name: string
   age: number
@@ -19,7 +21,7 @@ type ChatItem = {
   messages: ChatMessage[]
 }
 
-const initialChats: ChatItem[] = [
+export const initialChats: ChatItem[] = [
   {
     id: '1',
     name: 'Nguyễn Văn A',
@@ -84,14 +86,21 @@ export function LiveConsultationTab({
   onBackToDashboard,
   onViewPatientProfile,
   initialActiveChatId,
-  onClearActiveChat
+  onClearActiveChat,
+  chats: propChats,
+  setChats: propSetChats
 }: { 
   onBackToDashboard?: () => void;
-  onViewPatientProfile?: (patientId: string) => void;
+  onViewPatientProfile?: (patientId: string, encounterDate?: string) => void;
   initialActiveChatId?: string | null;
   onClearActiveChat?: () => void;
+  chats?: ChatItem[];
+  setChats?: React.Dispatch<React.SetStateAction<ChatItem[]>>;
 }) {
-  const [chats, setChats] = useState<ChatItem[]>(initialChats)
+  const [internalChats, setInternalChats] = useState<ChatItem[]>(initialChats)
+  const chats = propChats !== undefined ? propChats : internalChats
+  const setChats = propSetChats !== undefined ? propSetChats : setInternalChats
+
   const [activeChatId, setActiveChatId] = useState<string | null>(initialActiveChatId || null)
 
   useEffect(() => {
@@ -106,9 +115,87 @@ export function LiveConsultationTab({
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [showToast, setShowToast] = useState(false)
   const [toastInfo, setToastInfo] = useState<{ day: number; time: string } | null>(null)
+  const [selectedHistoryChat, setSelectedHistoryChat] = useState<{
+    date: string;
+    title: string;
+    patientName: string;
+    messages: { sender: 'patient' | 'doctor'; text: string; time: string }[];
+  } | null>(null)
 
   const activeChat = chats.find(c => c.id === activeChatId)
   const isChatActiveMode = activeChat && activeChat.status === 'active'
+
+  const matchingPatient = activeChat ? initialPatients.find(p => p.id === activeChat.id || p.name === activeChat.name) : null
+  const pastEncounters = matchingPatient?.pastEncounters || []
+
+  // Dynamic autocomplete phrase suggester ("mớm câu" logic with 20 premium medical prefix triggers)
+  const getAutocompleteSuggestions = (text: string): string[] => {
+    const query = text.toLowerCase().trim();
+    if (!query) return [];
+
+    // Comprehensive category mapping dictionary with 20 high-fidelity sets
+    const suggestionsDb: Record<string, string[]> = {
+      'hãy': ['đặt lịch tái khám trực tiếp', 'theo dõi sức khỏe tại nhà', 'hạn chế vận động mạnh'],
+      'bạn': ['nên uống thuốc đúng giờ', 'cần tránh ăn đồ dầu mỡ', 'nên tái khám sau 7 ngày'],
+      'yêu': ['cầu làm xét nghiệm máu tổng quát', 'cầu chụp X-quang phổi thẳng', 'cầu làm điện tâm đồ (ECG)'],
+      'kê': ['đơn thuốc điều trị dạ dày', 'toa thuốc hạ sốt giảm đau', 'đơn kháng sinh điều trị viêm họng'],
+      'triệu': ['chứng này có xuất hiện thường xuyên không?', 'chứng đau ngực có lan ra vai không?', 'chứng sốt xuất hiện từ khi nào?'],
+      'kết': ['quả xét nghiệm của bạn hoàn toàn bình thường', 'quả siêu âm cho thấy có viêm nhẹ', 'quả chụp X-quang không có tổn thương'],
+      'huyết': ['áp của bạn hiện tại hơi cao', 'áp cần được đo đều đặn mỗi sáng', 'áp tâm thu đạt mức bình thường'],
+      'uống': ['thuốc sau khi ăn no 30 phút', 'nhiều nước lọc (tối thiểu 2 lít/ngày)', 'thuốc đều đặn và không tự ý ngắt quãng'],
+      'tránh': ['các thực phẩm cay nóng, kích thích', 'thức khuya và làm việc quá sức', 'uống rượu bia trong thời gian điều trị'],
+      'tái': ['khám ngay nếu có dấu hiệu khó thở', 'khám định kỳ sau khi uống hết thuốc', 'khám tại phòng khám Nội 102'],
+      'theo': ['dõi nhiệt độ cơ thể mỗi 4 tiếng', 'dõi chỉ số đường huyết trước ăn sáng', 'dõi cơn đau và báo lại bác sĩ'],
+      'chế': ['độ ăn uống cần giảm muối và đường', 'độ sinh hoạt lành mạnh, tập thể dục nhẹ', 'độ nghỉ ngơi hoàn toàn trong 3 ngày tới'],
+      'thuốc': ['này uống 2 lần mỗi ngày (sáng/tối)', 'kháng sinh cần uống đủ liều 5 ngày', 'xịt mũi dùng tối đa 3 lần/ngày'],
+      'đau': ['ngực có đi kèm cảm giác khó thở không?', 'đầu nhiều vào buổi sáng hay buổi tối?', 'bụng âm ỉ hay đau quặn từng cơn?'],
+      'khám': ['lâm sàng cho thấy nhịp tim đều', 'lại sau khi hoàn thành liệu trình thuốc', 'chuyên khoa tim mạch để kiểm tra sâu'],
+      'ăn': ['nhiều rau xanh và trái cây tươi', 'chín uống sôi, đảm bảo vệ sinh', 'các món mềm, dễ tiêu hóa như cháo, súp'],
+      'nghỉ': ['ngơi tĩnh dưỡng tại nhà', 'ngơi và tránh stress, lo âu', 'ngơi hoàn toàn tại giường'],
+      'giảm': ['áp lực công việc và thư giãn đầu óc', 'lượng tinh bột và chất béo bão hòa', 'liều lượng thuốc nếu triệu chứng thuyên giảm'],
+      'nhịp': ['tim của bạn hiện tại hơi nhanh', 'thở đều và phổi thông khí tốt', 'tim ổn định ở mức 75 chu kỳ/phút'],
+      'chỉ': ['số đường huyết cần được kiểm soát tốt', 'số SpO2 đạt mức an toàn 98%', 'số xét nghiệm mỡ máu hơi cao']
+    };
+
+    // 1. Direct matched triggers (e.g. typing "hãy" or "hãy ")
+    for (const key of Object.keys(suggestionsDb)) {
+      if (query === key || text.toLowerCase().startsWith(key + ' ')) {
+        return suggestionsDb[key];
+      }
+    }
+
+    // 2. Partial prefix word matching (e.g. typing "h" matches "Hãy đặt lịch khám", etc.)
+    const matches: string[] = [];
+    const keywords = Object.keys(suggestionsDb);
+    for (const key of keywords) {
+      if (key.startsWith(query)) {
+        // Generate complete phrases for quick autocompletion
+        suggestionsDb[key].forEach(val => {
+          const capitalizedKey = key[0].toUpperCase() + key.slice(1);
+          matches.push(`${capitalizedKey} ${val}`);
+        });
+      }
+    }
+
+    // Limit to top 3 best matches to keep UI clean and prevent overflow
+    return matches.slice(0, 3);
+  };
+
+  const handleSelectSuggestion = (suggestion: string) => {
+    const currentText = inputMessage;
+    const currentLower = currentText.toLowerCase().trim();
+    
+    if (suggestion.toLowerCase().startsWith(currentLower)) {
+      // Capitalize first letter if the original typed message had it capitalized
+      const capitalizedSug = currentText && currentText[0] === currentText[0].toUpperCase()
+        ? suggestion[0].toUpperCase() + suggestion.slice(1)
+        : suggestion;
+      setInputMessage(capitalizedSug);
+    } else {
+      const spacer = currentText.endsWith(' ') ? '' : ' ';
+      setInputMessage(currentText + spacer + suggestion);
+    }
+  };
 
   const toggleSection = (section: string) => {
     setExpandedSection(prev => prev === section ? null : section)
@@ -286,12 +373,20 @@ export function LiveConsultationTab({
               ))}
             </div>
 
-            {/* Actions tag above input (Only when active) */}
+            {/* Actions tag above input (Only when active and has autocomplete suggestions) */}
             {activeChat.status === 'active' && (
-              <div className="chat-action-tags">
-                <button className="action-tag-btn">Hẹn khám lại</button>
-                <button className="action-tag-btn">Yêu cầu xét nghiệm</button>
-                <button className="action-tag-btn">Kê toa thuốc</button>
+              <div className="chat-action-tags" style={{ minHeight: '36px', display: 'flex', gap: '8px', padding: '0 16px', marginBottom: '8px' }}>
+                {getAutocompleteSuggestions(inputMessage).map((sug, idx) => (
+                  <button 
+                    key={idx}
+                    type="button"
+                    className="action-tag-btn autocompleted-tag"
+                    onClick={() => handleSelectSuggestion(sug)}
+                    style={{ border: '1px solid #3B82F6', color: '#3B82F6', background: '#F0F6FF', fontWeight: 600 }}
+                  >
+                    {sug}
+                  </button>
+                ))}
               </div>
             )}
 
@@ -429,18 +524,26 @@ export function LiveConsultationTab({
             </div>
             {expandedSection === 'visit-history' && (
               <div className="workspace-accordion-content scrollable-content">
-                <div className="info-item-card">
-                  <span className="info-item-value">05/05/2026</span>
-                  <span className="info-item-label">Khám tổng quát</span>
-                </div>
-                <div className="info-item-card">
-                  <span className="info-item-value">20/04/2026</span>
-                  <span className="info-item-label">Tái khám tim mạch</span>
-                </div>
-                <div className="info-item-card">
-                  <span className="info-item-value">20/01/2026</span>
-                  <span className="info-item-label">Tái khám tim mạch</span>
-                </div>
+                {pastEncounters.map((enc, idx) => (
+                  <div 
+                    key={idx}
+                    className="info-item-card clickable-history-card"
+                    style={{ cursor: 'pointer', transition: 'all 0.15s ease' }}
+                    onClick={() => {
+                      if (matchingPatient) {
+                        onViewPatientProfile?.(matchingPatient.id, enc.date);
+                      }
+                    }}
+                  >
+                    <span className="info-item-value" style={{ color: '#2563EB', fontWeight: 700 }}>{enc.date}</span>
+                    <span className="info-item-label" style={{ fontWeight: 600 }}>{enc.diagnosis}</span>
+                  </div>
+                ))}
+                {pastEncounters.length === 0 && (
+                  <div className="info-item-card" style={{ opacity: 0.7 }}>
+                    <span className="info-item-label">Chưa ghi nhận lịch sử khám bệnh.</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -458,9 +561,34 @@ export function LiveConsultationTab({
             </div>
             {expandedSection === 'consultation-history' && (
               <div className="workspace-accordion-content scrollable-content">
-                <div className="info-item-card">
-                  <span className="info-item-value">01/05/2026</span>
-                  <span className="info-item-label">Tư vấn về triệu chứng đau ngực</span>
+                <div 
+                  className="info-item-card clickable-history-card"
+                  style={{ 
+                    cursor: 'pointer', 
+                    transition: 'all 0.2s ease', 
+                    background: '#F0F6FF', 
+                    border: '1px dashed #3B82F6' 
+                  }}
+                  onClick={() => {
+                    setSelectedHistoryChat({
+                      date: '01/05/2026',
+                      title: 'Tư vấn về triệu chứng đau ngực',
+                      patientName: activeChat?.name || 'Nguyễn Văn A',
+                      messages: [
+                        { sender: 'patient', text: 'Bác sĩ ơi, dạo này tôi hay bị nhói đau ở vùng ngực bên trái, thỉnh thoảng lan ra sau lưng. Rất lo lắng không biết có phải bị tim không ạ?', time: '10:00' },
+                        { sender: 'doctor', text: 'Chào bác. Cơn đau ngực của bác xuất hiện khi nào? Có kèm theo khó thở hay vã mồ hôi không?', time: '10:02' },
+                        { sender: 'patient', text: 'Dạ đau chủ yếu sau khi ăn no hoặc khi nằm xuống. Không có vã mồ hôi hay khó thở bác sĩ ạ. Chỉ thấy hơi ợ chua và nóng rát ở cổ.', time: '10:05' },
+                        { sender: 'doctor', text: 'Triệu chứng của bác nghĩ nhiều đến trào ngược dạ dày thực quản (GERD). Tuy nhiên bác vẫn nên đi đo điện tâm đồ (ECG) sớm để loại trừ bệnh tim mạch nhé.', time: '10:07' },
+                        { sender: 'patient', text: 'Dạ vâng cảm ơn bác sĩ nhiều lắm, tôi nghe bác sĩ tư vấn vậy cũng yên tâm hơn nhiều rồi ạ. Tôi sẽ đi làm ECG sớm ạ.', time: '10:10' }
+                      ]
+                    });
+                  }}
+                >
+                  <span className="info-item-value" style={{ color: '#2563EB', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    01/05/2026
+                    <span style={{ fontSize: '10px', background: '#3B82F6', color: '#ffffff', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>XEM LẠI</span>
+                  </span>
+                  <span className="info-item-label" style={{ fontWeight: 600, color: '#4B5563' }}>Tư vấn về triệu chứng đau ngực</span>
                 </div>
               </div>
             )}
@@ -495,10 +623,6 @@ export function LiveConsultationTab({
             )}
           </div>
           
-          <button className="book-appointment-btn" onClick={() => setIsModalOpen(true)}>
-            <svg className="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            Đặt lịch khám trực tiếp
-          </button>
         </div>
       )}
 
@@ -586,6 +710,171 @@ export function LiveConsultationTab({
                 }}
               >
                 Xác nhận đặt lịch
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Historical Chat Review Modal Overlay */}
+      {selectedHistoryChat && createPortal(
+        <div className="modal-overlay" onClick={() => setSelectedHistoryChat(null)} style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.4)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+        }}>
+          <div className="history-chat-modal-card" onClick={(e) => e.stopPropagation()} style={{
+            background: '#ffffff',
+            borderRadius: '24px',
+            width: '600px',
+            maxWidth: '95%',
+            maxHeight: '85vh',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            border: '1px solid rgba(0, 0, 0, 0.05)',
+          }}>
+            {/* Modal Header */}
+            <div className="modal-header" style={{
+              padding: '20px 24px',
+              borderBottom: '1px solid #F3F4F6',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              background: 'linear-gradient(135deg, #F0F6FF 0%, #E0F2FE 100%)'
+            }}>
+              <div>
+                <h2 style={{ margin: 0, fontSize: '18px', color: '#1E40AF', fontWeight: 800 }}>CHI TIẾT LỊCH SỬ TƯ VẤN</h2>
+                <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#2563EB', fontWeight: 600 }}>
+                  Bệnh nhân: {selectedHistoryChat.patientName} • Ngày {selectedHistoryChat.date}
+                </p>
+              </div>
+              <button 
+                onClick={() => setSelectedHistoryChat(null)}
+                style={{
+                  border: 'none',
+                  background: 'rgba(37, 99, 235, 0.1)',
+                  color: '#2563EB',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '16px', height: '16px' }}>
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+            
+            {/* Subject Indicator */}
+            <div style={{
+              padding: '12px 24px',
+              background: '#F9FAFB',
+              borderBottom: '1px solid #F3F4F6',
+              fontSize: '14px',
+              color: '#374151',
+              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <span style={{
+                background: '#3B82F6',
+                color: '#ffffff',
+                padding: '2px 8px',
+                borderRadius: '6px',
+                fontSize: '11px',
+                fontWeight: 700
+              }}>CHỦ ĐỀ</span>
+              {selectedHistoryChat.title}
+            </div>
+
+            {/* Chat Transcript Area */}
+            <div className="modal-body" style={{
+              padding: '24px',
+              overflowY: 'auto',
+              flex: 1,
+              background: '#FAFAFA',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px'
+            }}>
+              {selectedHistoryChat.messages.map((msg, idx) => (
+                <div key={idx} style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: msg.sender === 'doctor' ? 'flex-end' : 'flex-start',
+                  maxWidth: '85%',
+                  alignSelf: msg.sender === 'doctor' ? 'flex-end' : 'flex-start'
+                }}>
+                  <div style={{
+                    padding: '12px 16px',
+                    borderRadius: msg.sender === 'doctor' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                    background: msg.sender === 'doctor' ? '#2563EB' : '#ffffff',
+                    color: msg.sender === 'doctor' ? '#ffffff' : '#1F2937',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+                    fontSize: '14px',
+                    lineHeight: '1.5',
+                    border: msg.sender === 'doctor' ? 'none' : '1px solid #E5E7EB'
+                  }}>
+                    {msg.text}
+                  </div>
+                  <span style={{
+                    fontSize: '11px',
+                    color: '#9CA3AF',
+                    marginTop: '4px',
+                    marginRight: msg.sender === 'doctor' ? '4px' : '0',
+                    marginLeft: msg.sender === 'doctor' ? '0' : '4px',
+                    fontWeight: 500
+                  }}>
+                    {msg.sender === 'doctor' ? 'Bác sĩ' : selectedHistoryChat.patientName} • {msg.time}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Modal Footer */}
+            <div style={{
+              padding: '16px 24px',
+              borderTop: '1px solid #F3F4F6',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              background: '#ffffff'
+            }}>
+              <button 
+                onClick={() => setSelectedHistoryChat(null)}
+                style={{
+                  background: '#2563EB',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '10px 24px',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 12px rgba(37, 99, 235, 0.2)',
+                  transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.opacity = '0.9'}
+                onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
+              >
+                Đóng lịch sử
               </button>
             </div>
           </div>

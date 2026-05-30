@@ -9,7 +9,7 @@ import { ReturnButton } from '../../../components/ui/ReturnButton'
 import './PatientListTab.css'
 
 // Clinical-grade patient mock data with EMR elements matching the wireframe exactly
-const initialPatients = [
+export const initialPatients = [
   {
     "id": "1",
     "code": "BN-2026-001",
@@ -1492,10 +1492,16 @@ export function PatientListTab({
   onBackToDashboard,
   initialActivePatientId,
   onClearActivePatient,
+  initialSelectedEncounterDate,
+  onBackToReferrer,
+  referrerTabName
 }: {
   onBackToDashboard?: () => void
   initialActivePatientId?: string | null
   onClearActivePatient?: () => void
+  initialSelectedEncounterDate?: string | null
+  onBackToReferrer?: () => void
+  referrerTabName?: string
 }) {
   const [patients, setPatients] = useState(initialPatients)
   const [activePatientId, setActivePatientId] = useState<string | null>(initialActivePatientId || null)
@@ -1512,9 +1518,21 @@ export function PatientListTab({
   useEffect(() => {
     if (initialActivePatientId) {
       setActivePatientId(initialActivePatientId)
+      
+      // Try to find the exact index matching the pre-selected encounter date
+      if (initialSelectedEncounterDate) {
+        const p = patients.find(pat => pat.id === initialActivePatientId)
+        if (p) {
+          const idx = p.pastEncounters.findIndex(enc => enc.date === initialSelectedEncounterDate)
+          if (idx !== -1) {
+            setSelectedEncounterIdx(idx)
+            return
+          }
+        }
+      }
       setSelectedEncounterIdx(0)
     }
-  }, [initialActivePatientId])
+  }, [initialActivePatientId, initialSelectedEncounterDate])
 
   // Find active patient details
   const activePatient = patients.find(p => p.id === activePatientId)
@@ -1571,11 +1589,25 @@ export function PatientListTab({
         {/* Return Button at top left */}
         <ReturnButton
           onClick={() => {
-            setActivePatientId(null)
-            setSelectedEncounterIdx(0)
-            onClearActivePatient?.()
+            if (onBackToReferrer) {
+              onBackToReferrer()
+            } else {
+              setActivePatientId(null)
+              setSelectedEncounterIdx(0)
+              onClearActivePatient?.()
+            }
           }}
-          title="Quay lại danh sách"
+          title={
+            onBackToReferrer
+              ? (referrerTabName === 'Tư vấn trực tiếp'
+                  ? "Quay lại màn nhắn tin"
+                  : referrerTabName === 'Dashboard'
+                  ? "Quay lại Dashboard"
+                  : referrerTabName === 'Lịch hẹn khám'
+                  ? "Quay lại lịch hẹn"
+                  : `Quay lại ${referrerTabName}`)
+              : "Quay lại danh sách"
+          }
           style={{ marginBottom: '16px' }}
         />
 
