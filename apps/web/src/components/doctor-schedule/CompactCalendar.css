@@ -1,0 +1,159 @@
+.compact-calendar {
+  background: white;
+  padding: 16px;
+  border-radius: 20px;
+  border: 1.5px solid #BFDBFE;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.02);
+}
+
+.cc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.cc-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1E293B;
+  letter-spacing: -0.01em;
+}
+
+.cc-month-select {
+  border-radius: 8px;
+  border: 1px solid #BFDBFE;
+  background-color: #EFF6FF;
+  color: #1E40AF;
+  font-weight: 700;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.cc-month-select:hover {
+  background-color: #DBEAFE;
+  border-color: #93C5FD;
+}
+
+.cc-grid-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.cc-weekday {
+  color: #64748B;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  padding-bottom: 4px;
+}
+
+.cc-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  text-align: center;
+}
+
+.cc-day {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #F1F5F9;
+  border-radius: 12px;
+  cursor: pointer;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 700;
+  background: white;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 2px;
+}
+
+.cc-day:hover {
+  border-color: #3B82F6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.05);
+}
+
+.cc-day.has-work {
+  background: #EFF6FF;
+  color: #1E40AF;
+  border-color: #DBEAFE;
+}
+
+.cc-day.has-work:hover {
+  background: #DBEAFE;
+  border-color: #3B82F6;
+}
+
+.cc-day.selected {
+  background: #3B82F6 !important;
+  color: white !important;
+  border-color: #3B82F6 !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+}
+
+.cc-day.selected .cc-day-num {
+  color: white !important;
+}
+
+.cc-day.selected .cc-appt-badge {
+  color: white !important;
+}
+
+.cc-day.selected .cc-dot {
+  color: white !important;
+}
+
+.cc-day.selected:hover {
+  background: #2563EB !important;
+}
+
+.cc-day.weekend {
+  color: #94A3B8;
+  border-color: #F8FAFC;
+}
+
+.cc-day.weekend.has-work {
+  background: #EFF6FF;
+  color: #1E40AF;
+  border-color: #DBEAFE;
+}
+
+.cc-appt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #3B82F6;
+  margin-top: 1px;
+  line-height: 1;
+}
+
+.cc-dot {
+  font-size: 7px;
+  color: #3B82F6;
+}
+
+.cc-empty-cell {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid transparent;
+}
+
+@media (max-width: 1024px) {
+  .cc-day {
+    aspect-ratio: 1.1 / 1;
+  }
+}

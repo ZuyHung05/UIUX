@@ -9,6 +9,8 @@ import { DoctorManagementPage } from './pages/manager/doctors/DoctorManagementPa
 import { DoctorNewPage } from './pages/manager/doctors/DoctorNewPage'
 import { DoctorsDataProvider } from './pages/manager/doctors/DoctorsDataContext'
 
+import { DoctorScheduleV2Page } from './pages/doctor/schedule/DoctorScheduleV2Page'
+
 function App() {
   return (
     <DoctorsDataProvider>
@@ -22,6 +24,7 @@ function App() {
         <Route path="/manager/doctors/:doctorId" element={<DoctorDetailPage />} />
         <Route path="/manager/chatbot-monitor" element={<ChatbotMonitorPage />} />
         <Route path="/doctor/dashboard" element={<DoctorDashboardPage />} />
+        <Route path="/doctor/schedule-v2" element={<DoctorScheduleV2Page />} />
         {/* Fallback route */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
