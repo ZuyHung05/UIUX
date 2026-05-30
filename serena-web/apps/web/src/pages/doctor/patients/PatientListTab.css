@@ -1549,7 +1549,7 @@
 /* Status Pills matching StatusBadge capsule style */
 .status-pill {
   display: inline-flex;
-  min-width: 96px;
+  width: 160px;
   min-height: 28px;
   justify-content: center;
   align-items: center;
@@ -1574,9 +1574,9 @@
 }
 
 .status-pill.done {
-  border-color: #E9D5FF;
-  background: #F3E8FF;
-  color: #7C3AED;
+  border-color: #E2E8F0;
+  background: #F1F5F9;
+  color: #475569;
 }
 
 /* EMR Appointment Prep Card Layout */

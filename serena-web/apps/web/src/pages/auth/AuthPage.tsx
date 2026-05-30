@@ -1,9 +1,6 @@
-import { useEffect, useMemo, useState, type CSSProperties, type FormEvent } from 'react'
+import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { SystemLogo } from '../../components/brand/SystemLogo'
-import sereneBotIcon from '../../assets/auth/serene-bot.svg'
-import plusIcon from '../../assets/auth/plus.svg'
-import globeIcon from '../../assets/auth/globe.svg'
+import sereneHealthLogo from '../../assets/icons/serene_health_logo_blue.svg'
 import './AuthPage.css'
 
 type AuthMode = 'login' | 'forgot' | 'signup' | 'forgotLoading' | 'forgotSuccess'
@@ -80,6 +77,33 @@ const initialSignupForm: SignupForm = {
   confirmPassword: '',
 }
 
+const emailIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M22 6l-10 7L2 6" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+)
+
+const lockIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M7 11V7a5 5 0 0110 0v4" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+)
+
+const phoneIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+)
+
+const userIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="12" cy="7" r="4" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+)
+
 function findAccount(accounts: Account[], identifier: string) {
   const normalized = identifier.trim().toLowerCase()
 
@@ -122,6 +146,8 @@ type TextFieldProps = {
   inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'
   onChange: (value: string) => void
   onFocus?: () => void
+  icon?: React.ReactNode
+  isPassword?: boolean
 }
 
 function TextField({
@@ -137,23 +163,51 @@ function TextField({
   inputMode,
   onChange,
   onFocus,
+  icon,
+  isPassword
 }: TextFieldProps) {
+  const [showPassword, setShowPassword] = useState(false)
+  const actualType = isPassword ? (showPassword ? 'text' : 'password') : type
+
   return (
     <label className={compact ? 'auth-field auth-field-compact' : 'auth-field'} htmlFor={id}>
       <span>{label}</span>
-      <input
-        aria-describedby={error ? `${id}-error` : undefined}
-        aria-invalid={Boolean(error)}
-        autoComplete={autoComplete}
-        className={error ? 'is-invalid' : ''}
-        id={id}
-        inputMode={inputMode}
-        onChange={(event) => onChange(event.target.value)}
-        onFocus={onFocus}
-        placeholder={placeholder}
-        type={type}
-        value={value}
-      />
+      <div className="auth-input-wrapper">
+        {icon && <span className="auth-input-icon">{icon}</span>}
+        <input
+          aria-describedby={error ? `${id}-error` : undefined}
+          aria-invalid={Boolean(error)}
+          autoComplete={autoComplete}
+          className={`${error ? 'is-invalid' : ''} ${icon ? 'has-icon' : ''}`}
+          id={id}
+          inputMode={inputMode}
+          onChange={(event) => onChange(event.target.value)}
+          onFocus={onFocus}
+          placeholder={placeholder}
+          type={actualType}
+          value={value}
+        />
+        {isPassword && (
+          <button 
+            type="button" 
+            className="auth-password-toggle" 
+            onClick={() => setShowPassword(!showPassword)}
+            tabIndex={-1}
+            aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+          >
+            {showPassword ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="12" cy="12" r="3" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            )}
+          </button>
+        )}
+      </div>
       {helper ? <p className="auth-field-helper">{helper}</p> : null}
       {error ? (
         <p className="auth-field-error" id={`${id}-error`}>
@@ -164,42 +218,44 @@ function TextField({
   )
 }
 
-function BrandIllustration() {
+function AuthBackground() {
   return (
-    <section className="auth-brand-panel" aria-label="Serene Health">
-      <div className="brand-center">
-        <div className="bot-badge">
-          <div className="bot-face">
-            <img src={sereneBotIcon} alt="" aria-hidden="true" />
-          </div>
-          <div className="bot-plus-card">
-            <img src={plusIcon} alt="" aria-hidden="true" />
-          </div>
-          <div className="bot-globe-card">
-            <img src={globeIcon} alt="" aria-hidden="true" />
-          </div>
-        </div>
-
-        <div className="brand-text">
-          <h1>Serene Health</h1>
-          <p>Trợ lý y tế thông minh, đồng hành cùng sức khỏe của bạn</p>
-        </div>
-
-        <div className="brand-pills">
-          <span>🤖 AI-Powered</span>
-          <span>💙 Đáng tin cậy</span>
-        </div>
-      </div>
-    </section>
+    <div className="auth-background" aria-hidden="true">
+      <div className="auth-base-gradient" />
+      <div className="auth-blob auth-blob-blue" />
+      <div className="auth-blob auth-blob-purple" />
+      <div className="auth-blob auth-blob-mint" />
+      <div className="auth-blob auth-blob-sky" />
+      <div className="auth-bubble auth-bubble-1" />
+      <div className="auth-bubble auth-bubble-2" />
+      <div className="auth-bubble auth-bubble-3" />
+      <div className="auth-bubble auth-bubble-4" />
+      <div className="auth-bubble auth-bubble-5" />
+      <div className="auth-bubble auth-bubble-6" />
+      <div className="auth-bubble auth-bubble-7" />
+      <div className="auth-bubble auth-bubble-8" />
+    </div>
   )
 }
 
-function AuthHeader() {
+function AuthHeader({ mode }: { mode: AuthMode }) {
+  const subtitle = (() => {
+    if (mode === 'forgot' || mode === 'forgotLoading' || mode === 'forgotSuccess') {
+      return 'Nhập thông tin khôi phục để thiết lập lại mật khẩu của bạn'
+    }
+
+    if (mode === 'signup') {
+      return 'Tạo tài khoản để bắt đầu sử dụng các dịch vụ của hệ thống'
+    }
+
+    return 'Đăng nhập để trải nghiệm các dịch vụ của hệ thống'
+  })()
+
   return (
     <header className="auth-header">
-      <SystemLogo className="auth-header-logo" />
-      <h2>CHÀO MỪNG ĐẾN VỚI SERENE HEALTH</h2>
-      <p>Đăng nhập để sử dụng dịch vụ của hệ thống</p>
+      <img className="auth-header-logo" src={sereneHealthLogo} alt="Serene Health" />
+      <h1>Serene Health</h1>
+      <p>{subtitle}</p>
     </header>
   )
 }
@@ -207,7 +263,6 @@ function AuthHeader() {
 export function AuthPage() {
   const navigate = useNavigate()
   const [mode, setMode] = useState<AuthMode>('login')
-  const [layoutScale, setLayoutScale] = useState({ shell: 1, content: 1 })
   const [accounts, setAccounts] = useState<Account[]>(initialAccounts)
   const [loginForm, setLoginForm] = useState<LoginForm>(initialLoginForm)
   const [forgotForm, setForgotForm] = useState<ForgotForm>(initialForgotForm)
@@ -223,39 +278,6 @@ export function AuthPage() {
     () => findAccount(accounts, forgotForm.identifier),
     [accounts, forgotForm.identifier],
   )
-
-  useEffect(() => {
-    function updateLayoutScale() {
-      const viewportWidth = window.innerWidth
-      const viewportHeight = window.innerHeight
-
-      if (viewportWidth <= 560) {
-        setLayoutScale({
-          shell: Math.min(viewportWidth / 390, viewportHeight / 844),
-          content: 1,
-        })
-        return
-      }
-
-      if (viewportWidth <= 900) {
-        setLayoutScale({
-          shell: Math.min(viewportWidth / 720, viewportHeight / 1024),
-          content: 1,
-        })
-        return
-      }
-
-      setLayoutScale({
-        shell: 1,
-        content: Math.min(1.16, Math.min(viewportWidth / 1440, viewportHeight / 820)),
-      })
-    }
-
-    updateLayoutScale()
-    window.addEventListener('resize', updateLayoutScale)
-
-    return () => window.removeEventListener('resize', updateLayoutScale)
-  }, [])
 
   useEffect(() => {
     if (mode !== 'forgotLoading') {
@@ -497,6 +519,7 @@ export function AuthPage() {
           onFocus={() => setLoginErrors((current) => ({ ...current, identifier: undefined }))}
           placeholder="Nhập email hoặc số điện thoại"
           value={loginForm.identifier}
+          icon={emailIcon}
         />
         <TextField
           autoComplete="current-password"
@@ -508,6 +531,8 @@ export function AuthPage() {
           placeholder="Nhập mật khẩu"
           type="password"
           value={loginForm.password}
+          icon={lockIcon}
+          isPassword
         />
 
         <div className="auth-login-options">
@@ -527,7 +552,7 @@ export function AuthPage() {
         <button className="auth-primary-button" type="submit">
           Đăng nhập
         </button>
-        <div className="auth-divider" />
+        <hr className="auth-separator" />
         <p className="auth-register-prompt">
           <span>Chưa có tài khoản? </span>
           <button className="auth-inline-link" onClick={() => setMode('signup')} type="button">
@@ -545,7 +570,6 @@ export function AuthPage() {
           <span aria-hidden="true">‹</span>
           Quay lại trang đăng nhập
         </button>
-        <h3>Quên mật khẩu</h3>
         <div className="auth-recovery-row">
           <TextField
             autoComplete="username"
@@ -557,6 +581,7 @@ export function AuthPage() {
             onFocus={() => setForgotErrors((current) => ({ ...current, identifier: undefined }))}
             placeholder="Nhập email hoặc số điện thoại"
             value={forgotForm.identifier}
+            icon={emailIcon}
           />
           <button className="auth-send-code-button" onClick={sendRecoveryCode} type="button">
             Gửi mã
@@ -574,6 +599,8 @@ export function AuthPage() {
           placeholder="Nhập mật khẩu mới được gửi"
           type="password"
           value={forgotForm.sentPassword}
+          icon={lockIcon}
+          isPassword
         />
         <button className="auth-primary-button" type="submit">
           Xác nhận
@@ -610,7 +637,6 @@ export function AuthPage() {
           <span aria-hidden="true">‹</span>
           Quay lại trang đăng nhập
         </button>
-        <h3>Đăng kí tài khoản</h3>
         <div className="auth-signup-grid">
           <TextField
             autoComplete="email"
@@ -623,6 +649,7 @@ export function AuthPage() {
             placeholder="email@example.com"
             type="email"
             value={signupForm.email}
+            icon={emailIcon}
           />
           <TextField
             autoComplete="tel"
@@ -634,6 +661,7 @@ export function AuthPage() {
             onChange={(value) => updateSignupField('phone', value.replace(/\D/g, '').slice(0, 10))}
             placeholder="10 chữ số"
             value={signupForm.phone}
+            icon={phoneIcon}
           />
           <TextField
             autoComplete="name"
@@ -644,6 +672,7 @@ export function AuthPage() {
             onChange={(value) => updateSignupField('fullName', value)}
             placeholder="Nhập họ và tên"
             value={signupForm.fullName}
+            icon={userIcon}
           />
           <label className="auth-field auth-field-compact" htmlFor="signup-gender">
             <span>Giới tính</span>
@@ -683,6 +712,8 @@ export function AuthPage() {
             placeholder="Tối thiểu 8 kí tự"
             type="password"
             value={signupForm.password}
+            icon={lockIcon}
+            isPassword
           />
           <TextField
             autoComplete="new-password"
@@ -694,6 +725,8 @@ export function AuthPage() {
             placeholder="Nhập lại mật khẩu"
             type="password"
             value={signupForm.confirmPassword}
+            icon={lockIcon}
+            isPassword
           />
         </div>
         <button className="auth-primary-button" type="submit">
@@ -704,31 +737,19 @@ export function AuthPage() {
   }
 
   return (
-    <main
-      className="auth-page"
-      style={
-        {
-          '--auth-shell-scale': layoutScale.shell,
-          '--auth-content-scale': layoutScale.content,
-        } as CSSProperties
-      }
-    >
+    <main className="auth-page">
+      <AuthBackground />
       {showToast ? <div className="auth-toast">Đăng nhập thành công!</div> : null}
-      <div className="auth-shell">
-        <BrandIllustration />
-        <section className="auth-content-panel">
-          <div className="auth-form-stage">
-            <AuthHeader />
-            <section className={`auth-modal auth-modal-${mode}`} aria-label="Biểu mẫu xác thực">
-              {mode === 'login' ? renderLogin() : null}
-              {mode === 'forgot' ? renderForgot() : null}
-              {mode === 'forgotLoading' ? renderForgotLoading() : null}
-              {mode === 'forgotSuccess' ? renderForgotSuccess() : null}
-              {mode === 'signup' ? renderSignup() : null}
-            </section>
-          </div>
-        </section>
-      </div>
+      <section className={`auth-modal auth-modal-${mode}`} aria-label="Biểu mẫu xác thực">
+        <div className="auth-modal-scroll">
+          <AuthHeader mode={mode} />
+          {mode === 'login' ? renderLogin() : null}
+          {mode === 'forgot' ? renderForgot() : null}
+          {mode === 'forgotLoading' ? renderForgotLoading() : null}
+          {mode === 'forgotSuccess' ? renderForgotSuccess() : null}
+          {mode === 'signup' ? renderSignup() : null}
+        </div>
+      </section>
     </main>
   )
 }

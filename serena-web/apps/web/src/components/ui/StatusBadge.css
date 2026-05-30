@@ -1,6 +1,6 @@
 .status-badge {
   display: inline-flex;
-  min-width: 96px;
+  width: 160px;
   min-height: 28px;
   justify-content: center;
   align-items: center;
@@ -35,8 +35,9 @@
 }
 
 .status-badge-completed {
-  background-color: #E5E7EB;
-  color: #2D3748;
+  border-color: #E2E8F0;
+  background-color: #F1F5F9;
+  color: #475569;
 }
 
 .status-badge-in-progress {
