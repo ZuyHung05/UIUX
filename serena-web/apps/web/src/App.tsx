@@ -8,7 +8,7 @@ import { DoctorDetailPage } from './pages/manager/doctors/DoctorDetailPage'
 import { DoctorManagementPage } from './pages/manager/doctors/DoctorManagementPage'
 import { DoctorNewPage } from './pages/manager/doctors/DoctorNewPage'
 import { DoctorsDataProvider } from './pages/manager/doctors/DoctorsDataContext'
-import { ManagerPatientListPage } from './pages/manager/patients/ManagerPatientListPage'
+
 
 function App() {
   return (
@@ -21,7 +21,7 @@ function App() {
         <Route path="/manager/doctors" element={<DoctorManagementPage />} />
         <Route path="/manager/doctors/new" element={<DoctorNewPage />} />
         <Route path="/manager/doctors/:doctorId" element={<DoctorDetailPage />} />
-        <Route path="/manager/patients" element={<ManagerPatientListPage />} />
+
         <Route path="/manager/chatbot-monitor" element={<ChatbotMonitorPage />} />
         <Route path="/doctor/dashboard" element={<DoctorDashboardPage />} />
         {/* Fallback route */}

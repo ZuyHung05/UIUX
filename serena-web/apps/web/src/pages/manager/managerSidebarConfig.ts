@@ -5,30 +5,25 @@ export const managerSidebarConfig: SidebarConfig = {
   groups: [
     {
       title: 'Tổng quan',
-      items: [{ label: 'Dashboard', icon: 'grid', href: '/manager/dashboard' }],
+      items: [{ label: 'Dashboard', icon: 'home', href: '/manager/dashboard' }],
+    },
+    {
+      title: 'Vận hành phòng khám',
+      items: [
+        { label: 'Điều phối Lịch làm việc', icon: 'clock', href: '/manager/schedules' },
+        { label: 'Giám sát Chatbot', icon: 'bot', href: '/manager/chatbot-monitor' },
+      ],
     },
     {
       title: 'Quản trị',
       items: [
-        { label: 'Quản lý bác sĩ', icon: 'users', href: '/manager/doctors' },
-        { label: 'Quản lý bệnh nhân', icon: 'users', href: '/manager/patients' },
+        { label: 'Danh sách Chi nhánh', icon: 'building', href: '/manager/branches' },
+        { label: 'Danh sách Bác sĩ', icon: 'users', href: '/manager/doctors' },
+        { label: 'Bảng giá & Dịch vụ', icon: 'list', href: '/manager/services' },
       ],
     },
-    // {
-    //   title: 'Vận hành phòng khám',
-    //   items: [
-    //     { label: 'Lịch làm việc', icon: 'clock' },
-    //     { label: 'Lịch hẹn khám', icon: 'calendar' },
-    //     { label: 'Chi nhánh', icon: 'building' },
-    //     { label: 'Danh mục dịch vụ', icon: 'list' },
-    //   ],
-    // },
     {
-      title: 'Chatbot & AI',
-      items: [{ label: 'Giám sát Chatbot', icon: 'bot', href: '/manager/chatbot-monitor' }],
-    },
-    {
-      title: 'Báo cáo - Thống kê',
+      title: 'Báo cáo',
       items: [{ label: 'Báo cáo - Thống kê', icon: 'chart', href: '/manager/report' }],
     },
   ],

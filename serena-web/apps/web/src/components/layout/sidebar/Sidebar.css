@@ -119,13 +119,13 @@
   margin: 0 0 11px 20px;
   color: #718096;
   font-size: 14px;
-  font-weight: 700;
-  line-height: 16px;
+  font-weight: 600;
+  line-height: 10px;
 }
 
 .nav-items {
   display: grid;
-  gap: 7px;
+  gap: 2px;
 }
 
 .nav-item {
@@ -134,14 +134,14 @@
   min-height: 24px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 8px;
   border-radius: 24px;
-  padding: 6px 18px;
+  padding: 8px 12px;
   color: #244a6b;
   text-decoration: none;
   font-size: 13px;
   font-weight: 500;
-  line-height: 1.25;
+  line-height: 1.4;
   white-space: nowrap;
   transition:
     color 160ms ease,

@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import './Sidebar.css'
 import { SidebarIcon } from './SidebarIcon'
 import { SidebarLogo } from './SidebarLogo'
@@ -11,6 +11,7 @@ type SidebarProps = {
 
 export function Sidebar({ config, onItemClick }: SidebarProps) {
   const location = useLocation()
+  const navigate = useNavigate()
 
   return (
     <aside className="app-sidebar">
@@ -55,7 +56,7 @@ export function Sidebar({ config, onItemClick }: SidebarProps) {
         ))}
       </nav>
 
-      <button className="logout-button" type="button">
+      <button className="logout-button" type="button" onClick={() => navigate('/login')}>
         Đăng xuất
       </button>
     </aside>

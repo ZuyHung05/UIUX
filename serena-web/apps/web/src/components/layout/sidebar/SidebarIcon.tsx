@@ -15,6 +15,12 @@ export function SidebarIcon({ name }: SidebarIconProps) {
         <rect x="15" y="15" width="5" height="5" rx="1" />
       </>
     ),
+    home: (
+      <>
+        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        <path d="M9 22V12h6v10" />
+      </>
+    ),
     users: (
       <>
         <path d="M9.5 11.2a3.6 3.6 0 1 0 0-7.2 3.6 3.6 0 0 0 0 7.2Z" />

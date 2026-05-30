@@ -1,5 +1,6 @@
 export type SidebarIconName =
   | 'grid'
+  | 'home'
   | 'users'
   | 'clock'
   | 'calendar'
