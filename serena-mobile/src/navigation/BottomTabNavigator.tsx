@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Calendar, History, Home, User } from 'lucide-react-native';
+import { Calendar, History, Home, MessageCircle, User } from 'lucide-react-native';
 import AppointmentScreen from '../screens/appointment/AppointmentScreen';
+import ChatScreen from '../screens/chat/ChatScreen';
 import { HistoryScreen } from '../screens/history/HistoryScreen';
 import HomeScreen from '../screens/home/HomeScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
@@ -40,6 +41,16 @@ export default function BottomTabNavigator() {
                 options={{
                     tabBarLabel: 'Lịch sử',
                     tabBarIcon: ({ color }) => <History color={color} size={24} />,
+                }}
+            />
+            <Tab.Screen
+                name="Consultation"
+                component={ChatScreen}
+                options={{
+                    tabBarLabel: 'Tư vấn',
+                    tabBarIcon: ({ color }) => (
+                        <MessageCircle color={color} size={24} />
+                    ),
                 }}
             />
             <Tab.Screen

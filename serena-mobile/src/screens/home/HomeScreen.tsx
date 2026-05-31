@@ -42,14 +42,14 @@ export default function HomeScreen() {
             <View style={styles.actionGrid}>
                 <TouchableOpacity style={styles.actionCard}>
                     <View style={[styles.iconBox, { backgroundColor: COLORS.lightBlue }]}>
-                        <MessageSquare color={COLORS.secondary} size={24} />
+                        <MessageSquare color={COLORS.primary} size={24} />
                     </View>
                     <Text style={styles.actionText}>Kết nối với{"\n"}bác sĩ</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.actionCard}>
                     <View style={[styles.iconBox, { backgroundColor: COLORS.lightGreen }]}>
-                        <Calendar color={COLORS.primary} size={24} />
+                        <Calendar color={COLORS.green} size={24} />
                     </View>
                     <Text style={styles.actionText}>Đặt lịch khám</Text>
                 </TouchableOpacity>
@@ -97,8 +97,8 @@ const styles = StyleSheet.create({
 
     // Chips
     chipScroll: { marginVertical: 20 },
-    chip: { backgroundColor: '#F0F0F0', paddingHorizontal: 18, paddingVertical: 10, borderRadius: 20, marginRight: 10 },
-    chipText: { fontSize: 14, color: '#333' },
+    chip: { backgroundColor: COLORS.lightBlue, paddingHorizontal: 18, paddingVertical: 10, borderRadius: 20, marginRight: 10 },
+    chipText: { fontSize: 14, color: COLORS.accent },
 
     // Action Cards
     actionGrid: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 25 },

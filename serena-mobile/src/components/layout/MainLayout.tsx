@@ -7,12 +7,14 @@ import { COLORS } from '../../utils/theme';
 import { AppHeader } from './header';
 
 interface MainLayoutProps {
-    children: React.ReactNode; // Nội dung của màn hình
-    title?: string;            // Tiêu đề header
-    subtitle?: string;         // Phụ đề header
-    isScrollable?: boolean;    // Có cho phép cuộn toàn màn hình không? (Mặc định là có)
+    children: React.ReactNode;
+    title?: string;
+    subtitle?: string;
+    isScrollable?: boolean;
     backgroundColor?: string;
     padding?: number;         // Padding mặc định cho nội dung
+    showBack?: boolean;
+    showRightIcon?: boolean;
 }
 
 export const MainLayout = ({
@@ -22,6 +24,8 @@ export const MainLayout = ({
     isScrollable = true,
     backgroundColor = '#F9FAFB',
     padding = 20,
+    showBack = false,
+    showRightIcon = false
 }: MainLayoutProps) => {
 
     const ContentWrapper = isScrollable ? ScrollView : View;
@@ -29,7 +33,7 @@ export const MainLayout = ({
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: COLORS.white }]} edges={['top']}>
             <StatusBar style="dark" />
-            <AppHeader title={title} subtitle={subtitle} />
+            <AppHeader title={title} subtitle={subtitle} showBack={showBack} showRightIcon={showRightIcon} />
             <ContentWrapper
                 style={[styles.content, { backgroundColor }]}
                 showsVerticalScrollIndicator={false}
