@@ -44,55 +44,57 @@ export const RatingModal = ({ isVisible, onClose, onSubmit }: RatingModalProps) 
             <Pressable style={styles.overlay} onPress={onClose}>
 
                 <KeyboardAvoidingView
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                    style={styles.sheetContainer}
+                    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                    style={{ flex: 1, justifyContent: 'flex-end' }}
                 >
-                    <Pressable style={styles.content} onPress={(e) => e.stopPropagation()}>
-                        <View style={styles.handle} />
-                        <View style={styles.header}>
-                            <Text style={styles.title}>Đánh giá chất lượng tư vấn</Text>
-                            <TouchableOpacity onPress={onClose}>
-                                <X color="#333" size={24} />
-                            </TouchableOpacity>
-                        </View>
-
-                        {/* chọn Sao */}
-                        <View style={styles.starSection}>
-                            {[1, 2, 3, 4, 5].map((index) => (
-                                <TouchableOpacity
-                                    key={index}
-                                    onPress={() => setRating(index)}
-                                    style={styles.starTouch}
-                                >
-                                    <Star
-                                        size={40}
-                                        color={index <= rating ? '#FFD700' : '#E0E0E0'}
-                                        fill={index <= rating ? '#FFD700' : 'transparent'}
-                                    />
+                    <View style={styles.sheetContainer}>
+                        <Pressable style={styles.content} onPress={(e) => e.stopPropagation()}>
+                            <View style={styles.handle} />
+                            <View style={styles.header}>
+                                <Text style={styles.title}>Đánh giá chất lượng tư vấn</Text>
+                                <TouchableOpacity onPress={onClose}>
+                                    <X color="#333" size={24} />
                                 </TouchableOpacity>
-                            ))}
-                        </View>
+                            </View>
 
-                        {/* Ô nhập ý kiến */}
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder="Chia sẻ thêm cảm nhận của bạn về cuộc tư vấn này..."
-                            placeholderTextColor="#999"
-                            multiline
-                            textAlignVertical="top"
-                            value={comment}
-                            onChangeText={setComment}
-                        />
+                            {/* chọn Sao */}
+                            <View style={styles.starSection}>
+                                {[1, 2, 3, 4, 5].map((index) => (
+                                    <TouchableOpacity
+                                        key={index}
+                                        onPress={() => setRating(index)}
+                                        style={styles.starTouch}
+                                    >
+                                        <Star
+                                            size={40}
+                                            color={index <= rating ? '#FFD700' : '#E0E0E0'}
+                                            fill={index <= rating ? '#FFD700' : 'transparent'}
+                                        />
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
 
-                        {/* Nút gửi đánh giá */}
-                        <AppButton
-                            title="Gửi đánh giá"
-                            onPress={() => onSubmit(rating, comment)}
-                            variant={isReady ? 'primary' : 'ghost'} // Đổi variant dựa trên trạng thái
-                            disabled={!isReady} // Không cho nhấn nếu chưa chọn sao
-                            style={styles.submitBtn}
-                        />
-                    </Pressable>
+                            {/* Ô nhập ý kiến */}
+                            <TextInput
+                                style={styles.textInput}
+                                placeholder="Chia sẻ thêm cảm nhận của bạn về cuộc tư vấn này..."
+                                placeholderTextColor="#999"
+                                multiline
+                                textAlignVertical="top"
+                                value={comment}
+                                onChangeText={setComment}
+                            />
+
+                            {/* Nút gửi đánh giá */}
+                            <AppButton
+                                title="Gửi đánh giá"
+                                onPress={() => onSubmit(rating, comment)}
+                                variant={isReady ? 'primary' : 'ghost'} // Đổi variant dựa trên trạng thái
+                                disabled={!isReady} // Không cho nhấn nếu chưa chọn sao
+                                style={styles.submitBtn}
+                            />
+                        </Pressable>
+                    </View>
                 </KeyboardAvoidingView>
             </Pressable>
         </Modal>
@@ -106,8 +108,9 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     sheetContainer: {
+        // maxHeight: '80%',
         width: '100%',
-        height: '55%',              // 👈 chỉnh độ cao ở đây
+        height: '60%',
         backgroundColor: '#fff',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
@@ -153,7 +156,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F9FF',
         borderRadius: 15,
         padding: 15,
-        height: 180,
+        height: 185,
         ...TYPOGRAPHY.body,
         color: '#333',
         marginBottom: 20,
@@ -161,5 +164,6 @@ const styles = StyleSheet.create({
     submitBtn: {
         width: '100%',
         borderRadius: 30,
+        paddingVertical: 15,
     }
 });

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { RatingModal } from '../../components/common/RatingModal';
 import ClinicVisitCard from '../../components/history/ClinicVisitCard';
 import ConsultationItem from '../../components/history/ConsultationtItem';
 import { MainLayout } from '../../components/layout/MainLayout';
@@ -8,6 +9,19 @@ import { COLORS } from '../../utils/theme';
 
 export const HistoryScreen = () => {
     const [tab, setTab] = useState('tu-van');
+
+    const [isRatingVisible, setIsRatingVisible] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const handleOpenRating = (item: any) => {
+        setSelectedItem(item);
+        setIsRatingVisible(true);
+    };
+    const handleRatingSubmit = (rating: number, comment: string) => {
+        console.log(`Đã đánh giá ${rating} sao với nội dung: ${comment}`);
+        setIsRatingVisible(false);
+        // có thể hiện thông báo "Cảm ơn bạn đã đánh giá" ở đây
+    };
+
     return (
         <MainLayout title="Lịch sử hoạt động" subtitle="Lịch tư vấn và thăm khám">
             <View style={styles.tabContainer}>
@@ -28,11 +42,16 @@ export const HistoryScreen = () => {
 
             <View style={{ marginTop: 10 }}>
                 {tab === 'tu-van' ? (
-                    CONSULTATION_HISTORY.map(item => <ConsultationItem key={item.id} item={item} />)
+                    CONSULTATION_HISTORY.map(item => <ConsultationItem key={item.id} item={item} onOpenRating={() => handleOpenRating(item)} />)
                 ) : (
                     CLINIC_HISTORY.map(item => <ClinicVisitCard key={item.id} item={item} />)
                 )}
             </View>
+            <RatingModal
+                isVisible={isRatingVisible}
+                onClose={() => setIsRatingVisible(false)}
+                onSubmit={handleRatingSubmit}
+            />
         </MainLayout>
     );
 };
