@@ -9,7 +9,10 @@ import {
   LineChart,
   Pie,
   PieChart,
+  ReferenceLine,
   ResponsiveContainer,
+  Scatter,
+  ScatterChart,
   Tooltip,
   XAxis,
   YAxis,
@@ -75,10 +78,10 @@ const metrics: Array<{
 ]
 
 const chatbotResults = [
-  { name: 'Đã xử lý', value: 64, color: '#bdf2e4' }, // Pastel Teal (Low)
-  { name: 'Chuyển bác sĩ', value: 18, color: '#eaf49b' }, // Pastel Yellow-Green (Moderate)
-  { name: 'Không rõ', value: 13, color: '#e2dcf4' }, // Pastel Lavender
-  { name: 'Nguy hiểm', value: 5, color: '#ffc1cc' }, // Pastel Pink (Urgent)
+  { name: 'Đã xử lý', value: 64, color: '#dcebff', gradient: ['#d5fbff', '#dcebff'] },
+  { name: 'Chuyển bác sĩ', value: 18, color: '#d8f8df', gradient: ['#f0ffd2', '#d8f8df'] },
+  { name: 'Không rõ', value: 5, color: '#fff1c7', gradient: ['#ffe2f1', '#fff1c7'] },
+  { name: 'Nguy hiểm', value: 13, color: '#ffdce3', gradient: ['#ffd5dc', '#ffdce3'] },
 ]
 
 const heroChartData = [
@@ -104,10 +107,22 @@ const topDoctorsData = [
   { name: 'BS. Hoàng Thị E', appointments: 80 },
 ]
 
-const doctorResourceStatus = [
-  { name: 'Quá tải (>8h/ngày)', value: 15, color: '#ff6b8b' },
-  { name: 'Bình thường (4-8h/ngày)', value: 65, color: '#2bc155' },
-  { name: 'Nhàn rỗi (<4h/ngày)', value: 20, color: '#ffba08' },
+const doctorPerformanceData = [
+  { name: 'BS. Trần Văn A', appointments: 18, completion: 96 },
+  { name: 'BS. Nguyễn Thị B', appointments: 16, completion: 94 },
+  { name: 'BS. Lê Minh C', appointments: 15, completion: 91 },
+  { name: 'BS. Phạm Văn D', appointments: 12, completion: 86 },
+  { name: 'BS. Hoàng Thị E', appointments: 9, completion: 78 },
+  { name: 'BS. Vũ Thu H', appointments: 20, completion: 83 },
+  { name: 'BS. Đỗ Quang K', appointments: 7, completion: 72 },
+  { name: 'BS. Mai Anh N', appointments: 13, completion: 89 },
+]
+
+const workforceSummary = [
+  { label: 'Số bác sĩ', value: '42' },
+  { label: 'Đạt công suất mục tiêu', value: '76%' },
+  { label: 'Đang quá tải', value: '6' },
+  { label: 'Đang thiếu lịch', value: '8' },
 ]
 
 const businessTrends = [
@@ -187,15 +202,32 @@ export function ManagerDashboardPage() {
                         <filter id="badge-shadow" x="-20%" y="-20%" width="140%" height="140%">
                           <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#000" floodOpacity="0.1" />
                         </filter>
+                        {chatbotResults.map((entry, index) => (
+                          <linearGradient key={entry.name} id={`chatbotResultGradient${index}`} x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stopColor={entry.gradient[0]} />
+                            <stop offset="100%" stopColor={entry.gradient[1]} />
+                          </linearGradient>
+                        ))}
                       </defs>
                       <Pie
                         data={[{ value: 100 }]}
                         dataKey="value"
                         cx="50%"
                         cy="50%"
-                        innerRadius={70}
-                        outerRadius={105}
-                        fill="#f8fafc"
+                        innerRadius={112}
+                        outerRadius={114}
+                        fill="#e6edf3"
+                        stroke="none"
+                        isAnimationActive={false}
+                      />
+                      <Pie
+                        data={[{ value: 100 }]}
+                        dataKey="value"
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={76}
+                        outerRadius={106}
+                        fill="#f4f8fb"
                         stroke="none"
                         isAnimationActive={false}
                       />
@@ -205,9 +237,9 @@ export function ManagerDashboardPage() {
                         nameKey="name"
                         cx="50%"
                         cy="50%"
-                        innerRadius={70}
-                        outerRadius={105}
-                        paddingAngle={2}
+                        innerRadius={76}
+                        outerRadius={106}
+                        paddingAngle={1}
                         cornerRadius={20}
                         stroke="none"
                         labelLine={false}
@@ -228,10 +260,21 @@ export function ManagerDashboardPage() {
                         }}
                       >
                         {chatbotResults.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
+                          <Cell key={`cell-${index}`} fill={`url(#chatbotResultGradient${index})`} />
                         ))}
                       </Pie>
-                      <Tooltip formatter={(value, name) => [`${value}%`, name]} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }} />
+                      <Tooltip
+                        content={({ active, payload }) => {
+                          const item = payload?.[0]?.payload
+                          if (!active || !item?.name) return null
+                          return (
+                            <div className="chart-tooltip">
+                              <strong>{item.name}</strong>
+                              <span>{item.value}%</span>
+                            </div>
+                          )
+                        }}
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                   <div className="donut-inner-text">
@@ -248,6 +291,7 @@ export function ManagerDashboardPage() {
                         <span className="label" style={{ color: item.name === 'Nguy hiểm' ? '#e11d48' : '#1e293b' }}>
                           {item.name}
                         </span>
+                        <span className="legend-percent">{item.value}%</span>
                       </div>
                     </div>
                   ))}
@@ -259,16 +303,12 @@ export function ManagerDashboardPage() {
             <section className="dashboard-card combined-hero-card">
               <h2>Tổng quan Hoạt động</h2>
               <div className="chart-frame">
-                <ResponsiveContainer width="100%" height={320}>
-                  <ComposedChart data={heroChartData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
+                <ResponsiveContainer width="100%" height={300}>
+                  <ComposedChart data={heroChartData} margin={{ top: 12, right: 20, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#bee3f8" stopOpacity={0.9}/>
-                        <stop offset="100%" stopColor="#bee3f8" stopOpacity={0.3}/>
-                      </linearGradient>
-                      <linearGradient id="areaApptGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#38bdf8" stopOpacity={0.25}/>
-                        <stop offset="100%" stopColor="#38bdf8" stopOpacity={0}/>
+                        <stop offset="0%" stopColor="#dcebff" stopOpacity={0.75}/>
+                        <stop offset="100%" stopColor="#dcebff" stopOpacity={0.2}/>
                       </linearGradient>
                       <linearGradient id="areaRevGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#f6ad55" stopOpacity={0.25}/>
@@ -277,20 +317,108 @@ export function ManagerDashboardPage() {
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={true} horizontal={false} stroke="#f1f5f9" />
                     <XAxis dataKey="time" tickLine={false} axisLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                    <YAxis tickLine={false} axisLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} />
+                    <YAxis domain={[0, 70]} tickLine={false} axisLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} />
                     <Tooltip 
                       cursor={{ fill: '#f8fafc' }}
                       contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
                     />
-                    <Legend iconType="circle" wrapperStyle={{ paddingTop: '10px' }} />
-                    
-                    <Bar dataKey="consultations" name="Lượt tư vấn" barSize={40} fill="url(#barGradient)" radius={[8, 8, 0, 0]} animationDuration={1000} />
-                    <Area type="monotone" dataKey="appointments" name="Lịch hẹn" stroke="#38bdf8" fill="url(#areaApptGradient)" strokeWidth={3} dot={{ r: 5, strokeWidth: 2, fill: '#fff' }} activeDot={{ r: 7 }} animationDuration={1200} />
+                    <Bar dataKey="consultations" name="Lượt tư vấn" barSize={28} fill="url(#barGradient)" radius={[8, 8, 0, 0]} animationDuration={1000} />
+                    <Line type="monotone" dataKey="appointments" name="Lịch hẹn" stroke="#82c98d" strokeWidth={3} dot={{ r: 5, strokeWidth: 2, fill: '#fff' }} activeDot={{ r: 7 }} animationDuration={1200} />
                     <Area type="monotone" dataKey="revenue" name="Doanh thu" stroke="#f6ad55" fill="url(#areaRevGradient)" strokeWidth={3} strokeDasharray="4 4" dot={{ r: 5, strokeWidth: 2, fill: '#fff' }} activeDot={{ r: 7 }} animationDuration={1400} />
                   </ComposedChart>
                 </ResponsiveContainer>
+                <div className="mixed-chart-legend" aria-hidden="true">
+                  <span><i className="legend-bar-swatch" />Lượt tư vấn</span>
+                  <span><i className="legend-line-swatch legend-line-green" />Lịch hẹn</span>
+                  <span><i className="legend-line-swatch legend-line-amber" />Doanh thu</span>
+                </div>
               </div>
             </section>
+          </div>
+
+          {/* 4. Doctor Performance */}
+          <div className="doctor-insights-grid">
+            <section className="dashboard-card doctor-scatter-card">
+              <h2>Hiệu suất Bác sĩ</h2>
+              <p className="card-subtitle">Tương quan giữa số lịch hẹn nhận trong ngày và tỷ lệ hoàn thành lịch khám.</p>
+              <div className="chart-frame doctor-scatter-frame">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ScatterChart margin={{ top: 14, right: 22, left: -8, bottom: 8 }}>
+                    <CartesianGrid stroke="#edf2f7" strokeDasharray="3 3" />
+                    <XAxis
+                      type="number"
+                      dataKey="appointments"
+                      name="Lịch hẹn"
+                      domain={[0, 22]}
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fill: '#94a3b8', fontSize: 12 }}
+                    />
+                    <YAxis
+                      type="number"
+                      dataKey="completion"
+                      name="Hoàn thành"
+                      unit="%"
+                      domain={[60, 100]}
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fill: '#94a3b8', fontSize: 12 }}
+                    />
+                    <ReferenceLine x={14} stroke="#dcebff" strokeDasharray="4 4" />
+                    <ReferenceLine y={85} stroke="#d8f8df" strokeDasharray="4 4" />
+                    <Tooltip
+                      cursor={{ strokeDasharray: '3 3', stroke: '#dcebff' }}
+                      content={({ active, payload }) => {
+                        const item = payload?.[0]?.payload
+                        if (!active || !item) return null
+                        return (
+                          <div className="chart-tooltip">
+                            <strong>{item.name}</strong>
+                            <span>{item.appointments} lịch hẹn</span>
+                            <span>{item.completion}% hoàn thành</span>
+                          </div>
+                        )
+                      }}
+                    />
+                    <Scatter data={doctorPerformanceData} fill="#82c98d">
+                      {doctorPerformanceData.map((entry) => (
+                        <Cell
+                          key={entry.name}
+                          fill={entry.completion >= 90 ? '#82c98d' : entry.appointments >= 18 ? '#f6ad55' : '#dcebff'}
+                        />
+                      ))}
+                    </Scatter>
+                  </ScatterChart>
+                </ResponsiveContainer>
+              </div>
+            </section>
+
+            <aside className="doctor-side-stack">
+              <section className="dashboard-card leaderboard-card">
+                <h2>Top bác sĩ nổi bật</h2>
+                <div className="leaderboard-list">
+                  {topDoctorsData.slice(0, 3).map((doctor, index) => (
+                    <div className="leaderboard-row" key={doctor.name}>
+                      <span className="leaderboard-rank">{index + 1}</span>
+                      <span className="leaderboard-name">{doctor.name}</span>
+                      <strong>{doctor.appointments}</strong>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="dashboard-card workforce-card">
+                <h2>Workforce Summary</h2>
+                <div className="workforce-summary-grid">
+                  {workforceSummary.map((item) => (
+                    <div className="workforce-summary-item" key={item.label}>
+                      <span>{item.label}</span>
+                      <strong>{item.value}</strong>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </aside>
           </div>
 
           {/* 4. Branch Performance */}
@@ -310,73 +438,13 @@ export function ManagerDashboardPage() {
                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
                   />
                   <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
-                  <Bar yAxisId="left" dataKey="chatbot" name="Lượt tư vấn Chatbot" fill="#4a93ff" radius={[6, 6, 0, 0]} barSize={20} />
-                  <Bar yAxisId="left" dataKey="appointments" name="Số lịch hẹn" fill="#2bc155" radius={[6, 6, 0, 0]} barSize={20} />
-                  <Bar yAxisId="right" dataKey="revenue" name="Doanh thu (trĐ)" fill="#ffba08" radius={[6, 6, 0, 0]} barSize={20} />
+                  <Bar yAxisId="left" dataKey="chatbot" name="Lượt tư vấn Chatbot" fill="#dcebff" radius={[6, 6, 0, 0]} barSize={20} />
+                  <Bar yAxisId="left" dataKey="appointments" name="Số lịch hẹn" fill="#82c98d" radius={[6, 6, 0, 0]} barSize={20} />
+                  <Bar yAxisId="right" dataKey="revenue" name="Doanh thu (trĐ)" fill="#f6ad55" radius={[6, 6, 0, 0]} barSize={20} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </section>
-
-          {/* 5. Doctor Resource Performance */}
-          <div className="dashboard-split-grid">
-            <section className="dashboard-card">
-              <h2>Top Bác sĩ được đặt lịch</h2>
-              <p className="card-subtitle">5 bác sĩ có số lượng lịch hẹn cao nhất</p>
-              <div className="chart-frame" style={{ height: 280 }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={topDoctorsData} layout="vertical" margin={{ top: 10, right: 30, left: 40, bottom: 0 }}>
-                    <CartesianGrid stroke="#f0f0f0" horizontal={true} vertical={false} />
-                    <XAxis type="number" hide />
-                    <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} tick={{ fill: '#4a5568', fontSize: 13, fontWeight: 500 }} width={120} />
-                    <Tooltip cursor={{ fill: '#f8fafc' }} formatter={(value) => [`${value} lịch hẹn`, 'Số lịch hẹn']} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }} />
-                    <Bar dataKey="appointments" fill="#4a93ff" radius={[0, 6, 6, 0]} barSize={24}>
-                      {topDoctorsData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={index === 0 ? '#4a93ff' : '#8dc1ff'} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </section>
-            
-            <section className="dashboard-card">
-              <h2>Tình trạng Nguồn lực Bác sĩ</h2>
-              <p className="card-subtitle">Phân bổ tải làm việc trong toàn hệ thống</p>
-              <div className="donut-chart-container" style={{ height: 280, display: 'flex', alignItems: 'center' }}>
-                <ResponsiveContainer width="55%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={doctorResourceStatus}
-                      dataKey="value"
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={90}
-                      paddingAngle={5}
-                      stroke="none"
-                    >
-                      {doctorResourceStatus.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(value) => [`${value}%`, 'Tỷ lệ']} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }} />
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="custom-legend" style={{ width: '45%' }}>
-                  {doctorResourceStatus.map(item => (
-                    <div className="legend-item-soft" key={item.name}>
-                      <span className="dot" style={{ backgroundColor: item.color }}></span>
-                      <div className="legend-text">
-                        <span className="label">{item.name}</span>
-                        <span className="value">{item.value}%</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-          </div>
 
           {/* 6. Business Trends */}
           <section className="dashboard-card business-trends">
@@ -394,9 +462,9 @@ export function ManagerDashboardPage() {
                     formatter={(value, name) => metricFormatter(value as number | string, name as string)}
                   />
                   <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
-                  <Line yAxisId="left" type="monotone" dataKey="consultations" name="Lượt tư vấn" stroke="#4a93ff" strokeWidth={3} dot={{ r: 4, fill: '#4a93ff', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
-                  <Line yAxisId="left" type="monotone" dataKey="appointments" name="Lịch hẹn" stroke="#2bc155" strokeWidth={3} dot={{ r: 4, fill: '#2bc155', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
-                  <Line yAxisId="right" type="monotone" dataKey="revenue" name="Doanh thu (trĐ)" stroke="#ffba08" strokeWidth={3} dot={{ r: 4, fill: '#ffba08', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
+                  <Line yAxisId="left" type="monotone" dataKey="consultations" name="Lượt tư vấn" stroke="#7fb4f1" strokeWidth={3} dot={{ r: 4, fill: '#7fb4f1', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
+                  <Line yAxisId="left" type="monotone" dataKey="appointments" name="Lịch hẹn" stroke="#82c98d" strokeWidth={3} dot={{ r: 4, fill: '#82c98d', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
+                  <Line yAxisId="right" type="monotone" dataKey="revenue" name="Doanh thu (trĐ)" stroke="#f6ad55" strokeWidth={3} dot={{ r: 4, fill: '#f6ad55', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>

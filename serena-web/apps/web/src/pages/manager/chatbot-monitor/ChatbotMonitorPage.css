@@ -90,7 +90,7 @@
 
 .chatbot-conversation-panel,
 .chatbot-detail-panel {
-  border: 1px solid #dcebff;
+  border: 2px solid #f1f5f9;
   border-radius: 28px;
   background: #fff;
 }
