@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.white,
         borderRadius: 20,
         paddingHorizontal: 10,
-        marginHorizontal: 20,
         height: 65,
         alignItems: 'center',
         // Đổ bóng cho iOS & Android
@@ -34,7 +33,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.1,
         shadowRadius: 5,
-        marginVertical: 15,
+        marginVertical: 10,
     },
     searchIcon: { marginRight: 10 },
     input: { flex: 1, fontSize: 14, color: '#333' },

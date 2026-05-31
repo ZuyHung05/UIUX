@@ -1,7 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Calendar, History, Home, User } from 'lucide-react-native';
+import { HistoryScreen } from '../screens/history/HistoryScreen';
 import HomeScreen from '../screens/home/HomeScreen';
-import { COLORS } from '../utils/theme';
+import { COLORS, TYPOGRAPHY } from '../utils/theme';
 
 const Tab = createBottomTabNavigator();
 
@@ -13,13 +14,14 @@ export default function BottomTabNavigator() {
                 tabBarActiveTintColor: COLORS.secondary,
                 tabBarInactiveTintColor: '#999',
                 tabBarStyle: {
-                    height: 70,
+                    height: 90,
                     paddingBottom: 10,
+                    paddingTop: 10,
                     borderTopLeftRadius: 20,
                     borderTopRightRadius: 20,
                     position: 'absolute',
                 },
-                tabBarLabelStyle: { fontSize: 12, fontWeight: '500' },
+                tabBarLabelStyle: { ...TYPOGRAPHY.caption, fontWeight: '600' },
             }}
         >
             <Tab.Screen
@@ -32,7 +34,7 @@ export default function BottomTabNavigator() {
             />
             <Tab.Screen
                 name="History"
-                component={HomeScreen} // Tạm thời để HomeScreen, sau này thay bằng HistoryScreen
+                component={HistoryScreen}
                 options={{
                     tabBarLabel: 'Lịch sử',
                     tabBarIcon: ({ color }) => <History color={color} size={24} />,
