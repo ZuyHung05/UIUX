@@ -1,5 +1,5 @@
-import { Bot, ChevronLeft, Send } from 'lucide-react-native';
-import { useState } from 'react';
+import { Bot, Mic, Plus, Send } from 'lucide-react-native';
+import React, { useCallback, useState } from 'react';
 import {
     FlatList,
     KeyboardAvoidingView,
@@ -10,203 +10,235 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { COLORS, SPACING } from '../../utils/theme';
 
-// Dữ liệu mẫu (Mock Data)
-const INITIAL_MESSAGES = [
-    { id: '1', text: 'Xin chào! Tôi là Serena, trợ lý sức khỏe AI của bạn.', sender: 'bot' },
-    { id: '2', text: 'Bạn đang cảm thấy thế nào? Hãy chọn hoặc nhập triệu chứng nhé.', sender: 'bot' },
-];
-
-const QUICK_REPLIES = ['Đau đầu', 'Sốt nhẹ', 'Đau dạ dày', 'Tư vấn bác sĩ'];
+// Import nội bộ
+import { AppButton } from '../../components/common/AppButton';
+import { MainLayout } from '../../components/layout/MainLayout';
+import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 
 export default function ChatScreen() {
-    const [messages, setMessages] = useState(INITIAL_MESSAGES);
     const [inputText, setInputText] = useState('');
+    const [messages, setMessages] = useState([
+        {
+            id: '1',
+            text: 'Tôi bị đau đầu',
+            sender: 'user'
+        },
+        {
+            id: '2',
+            text: 'Nghe bạn nói bị đau đầu, tôi rất tiếc. Tình trạng này chắc chắn rất khó chịu. Bạn đã bị như vậy bao lâu rồi?',
+            sender: 'bot',
+            quickReplies: ['Mới bị lúc nãy', 'Khoảng 2-3 tiếng', 'Đã bị từ sáng']
+        },
+    ]);
 
-    const handleSend = () => {
-        if (inputText.trim().length === 0) return;
+    // Hàm xử lý gửi tin nhắn
+    const handleSend = useCallback((text: string) => {
+        if (!text.trim()) return;
 
-        // Thêm tin nhắn của User
-        const newMessage = { id: Date.now().toString(), text: inputText, sender: 'user' };
-        setMessages([...messages, newMessage]);
+        const newUserMsg = {
+            id: Date.now().toString(),
+            text: text,
+            sender: 'user',
+        };
+
+        setMessages((prev) => [...prev, newUserMsg]);
         setInputText('');
 
-        // Giả lập Bot trả lời sau 1 giây
+        // Giả lập Bot phản hồi sau 1 giây
         setTimeout(() => {
             const botReply = {
                 id: (Date.now() + 1).toString(),
-                text: 'Cảm ơn bạn đã chia sẻ. Tôi đang ghi nhận triệu chứng này...',
-                sender: 'bot'
+                text: 'Cảm ơn bạn đã cung cấp thông tin. Hệ thống đang phân tích các triệu chứng...',
+                sender: 'bot',
+                quickReplies: ['Tư vấn trực tiếp', 'Tìm hiểu thêm']
             };
-            setMessages(prev => [...prev, botReply]);
+            setMessages((prev) => [...prev, botReply]);
         }, 1000);
+    }, []);
+
+    const renderMessage = ({ item }: { item: any }) => {
+        const isBot = item.sender === 'bot';
+
+        return (
+            <View style={styles.messageGroup}>
+                {/* Hàng tin nhắn chính */}
+                <View style={[styles.messageRow, isBot ? styles.botRow : styles.userRow]}>
+                    {isBot && (
+                        <View style={styles.botAvatar}>
+                            <Bot size={24} color={COLORS.white} />
+                        </View>
+                    )}
+                    <View style={[styles.bubble, isBot ? styles.botBubble : styles.userBubble]}>
+                        <Text style={[styles.messageText, { color: isBot ? COLORS.text : COLORS.white }]}>
+                            {item.text}
+                        </Text>
+                    </View>
+                </View>
+
+                {/* Quick Replies hiển thị ngay dưới bong bóng Chat của Bot */}
+                {isBot && item.quickReplies && (
+                    <View style={styles.quickReplyWrapper}>
+                        {item.quickReplies.map((reply: string, index: number) => (
+                            <AppButton
+                                key={index}
+                                title={reply}
+                                variant="ghost"
+                                size="small"
+                                onPress={() => handleSend(reply)}
+                                style={styles.chip}
+                            />
+                        ))}
+                    </View>
+                )}
+            </View>
+        );
     };
 
-    const renderMessage = ({ item }: { item: any }) => (
-        <View style={[
-            styles.messageWrapper,
-            item.sender === 'user' ? styles.userWrapper : styles.botWrapper
-        ]}>
-            {item.sender === 'bot' && (
-                <View style={styles.botIcon}>
-                    <Bot size={16} color={COLORS.white} />
-                </View>
-            )}
-            <View style={[
-                styles.bubble,
-                item.sender === 'user' ? styles.userBubble : styles.botBubble
-            ]}>
-                <Text style={[
-                    styles.messageText,
-                    item.sender === 'user' ? styles.userText : styles.botText
-                ]}>
-                    {item.text}
-                </Text>
-            </View>
-        </View>
-    );
-
     return (
-        <SafeAreaView style={styles.container}>
-            {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity>
-                    <ChevronLeft color={COLORS.text} size={24} />
-                </TouchableOpacity>
-                <Text style={styles.headerTitle}>Hỏi đáp sức khỏe AI</Text>
-                <View style={{ width: 24 }} />
-            </View>
-
-            {/* Chat List */}
+        <MainLayout
+            title="Tư vấn"
+            subtitle="Tôi có thể giúp gì cho bạn ?"
+            showBack={true}
+            isScrollable={false}
+            backgroundColor={COLORS.white}
+        >
             <FlatList
                 data={messages}
                 renderItem={renderMessage}
-                keyExtractor={item => item.id}
-                contentContainerStyle={styles.listContent}
+                keyExtractor={(item) => item.id}
+                contentContainerStyle={styles.chatList}
+                showsVerticalScrollIndicator={false}
             />
 
-            {/* Quick Replies & Input */}
             <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
             >
-                {/* Quick Reply Chips */}
-                <View style={styles.quickReplyContainer}>
-                    <FlatList
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        data={QUICK_REPLIES}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity
-                                style={styles.chip}
-                                onPress={() => setInputText(item)}
-                            >
-                                <Text style={styles.chipText}>{item}</Text>
-                            </TouchableOpacity>
-                        )}
-                        contentContainerStyle={{ paddingHorizontal: SPACING.m }}
-                    />
-                </View>
+                <View style={styles.inputWrapper}>
+                    <TouchableOpacity style={styles.iconBtn}>
+                        <Plus size={24} color={COLORS.secondary} />
+                    </TouchableOpacity>
 
-                {/* Input Bar */}
-                <View style={styles.inputBar}>
                     <TextInput
-                        style={styles.input}
-                        placeholder="Nhập triệu chứng tại đây..."
+                        style={styles.textInput}
+                        placeholder="Hỏi AI Y tế..."
+                        placeholderTextColor={COLORS.gray}
                         value={inputText}
                         onChangeText={setInputText}
+                        onSubmitEditing={() => handleSend(inputText)}
                     />
-                    <TouchableOpacity style={styles.sendBtn} onPress={handleSend}>
+
+                    <TouchableOpacity style={styles.iconBtn}>
+                        <Mic size={24} color={COLORS.secondary} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.sendBtn, { opacity: inputText ? 1 : 0.6 }]}
+                        onPress={() => handleSend(inputText)}
+                    >
                         <Send size={20} color={COLORS.white} />
                     </TouchableOpacity>
                 </View>
             </KeyboardAvoidingView>
-        </SafeAreaView>
+        </MainLayout>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#F9FAFB' },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: SPACING.m,
-        backgroundColor: COLORS.white,
-        borderBottomWidth: 1,
-        borderBottomColor: '#F0F0F0',
+    chatList: {
+        paddingHorizontal: 15,
+        paddingBottom: 20,
     },
-    headerTitle: { fontSize: 18, fontWeight: '700', color: COLORS.text },
-    listContent: { padding: SPACING.m, paddingBottom: 20 },
-    messageWrapper: { flexDirection: 'row', marginBottom: SPACING.m, alignItems: 'flex-end' },
-    botWrapper: { alignSelf: 'flex-start' },
-    userWrapper: { alignSelf: 'flex-end', flexDirection: 'row-reverse' },
-    botIcon: {
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        backgroundColor: COLORS.primary,
+    messageGroup: {
+        marginBottom: 20,
+    },
+    messageRow: {
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+    },
+    botRow: { alignSelf: 'flex-start' },
+    userRow: { alignSelf: 'flex-end', flexDirection: 'row-reverse' },
+
+    botAvatar: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: COLORS.secondary,
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 8,
     },
     bubble: {
-        maxWidth: '75%',
-        padding: 12,
+        maxWidth: '80%',
+        padding: 14,
         borderRadius: 20,
     },
     botBubble: {
-        backgroundColor: COLORS.white,
+        backgroundColor: COLORS.lightBlue,
         borderBottomLeftRadius: 4,
-        elevation: 1,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05,
-        shadowRadius: 2,
     },
     userBubble: {
         backgroundColor: COLORS.primary,
         borderBottomRightRadius: 4,
     },
-    messageText: { fontSize: 15, lineHeight: 20 },
-    botText: { color: COLORS.text },
-    userText: { color: COLORS.white },
-    quickReplyContainer: { paddingVertical: SPACING.s },
-    chip: {
-        backgroundColor: '#E8F5E9',
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 20,
-        marginRight: 8,
-        borderWidth: 1,
-        borderColor: COLORS.secondary,
+    messageText: {
+        ...TYPOGRAPHY.body,
+        lineHeight: 22,
     },
-    chipText: { color: COLORS.primary, fontWeight: '500', fontSize: 13 },
-    inputBar: {
+
+    // Quick Replies
+    quickReplyWrapper: {
         flexDirection: 'row',
-        padding: SPACING.m,
-        backgroundColor: COLORS.white,
-        alignItems: 'center',
-        borderTopWidth: 1,
-        borderTopColor: '#F0F0F0',
+        flexWrap: 'wrap',
+        marginLeft: 48,
+        marginTop: 10,
+        gap: 8,
     },
-    input: {
+    chip: {
+        color: COLORS.accent,
+        borderRadius: 15,
+        backgroundColor: COLORS.lightBlue,
+        borderColor: COLORS.secondary,
+        borderWidth: 0.5,
+    },
+
+    // Input Bar (Floating above Bottom Tab)
+    inputWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: COLORS.white,
+        marginHorizontal: 15,
+        // Khoảng cách này giúp thanh input nằm ngay trên Tab Bar
+        marginBottom: Platform.OS === 'ios' ? 110 : 85,
+        padding: 6,
+        paddingLeft: 10,
+        borderRadius: 30,
+        // Shadow & Border
+        borderWidth: 1,
+        borderColor: COLORS.lightGray,
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+    },
+    textInput: {
         flex: 1,
-        backgroundColor: '#F3F4F6',
-        borderRadius: 25,
-        paddingHorizontal: 20,
+        ...TYPOGRAPHY.body,
+        color: COLORS.text,
         height: 45,
-        marginRight: 10,
-        fontSize: 15,
+    },
+    iconBtn: {
+        padding: 8,
     },
     sendBtn: {
-        width: 45,
-        height: 45,
-        borderRadius: 22.5,
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.primaryDark,
+        width: 42,
+        height: 42,
+        borderRadius: 21,
         justifyContent: 'center',
         alignItems: 'center',
-    },
+        marginLeft: 4,
+    }
 });

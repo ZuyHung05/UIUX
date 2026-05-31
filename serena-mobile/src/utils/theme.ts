@@ -1,22 +1,24 @@
 export const COLORS = {
-  accent: "#FF4D4D",
+  accent: "#244A6B",
   gray: "#9E9E9E",
   lightGray: "#E0E0E0",
 
-  primary: "#2D6A4F",
-  secondary: "#4E95FF", // Màu xanh dương của thẻ lịch khám
+  primary: "#5B9DFF",
+  primaryDark: "#3F83F8",
+  secondary: "#5B9DFF", // Màu xanh dương của thẻ lịch khám
   background: "#F8F9FA",
   white: "#FFFFFF",
-  text: "#333333",
-  subtext: "#666666",
-  lightBlue: "#E3F2FD",
-  lightGreen: "#E8F5E9",
+  text: "#244A6B",
+  subtext: "#64748B",
+  lightBlue: "#DCEBFF",
+  lightGreen: "#E0FFE6",
+  green: "#81E492",
 
-  warning: "#FF5454",
+  warning: "#f0627d",
 };
 export const TYPOGRAPHY = {
   h1: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "700" as const,
   },
 
@@ -36,13 +38,18 @@ export const TYPOGRAPHY = {
   },
 
   caption: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "400" as const,
   },
 
   button: {
     fontSize: 16,
     fontWeight: "600" as const,
+  },
+  tabLabel: {
+    fontSize: 14,
+    fontWeight: "500" as const,
+    lineHeight: 20,
   },
 };
 

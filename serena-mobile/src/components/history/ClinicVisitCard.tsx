@@ -7,8 +7,8 @@ import { AppButton } from '../common/AppButton';
 const ClinicVisitCard = ({ item }: { item: any }) => {
     const getStatusColor = (status: string) => {
         if (status === 'Sắp diễn ra') return COLORS.secondary;
-        if (status === 'Hoàn thành') return '#4CAF50';
-        return '#FF5454'; // Đã hủy
+        if (status === 'Hoàn thành') return COLORS.green;
+        return COLORS.warning; // Đã hủy
     };
 
     return (
@@ -20,7 +20,7 @@ const ClinicVisitCard = ({ item }: { item: any }) => {
                     <Text style={styles.cardSpecialty}>{item.specialty}</Text>
                 </View>
                 <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) + '15' },]}>
-                    <Text style={{ color: getStatusColor(item.status), ...TYPOGRAPHY.button, fontWeight: 'bold' }}>{item.status}</Text>
+                    <Text style={{ color: getStatusColor(item.status), ...TYPOGRAPHY.tabLabel }}>{item.status}</Text>
                 </View>
             </View>
 
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     cardHeader: { flexDirection: 'row', alignItems: 'center' },
     doctorAvatar: { width: 40, height: 40, borderRadius: 20, backgroundColor: COLORS.lightBlue },
     cardDoctor: { ...TYPOGRAPHY.title, color: COLORS.secondary },
-    cardSpecialty: { ...TYPOGRAPHY.caption, color: '#666', marginTop: 2 },
+    cardSpecialty: { ...TYPOGRAPHY.caption, color: COLORS.gray, marginTop: 2 },
     statusBadge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
 
     cardInfoBox: {
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: '100%',
     },
-    infoText: { ...TYPOGRAPHY.body, color: '#555' },
+    infoText: { ...TYPOGRAPHY.body, color: COLORS.text },
     infoRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 5 },
     infoIcon: {
         marginRight: 6,
