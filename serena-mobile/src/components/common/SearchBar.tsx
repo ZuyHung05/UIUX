@@ -1,6 +1,6 @@
 import { Mic, Search } from 'lucide-react-native';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
-import { COLORS } from '../../utils/theme';
+import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 
 export const SearchBar = () => {
     return (
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
     searchIcon: { marginRight: 10 },
-    input: { flex: 1, fontSize: 14, color: '#333' },
+    input: { flex: 1, ...TYPOGRAPHY.body, color: '#333' },
     micBtn: {
         backgroundColor: '#F0F7FF',
         padding: 10,

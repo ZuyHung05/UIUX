@@ -1,7 +1,9 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Calendar, History, Home, User } from 'lucide-react-native';
+import AppointmentScreen from '../screens/appointment/AppointmentScreen';
 import { HistoryScreen } from '../screens/history/HistoryScreen';
 import HomeScreen from '../screens/home/HomeScreen';
+import ProfileScreen from '../screens/profile/ProfileScreen';
 import { COLORS, TYPOGRAPHY } from '../utils/theme';
 
 const Tab = createBottomTabNavigator();
@@ -42,7 +44,7 @@ export default function BottomTabNavigator() {
             />
             <Tab.Screen
                 name="Appointment"
-                component={HomeScreen}
+                component={AppointmentScreen}
                 options={{
                     tabBarLabel: 'Lịch hẹn',
                     tabBarIcon: ({ color }) => <Calendar color={color} size={24} />,
@@ -50,7 +52,7 @@ export default function BottomTabNavigator() {
             />
             <Tab.Screen
                 name="Profile"
-                component={HomeScreen}
+                component={ProfileScreen}
                 options={{
                     tabBarLabel: 'Cá nhân',
                     tabBarIcon: ({ color }) => <User color={color} size={24} />,
