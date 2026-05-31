@@ -31,7 +31,7 @@ export const TYPOGRAPHY = {
   },
 
   body: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "400" as const,
   },
 

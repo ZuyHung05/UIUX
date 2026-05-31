@@ -3,10 +3,16 @@ import { useState } from 'react';
 import { Image, LayoutAnimation, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 import { AppButton } from '../common/AppButton';
+import { RatingModal } from '../common/RatingModal';
 
 const ConsultationItem = ({ item }: { item: any }) => {
     const [isExpanded, setIsExpanded] = useState(false);
-
+    const [isRatingVisible, setIsRatingVisible] = useState(false);
+    const handleRatingSubmit = (rating: number, comment: string) => {
+        console.log(`Đã đánh giá ${rating} sao với nội dung: ${comment}`);
+        setIsRatingVisible(false);
+        // có thể hiện thông báo "Cảm ơn bạn đã đánh giá" ở đây
+    };
     const toggleExpand = () => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setIsExpanded(!isExpanded);
@@ -40,7 +46,6 @@ const ConsultationItem = ({ item }: { item: any }) => {
             </View>
             {isExpanded && (
                 <View style={styles.expandedContent}>
-                    {/* <View style={styles.divider} /> */}
                     <AppButton
                         title="Xem chi tiết cuộc tư vấn"
                         variant="primary"
@@ -53,8 +58,13 @@ const ConsultationItem = ({ item }: { item: any }) => {
                         title="Đánh giá"
                         variant="outline"
                         size="medium"
-                        onPress={() => console.log('Open Rating Modal')}
+                        onPress={() => setIsRatingVisible(true)}
                         style={styles.actionBtn}
+                    />
+                    <RatingModal
+                        isVisible={isRatingVisible}
+                        onClose={() => setIsRatingVisible(false)}
+                        onSubmit={handleRatingSubmit}
                     />
                 </View>
             )}

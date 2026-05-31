@@ -11,7 +11,7 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import { COLORS } from '../../utils/theme';
+import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 import { AppButton } from './AppButton';
 
 interface RatingModalProps {
@@ -107,6 +107,11 @@ const styles = StyleSheet.create({
     },
     sheetContainer: {
         width: '100%',
+        height: '55%',              // 👈 chỉnh độ cao ở đây
+        backgroundColor: '#fff',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        padding: 16,
     },
     content: {
         backgroundColor: 'white',
@@ -130,8 +135,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     title: {
-        fontSize: 18,
-        fontWeight: '700',
+        ...TYPOGRAPHY.title,
         color: COLORS.secondary,
     },
     starSection: {
@@ -149,8 +153,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F9FF',
         borderRadius: 15,
         padding: 15,
-        height: 150,
-        fontSize: 15,
+        height: 180,
+        ...TYPOGRAPHY.body,
         color: '#333',
         marginBottom: 20,
     },
