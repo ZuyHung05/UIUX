@@ -18,7 +18,7 @@ import { COLORS } from '../../utils/theme';
 
 export default function HomeScreen() {
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} edges={['top']}>
             {/* 1. Header */}
             <HomeHeader />
 
@@ -37,21 +37,7 @@ export default function HomeScreen() {
                         </View>
                     </View>
                 </View>
-
-                {/* 3. Search Bar */}
-                {/* <Text style={styles.sectionTitleCenter}>Serena - Trợ lý y tế thông minh</Text>
-        <View style={styles.searchContainer}>
-          <Search color={COLORS.secondary} size={20} style={styles.searchIcon} />
-          <TextInput 
-            placeholder="Bạn đang cảm thấy thế nào? Nhập triệu chứng..." 
-            style={styles.searchInput}
-          />
-          <TouchableOpacity style={styles.micBtn}>
-            <Mic color={COLORS.secondary} size={20} />
-          </TouchableOpacity>
-        </View> */}
                 <SearchBar />
-
                 {/* 4. Symptom Chips */}
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScroll}>
                     {['Đau đầu', 'Sốt cao', 'Mất ngủ', 'Chóng mặt'].map((item) => (
