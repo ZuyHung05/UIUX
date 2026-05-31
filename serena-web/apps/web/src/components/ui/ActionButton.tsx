@@ -16,6 +16,7 @@ type IconButtonProps = {
   label: string
   children: ReactNode
   variant?: ButtonVariant
+  disabled?: boolean
   onClick?: () => void
   style?: CSSProperties
 }
@@ -35,9 +36,17 @@ export function PrimaryButton({
   )
 }
 
-export function IconButton({ label, children, variant = 'secondary', onClick, style }: IconButtonProps) {
+export function IconButton({ label, children, variant = 'secondary', disabled, onClick, style }: IconButtonProps) {
   return (
-    <button className={`ui-icon-button ui-button-${variant}`} type="button" aria-label={label} title={label} onClick={onClick} style={style}>
+    <button
+      className={`ui-icon-button ui-button-${variant}`}
+      type="button"
+      aria-label={label}
+      title={label}
+      disabled={disabled}
+      onClick={onClick}
+      style={style}
+    >
       {children}
     </button>
   )

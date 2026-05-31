@@ -19,7 +19,7 @@ export const managerSidebarConfig: SidebarConfig = {
       items: [
         { label: 'Danh sách Chi nhánh', icon: 'building', href: '/manager/branches' },
         { label: 'Danh sách Bác sĩ', icon: 'users', href: '/manager/doctors' },
-        { label: 'Bảng giá & Dịch vụ', icon: 'list', href: '/manager/services' },
+        { label: 'Dịch vụ & Bảng giá', icon: 'list', href: '/manager/services' },
       ],
     },
     {

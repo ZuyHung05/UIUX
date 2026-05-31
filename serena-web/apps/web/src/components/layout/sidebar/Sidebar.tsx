@@ -6,7 +6,7 @@ import type { SidebarConfig } from './types'
 
 type SidebarProps = {
   config: SidebarConfig
-  onItemClick: (label: string) => void
+  onItemClick?: (label: string) => void
 }
 
 export function Sidebar({ config, onItemClick }: SidebarProps) {
@@ -44,7 +44,7 @@ export function Sidebar({ config, onItemClick }: SidebarProps) {
                     to={item.href || '#'}
                     className={isActive ? 'nav-item active' : 'nav-item'}
                     key={item.label}
-                    onClick={() => onItemClick(item.label)}
+                    onClick={() => onItemClick?.(item.label)}
                   >
                     <SidebarIcon name={item.icon} />
                     <span>{item.label}</span>
