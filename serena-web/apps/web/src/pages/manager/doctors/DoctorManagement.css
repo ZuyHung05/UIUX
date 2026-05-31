@@ -79,6 +79,14 @@
   min-width: 0;
 }
 
+.doctor-toolbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
 .doctor-management-page .doctor-heading-row {
   min-height: 34px;
 }
@@ -925,6 +933,11 @@
   }
 
   .doctor-toolbar-filters {
+    flex-wrap: wrap;
+  }
+
+  .doctor-toolbar-actions {
+    justify-content: flex-start;
     flex-wrap: wrap;
   }
 

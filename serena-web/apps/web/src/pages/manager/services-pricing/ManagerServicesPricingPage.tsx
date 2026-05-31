@@ -2,131 +2,181 @@ import { useMemo, useState } from 'react'
 import { Header } from '../../../components/layout/header/Header'
 import { Sidebar } from '../../../components/layout/sidebar/Sidebar'
 import '../../../components/layout/DesktopShell.css'
-import { IconButton } from '../../../components/ui/ActionButton'
+import { IconButton, PrimaryButton } from '../../../components/ui/ActionButton'
 import { FilterSelect } from '../../../components/ui/FilterSelect'
 import { SearchInput } from '../../../components/ui/SearchInput'
+import { SegmentedTabs } from '../../../components/ui/SegmentedTabs'
+import { StatusBadge } from '../../../components/ui/StatusBadge'
+import { useToast } from '../../../components/ui/Toast'
 import { managerSidebarConfig } from '../managerSidebarConfig'
 import './ManagerServicesPricingPage.css'
 
-type CoreService = {
+type ClinicTab = 'branches' | 'specialties' | 'services'
+type Status = 'active' | 'inactive'
+
+type Branch = {
   id: string
   name: string
+  address: string
+  phone: string
+  manager: string
+  hours: string
+  doctorCount: number
+  roomCount: number
+  monthlyRevenue: number
+  satisfaction: string
+  status: Status
+}
+
+type Specialty = {
+  id: string
+  name: string
+  description: string
+  leadDoctor: string
+  branchCount: number
+  serviceCount: number
+  status: Status
+}
+
+type ClinicService = {
+  id: string
+  name: string
+  description: string
   billing: 'free' | 'paid'
-  status: 'active' | 'inactive'
   feeLabel: string
   unit: string
-  accent: 'mint' | 'blue' | 'rose'
+  accent: 'blue' | 'mint' | 'rose'
+  status: Status
 }
 
-type MedicalService = {
-  id: string
-  name: string
-  specialty: string
-  branch: string
-  price: number
-  status: 'active' | 'inactive'
-}
-
-type SpecialtyGroup = {
-  id: string
-  name: string
-  branch: string
-  services: MedicalService[]
-}
-
-const branches = ['Tất cả chi nhánh', 'Chi nhánh Quận 1', 'Chi nhánh Thủ Đức', 'Chi nhánh Bình Thạnh']
-
-const initialCoreServices: CoreService[] = [
+const branches: Branch[] = [
   {
-    id: 'chatbot',
-    name: 'Tư vấn Chatbot',
-    billing: 'free',
+    id: 'CN-01',
+    name: 'Chi nhánh Quận 1',
+    address: '18 Nguyễn Du, Phường Bến Nghé, Quận 1',
+    phone: '028 3822 1901',
+    manager: 'Nguyễn Hoài An',
+    hours: '07:30 - 20:00',
+    doctorCount: 18,
+    roomCount: 12,
+    monthlyRevenue: 520000000,
+    satisfaction: '4.8/5',
     status: 'active',
-    feeLabel: 'Miễn phí',
-    unit: '',
-    accent: 'mint',
   },
   {
-    id: 'doctor-online',
-    name: 'Tư vấn Bác sĩ (Trực tuyến)',
-    billing: 'paid',
+    id: 'CN-02',
+    name: 'Chi nhánh Thủ Đức',
+    address: '42 Võ Văn Ngân, Phường Linh Chiểu, TP. Thủ Đức',
+    phone: '028 3722 4508',
+    manager: 'Trần Minh Khoa',
+    hours: '08:00 - 19:30',
+    doctorCount: 14,
+    roomCount: 9,
+    monthlyRevenue: 385000000,
+    satisfaction: '4.7/5',
     status: 'active',
-    feeLabel: '150.000',
-    unit: 'VNĐ/ca',
-    accent: 'blue',
   },
   {
-    id: 'appointment',
-    name: 'Đặt lịch hẹn khám',
-    billing: 'paid',
-    status: 'active',
-    feeLabel: '200.000',
-    unit: 'VNĐ/lượt',
-    accent: 'rose',
+    id: 'CN-03',
+    name: 'Chi nhánh Bình Thạnh',
+    address: '96 Nguyễn Gia Trí, Phường 25, Bình Thạnh',
+    phone: '028 3512 7780',
+    manager: 'Lê Thu Hà',
+    hours: '08:00 - 18:00',
+    doctorCount: 9,
+    roomCount: 6,
+    monthlyRevenue: 248000000,
+    satisfaction: '4.5/5',
+    status: 'inactive',
   },
 ]
 
-const initialSpecialtyCatalog: SpecialtyGroup[] = [
+const specialties: Specialty[] = [
   {
-    id: 'cardiology',
+    id: 'CK-01',
     name: 'Tim mạch',
-    branch: 'Chi nhánh Quận 1',
-    services: [
-      { id: 'TM-101', name: 'Khám chuyên khoa Tim mạch', specialty: 'Tim mạch', branch: 'Chi nhánh Quận 1', price: 320000, status: 'active' },
-      { id: 'TM-204', name: 'Siêu âm tim Doppler màu', specialty: 'Tim mạch', branch: 'Chi nhánh Quận 1', price: 480000, status: 'active' },
-      { id: 'TM-310', name: 'Điện tâm đồ nghỉ', specialty: 'Tim mạch', branch: 'Chi nhánh Thủ Đức', price: 180000, status: 'inactive' },
-    ],
+    description: 'Khám, theo dõi và tư vấn các bệnh lý tim mạch thường gặp.',
+    leadDoctor: 'BS. Trần Văn Nam',
+    branchCount: 3,
+    serviceCount: 8,
+    status: 'active',
   },
   {
-    id: 'dermatology',
-    name: 'Da liễu',
-    branch: 'Chi nhánh Bình Thạnh',
-    services: [
-      { id: 'DL-115', name: 'Soi da và tư vấn điều trị', specialty: 'Da liễu', branch: 'Chi nhánh Bình Thạnh', price: 260000, status: 'active' },
-      { id: 'DL-220', name: 'Điều trị mụn chuyên sâu', specialty: 'Da liễu', branch: 'Chi nhánh Bình Thạnh', price: 650000, status: 'active' },
-      { id: 'DL-318', name: 'Liệu trình phục hồi da', specialty: 'Da liễu', branch: 'Chi nhánh Quận 1', price: 720000, status: 'active' },
-    ],
-  },
-  {
-    id: 'pediatrics',
+    id: 'CK-02',
     name: 'Nhi khoa',
-    branch: 'Chi nhánh Thủ Đức',
-    services: [
-      { id: 'NK-102', name: 'Khám tổng quát Nhi', specialty: 'Nhi khoa', branch: 'Chi nhánh Thủ Đức', price: 280000, status: 'active' },
-      { id: 'NK-206', name: 'Tư vấn dinh dưỡng trẻ em', specialty: 'Nhi khoa', branch: 'Chi nhánh Thủ Đức', price: 350000, status: 'active' },
-      { id: 'NK-411', name: 'Gói theo dõi tăng trưởng', specialty: 'Nhi khoa', branch: 'Chi nhánh Bình Thạnh', price: 890000, status: 'inactive' },
-    ],
+    description: 'Chăm sóc sức khỏe trẻ em, dinh dưỡng và theo dõi phát triển.',
+    leadDoctor: 'BS. Hoàng Quốc Việt',
+    branchCount: 2,
+    serviceCount: 6,
+    status: 'active',
   },
   {
-    id: 'obgyn',
-    name: 'Sản phụ khoa',
-    branch: 'Chi nhánh Quận 1',
-    services: [
-      { id: 'SPK-109', name: 'Khám phụ khoa định kỳ', specialty: 'Sản phụ khoa', branch: 'Chi nhánh Quận 1', price: 300000, status: 'active' },
-      { id: 'SPK-240', name: 'Siêu âm thai 4D', specialty: 'Sản phụ khoa', branch: 'Chi nhánh Bình Thạnh', price: 520000, status: 'active' },
-      { id: 'SPK-515', name: 'Gói tầm soát sức khỏe nữ', specialty: 'Sản phụ khoa', branch: 'Chi nhánh Quận 1', price: 1250000, status: 'active' },
-    ],
+    id: 'CK-03',
+    name: 'Da liễu',
+    description: 'Tư vấn, điều trị và chăm sóc các vấn đề về da.',
+    leadDoctor: 'BS. Phạm Thanh Hà',
+    branchCount: 2,
+    serviceCount: 7,
+    status: 'active',
   },
+  {
+    id: 'CK-04',
+    name: 'Tai Mũi Họng',
+    description: 'Khám chuyên khoa, nội soi và điều trị bệnh lý hô hấp trên.',
+    leadDoctor: 'BS. Đỗ Minh Quân',
+    branchCount: 1,
+    serviceCount: 5,
+    status: 'inactive',
+  },
+]
+
+const services: ClinicService[] = [
+  {
+    id: 'DV-01',
+    name: 'Tư vấn Chatbot',
+    description: 'Tư vấn ban đầu tự động, sàng lọc triệu chứng và gợi ý bước xử lý tiếp theo.',
+    billing: 'free',
+    feeLabel: 'Miễn phí',
+    unit: '',
+    accent: 'mint',
+    status: 'active',
+  },
+  {
+    id: 'DV-02',
+    name: 'Tư vấn Bác sĩ',
+    description: 'Kết nối bệnh nhân với bác sĩ để tư vấn chuyên môn trực tuyến.',
+    billing: 'paid',
+    feeLabel: '150.000',
+    unit: 'VNĐ/ca',
+    accent: 'blue',
+    status: 'active',
+  },
+  {
+    id: 'DV-03',
+    name: 'Đặt lịch hẹn khám',
+    description: 'Cho phép bệnh nhân chọn chi nhánh, chuyên khoa, bác sĩ và khung giờ khám.',
+    billing: 'paid',
+    feeLabel: '200.000',
+    unit: 'VNĐ/lượt',
+    accent: 'rose',
+    status: 'active',
+  },
+]
+
+const tabs: Array<{ id: ClinicTab; label: string }> = [
+  { id: 'branches', label: 'Chi nhánh' },
+  { id: 'specialties', label: 'Chuyên khoa' },
+  { id: 'services', label: 'Dịch vụ' },
+]
+
+const branchFilters = [
+  { value: 'all', label: 'Tất cả trạng thái' },
+  { value: 'active', label: 'Đang hoạt động' },
+  { value: 'inactive', label: 'Tạm ngưng' },
 ]
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat('vi-VN').format(value)
-}
-
-function parseFee(value: string) {
-  return value.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-}
-
-function Badge({ tone, children }: { tone: 'free' | 'paid' | 'active' | 'inactive'; children: string }) {
-  return <span className={`services-badge services-badge-${tone}`}>{children}</span>
-}
-
-function ChevronIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="m8 10 4 4 4-4" />
-    </svg>
-  )
 }
 
 function EditIcon() {
@@ -138,33 +188,35 @@ function EditIcon() {
   )
 }
 
-function SaveIcon() {
+function PlusIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M5 4.5h11l3 3v12H5v-15Z" />
-      <path d="M8 4.5v5h7v-5M8 19.5v-6h8v6" />
+      <path d="M12 5v14M5 12h14" />
     </svg>
   )
 }
 
-function PauseIcon() {
+function ChevronIcon({ open }: { open: boolean }) {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M8 5v14M16 5v14" />
+    <svg className={open ? 'is-open' : undefined} viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m6 9 6 6 6-6" />
     </svg>
   )
 }
 
-function PlayIcon() {
+function ClinicIcon({ tone }: { tone: 'blue' | 'mint' | 'rose' }) {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M8 5.5v13l10-6.5-10-6.5Z" />
-    </svg>
+    <span className={`clinic-item-icon clinic-item-icon-${tone}`}>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="5.5" y="4" width="9.5" height="16" rx="1.5" />
+        <path d="M15 9h4v11M8.5 8h3.5M8.5 12h3.5M8.5 16h3.5" />
+      </svg>
+    </span>
   )
 }
 
-function ServiceIcon({ type }: { type: CoreService['id'] }) {
-  if (type === 'chatbot') {
+function ServiceIcon({ serviceId }: { serviceId: string }) {
+  if (serviceId === 'DV-01') {
     return (
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <rect x="5" y="8" width="14" height="10" rx="3" />
@@ -173,7 +225,7 @@ function ServiceIcon({ type }: { type: CoreService['id'] }) {
     )
   }
 
-  if (type === 'doctor-online') {
+  if (serviceId === 'DV-02') {
     return (
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <rect x="4.5" y="5" width="15" height="12" rx="2.5" />
@@ -191,249 +243,261 @@ function ServiceIcon({ type }: { type: CoreService['id'] }) {
 }
 
 export function ManagerServicesPricingPage() {
-  const [coreServices, setCoreServices] = useState(initialCoreServices)
-  const [medicalCatalog, setMedicalCatalog] = useState(initialSpecialtyCatalog)
-  const [editingCoreServiceId, setEditingCoreServiceId] = useState<string | null>(null)
-  const [editingMedicalServiceId, setEditingMedicalServiceId] = useState<string | null>(null)
+  const { showToast } = useToast()
+  const [activeTab, setActiveTab] = useState<ClinicTab>('branches')
   const [query, setQuery] = useState('')
-  const [branch, setBranch] = useState(branches[0])
-  const [openSpecialties, setOpenSpecialties] = useState<Record<string, boolean>>({})
+  const [status, setStatus] = useState('all')
+  const [expandedBranchId, setExpandedBranchId] = useState<string | null>(null)
 
-  const filteredCatalog = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase()
+  const normalizedQuery = query.trim().toLowerCase()
 
-    return medicalCatalog
-      .map((group) => {
-        const services = group.services.filter((service) => {
-          const matchesBranch = branch === branches[0] || service.branch === branch
-          const matchesQuery =
-            !normalizedQuery ||
-            service.id.toLowerCase().includes(normalizedQuery) ||
-            service.name.toLowerCase().includes(normalizedQuery) ||
-            service.specialty.toLowerCase().includes(normalizedQuery)
+  const filteredBranches = useMemo(
+    () =>
+      branches.filter((branch) => {
+        const matchesStatus = status === 'all' || branch.status === status
+        const matchesQuery =
+          !normalizedQuery ||
+          branch.name.toLowerCase().includes(normalizedQuery) ||
+          branch.address.toLowerCase().includes(normalizedQuery) ||
+          branch.manager.toLowerCase().includes(normalizedQuery)
 
-          return matchesBranch && matchesQuery
-        })
+        return matchesStatus && matchesQuery
+      }),
+    [normalizedQuery, status],
+  )
 
-        return { ...group, services }
-      })
-      .filter((group) => group.services.length > 0)
-  }, [branch, medicalCatalog, query])
+  const filteredSpecialties = useMemo(
+    () =>
+      specialties.filter((specialty) => {
+        const matchesStatus = status === 'all' || specialty.status === status
+        const matchesQuery =
+          !normalizedQuery ||
+          specialty.name.toLowerCase().includes(normalizedQuery) ||
+          specialty.leadDoctor.toLowerCase().includes(normalizedQuery)
 
-  const handleCoreFeeChange = (serviceId: string, value: string) => {
-    setCoreServices((services) =>
-      services.map((service) => (service.id === serviceId ? { ...service, feeLabel: parseFee(value) } : service)),
-    )
-  }
+        return matchesStatus && matchesQuery
+      }),
+    [normalizedQuery, status],
+  )
 
-  const handleMedicalPriceChange = (serviceId: string, value: string) => {
-    const nextPrice = Number(value.replace(/[^\d]/g, ''))
+  const filteredServices = useMemo(
+    () =>
+      services.filter((service) => {
+        const matchesStatus = status === 'all' || service.status === status
+        const matchesQuery =
+          !normalizedQuery ||
+          service.name.toLowerCase().includes(normalizedQuery) ||
+          service.description.toLowerCase().includes(normalizedQuery) ||
+          service.id.toLowerCase().includes(normalizedQuery)
 
-    setMedicalCatalog((groups) =>
-      groups.map((group) => ({
-        ...group,
-        services: group.services.map((service) =>
-          service.id === serviceId ? { ...service, price: Number.isNaN(nextPrice) ? 0 : nextPrice } : service,
-        ),
-      })),
-    )
-  }
+        return matchesStatus && matchesQuery
+      }),
+    [normalizedQuery, status],
+  )
 
-  const toggleMedicalServiceStatus = (serviceId: string) => {
-    setMedicalCatalog((groups) =>
-      groups.map((group) => ({
-        ...group,
-        services: group.services.map((service) =>
-          service.id === serviceId
-            ? { ...service, status: service.status === 'active' ? 'inactive' : 'active' }
-            : service,
-        ),
-      })),
-    )
-  }
-
-  const toggleSpecialty = (specialtyId: string) => {
-    setOpenSpecialties((current) => ({ ...current, [specialtyId]: !current[specialtyId] }))
-  }
+  const tabCount =
+    activeTab === 'branches'
+      ? filteredBranches.length
+      : activeTab === 'specialties'
+        ? filteredSpecialties.length
+        : filteredServices.length
 
   return (
     <div className="desktop-shell-page services-pricing-page">
       <Sidebar config={managerSidebarConfig} />
       <Header profileRole={managerSidebarConfig.profileRole} />
-      <main className="desktop-shell-main services-pricing-main" aria-label="Dịch vụ và bảng giá">
-        <section className="services-pricing-content">
-          <div className="services-heading">
+      <main className="desktop-shell-main services-pricing-main" aria-label="Cấu hình phòng khám">
+        <section className="clinic-settings-content">
+          <div className="clinic-settings-heading">
             <div>
-              <h1>Dịch vụ & Bảng giá</h1>
-              <p>Quản lý phí nền tảng và danh mục giá y khoa theo chuyên khoa.</p>
+              <h1>Cấu hình Phòng khám</h1>
+              <p>Quản lý thông tin nền tảng của hệ thống: chi nhánh, chuyên khoa và dịch vụ.</p>
             </div>
           </div>
 
-          <section className="service-card-grid" aria-label="Dịch vụ nền tảng">
-            {coreServices.map((service) => {
-              const isEditing = editingCoreServiceId === service.id
-              const canEdit = service.billing === 'paid'
+          <SegmentedTabs
+            className="clinic-tabs"
+            options={tabs.map((tab) => ({ value: tab.id, label: tab.label }))}
+            value={activeTab}
+            ariaLabel="Nhóm thiết lập phòng khám"
+            onChange={(nextTab) => {
+              setActiveTab(nextTab)
+              setQuery('')
+              setStatus('all')
+              setExpandedBranchId(null)
+            }}
+          />
 
-              return (
-                <article className="service-card" key={service.id}>
-                  <div className="service-card-topline">
-                    <span className={`service-card-icon icon-${service.accent}`}>
-                      <ServiceIcon type={service.id} />
-                    </span>
-                    <Badge tone={service.status}>
-                      {service.status === 'active' ? 'Đang hoạt động' : 'Ngừng hoạt động'}
-                    </Badge>
-                  </div>
-                  <div className="service-card-body">
-                    <div className="service-card-copy">
-                      <h2>{service.name}</h2>
-                      <div className="service-fee-info">
-                        <span className="service-fee-label">
-                          {service.id === 'appointment' ? 'Phí đặt lịch' : 'Phí cơ bản'}
-                        </span>
-                        <span className={`billing-text billing-${service.billing}`}>
-                          • {service.billing === 'free' ? 'Miễn phí' : 'Trả phí'}
-                        </span>
-                      </div>
-                      <div className={isEditing ? 'service-fee-value is-editing' : 'service-fee-value'}>
-                        {isEditing ? (
-                          <div className="fee-input-wrapper">
-                            <input
-                              value={service.feeLabel}
-                              onChange={(event) => handleCoreFeeChange(service.id, event.target.value)}
-                              aria-label={`Chỉnh phí ${service.name}`}
-                              autoFocus
-                            />
-                            {service.unit ? <span className="fee-unit">{service.unit}</span> : null}
-                          </div>
-                        ) : (
-                          <div className="fee-display">
-                            <strong>{service.feeLabel}</strong>
-                            {service.unit ? <span>{service.unit}</span> : null}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="service-card-actions">
-                    <IconButton
-                      label={isEditing ? `Lưu phí ${service.name}` : `Sửa phí ${service.name}`}
-                      disabled={!canEdit}
-                      onClick={() => setEditingCoreServiceId((current) => (current === service.id ? null : service.id))}
-                    >
-                      {isEditing ? <SaveIcon /> : <EditIcon />}
-                    </IconButton>
-                  </div>
-                </article>
-              )
-            })}
-          </section>
-
-          <section className="medical-price-panel" aria-label="Danh mục Giá Y khoa theo Chuyên khoa">
-            <div className="medical-price-toolbar">
+          <section className="clinic-panel">
+            <div className="clinic-panel-toolbar">
               <div>
-                <h2>Danh mục Giá Y khoa theo Chuyên khoa</h2>
-                <span>{filteredCatalog.reduce((total, group) => total + group.services.length, 0)} dịch vụ</span>
+                <h2>{tabs.find((tab) => tab.id === activeTab)?.label}</h2>
+                <span>{tabCount} mục đang hiển thị</span>
               </div>
-              <div className="medical-price-filters">
-                <SearchInput value={query} onChange={setQuery} placeholder="Tìm nhanh dịch vụ..." />
+            </div>
+
+            <div className="clinic-toolbar">
+              <div className="clinic-panel-filters">
+                <SearchInput value={query} onChange={setQuery} placeholder="Tìm nhanh..." />
                 <FilterSelect
-                  value={branch}
-                  onChange={(event) => setBranch(event.target.value)}
-                  options={branches.map((item) => ({ value: item, label: item }))}
+                  value={status}
+                  onChange={(event) => setStatus(event.target.value)}
+                  options={branchFilters}
                 />
               </div>
+              <div className="clinic-toolbar-actions">
+                <PrimaryButton
+                  onClick={() =>
+                    showToast(
+                      activeTab === 'branches'
+                        ? 'Mở form thêm chi nhánh mới.'
+                        : activeTab === 'specialties'
+                          ? 'Mở form thêm chuyên khoa mới.'
+                          : 'Mở form thêm dịch vụ mới.',
+                      'success',
+                    )
+                  }
+                >
+                  <PlusIcon />
+                  {activeTab === 'branches'
+                    ? 'Thêm chi nhánh'
+                    : activeTab === 'specialties'
+                      ? 'Thêm chuyên khoa'
+                      : 'Thêm dịch vụ'}
+                </PrimaryButton>
+              </div>
             </div>
 
-            <div className="specialty-catalog-grid" aria-label="Danh sách chuyên khoa">
-              {filteredCatalog.map((group) => {
-                const isOpen = Boolean(openSpecialties[group.id])
-                const activeCount = group.services.filter((service) => service.status === 'active').length
-
-                return (
-                  <section className="specialty-card" key={group.id}>
-                    <button
-                      className="specialty-row"
-                      type="button"
-                      aria-expanded={isOpen}
-                      onClick={() => toggleSpecialty(group.id)}
-                    >
-                      <span className="specialty-toggle">
-                        <ChevronIcon />
-                      </span>
-                      <span className="specialty-name">
-                        <strong>{group.name}</strong>
-                        <small>
-                          {group.services.length} dịch vụ · {activeCount} đang áp dụng
-                        </small>
-                      </span>
-                      <span className="specialty-branch">{group.branch}</span>
-                    </button>
-
-                    <div className={isOpen ? 'service-rows is-open' : 'service-rows'}>
-                      <div className="service-table">
-                        <div className="service-table-head" role="row">
-                          <span>Mã dịch vụ</span>
-                          <span>Tên dịch vụ y khoa</span>
-                          <span>Chuyên khoa</span>
-                          <span>Giá tiền (VNĐ)</span>
-                          <span>Trạng thái</span>
-                          <span>Hành động</span>
-                        </div>
-                        {group.services.map((service) => {
-                          const isEditing = editingMedicalServiceId === service.id
-
-                          return (
-                            <div className="service-price-row" role="row" key={service.id}>
-                              <span className="service-code">{service.id}</span>
-                              <span className="service-name">{service.name}</span>
-                              <span>{service.specialty}</span>
-                              <span className="service-price">
-                                {isEditing ? (
-                                  <div className="price-input-wrapper">
-                                    <input
-                                      value={formatCurrency(service.price)}
-                                      onChange={(event) => handleMedicalPriceChange(service.id, event.target.value)}
-                                      aria-label={`Chỉnh giá ${service.name}`}
-                                      autoFocus
-                                    />
-                                    <span className="price-unit">đ</span>
-                                  </div>
-                                ) : (
-                                  <strong>{formatCurrency(service.price)} <span>đ</span></strong>
-                                )}
-                              </span>
-                              <span className="status-cell">
-                                <Badge tone={service.status}>
-                                  {service.status === 'active' ? 'Đang áp dụng' : 'Ngừng áp dụng'}
-                                </Badge>
-                              </span>
-                              <span className="service-row-actions">
-                                <IconButton
-                                  label={isEditing ? `Lưu ${service.name}` : `Sửa ${service.name}`}
-                                  onClick={() =>
-                                    setEditingMedicalServiceId((current) => (current === service.id ? null : service.id))
-                                  }
-                                >
-                                  {isEditing ? <SaveIcon /> : <EditIcon />}
-                                </IconButton>
-                                <IconButton
-                                  label={service.status === 'active' ? `Ngừng ${service.name}` : `Mở lại ${service.name}`}
-                                  variant={service.status === 'active' ? 'danger' : 'secondary'}
-                                  onClick={() => toggleMedicalServiceStatus(service.id)}
-                                >
-                                  {service.status === 'active' ? <PauseIcon /> : <PlayIcon />}
-                                </IconButton>
-                              </span>
-                            </div>
-                          )
-                        })}
-                      </div>
+            {activeTab === 'branches' ? (
+              <div className="clinic-branch-grid">
+                {filteredBranches.map((branch) => (
+                  <article className="clinic-branch-card" key={branch.id}>
+                    <div className="clinic-card-head">
+                      <ClinicIcon tone="blue" />
+                      <StatusBadge status={branch.status} />
                     </div>
-                  </section>
-                )
-              })}
-            </div>
+                    <div className="clinic-card-title">
+                      <span>{branch.id}</span>
+                      <h3>{branch.name}</h3>
+                    </div>
+                    <dl className="clinic-info-list">
+                      <div>
+                        <dt>Địa chỉ</dt>
+                        <dd>{branch.address}</dd>
+                      </div>
+                      <div>
+                        <dt>Điện thoại</dt>
+                        <dd>{branch.phone}</dd>
+                      </div>
+                      <div>
+                        <dt>Quản lý</dt>
+                        <dd>{branch.manager}</dd>
+                      </div>
+                      <div>
+                        <dt>Giờ mở cửa</dt>
+                        <dd>{branch.hours}</dd>
+                      </div>
+                    </dl>
+                    <div className="clinic-card-actions">
+                      <button
+                        className="clinic-detail-toggle"
+                        type="button"
+                        aria-expanded={expandedBranchId === branch.id}
+                        onClick={() => setExpandedBranchId((current) => (current === branch.id ? null : branch.id))}
+                      >
+                        {expandedBranchId === branch.id ? 'Thu gọn' : 'Xem chi tiết'}
+                        <ChevronIcon open={expandedBranchId === branch.id} />
+                      </button>
+                      <IconButton label={`Chỉnh sửa ${branch.name}`} onClick={() => showToast(`Mở chỉnh sửa ${branch.name}.`, 'info')}>
+                        <EditIcon />
+                      </IconButton>
+                    </div>
+                    {expandedBranchId === branch.id ? (
+                      <div className="clinic-branch-details">
+                        <div>
+                          <span>Bác sĩ</span>
+                          <strong>{branch.doctorCount}</strong>
+                        </div>
+                        <div>
+                          <span>Phòng chức năng</span>
+                          <strong>{branch.roomCount}</strong>
+                        </div>
+                        <div>
+                          <span>Doanh thu tháng</span>
+                          <strong>{formatCurrency(branch.monthlyRevenue)} đ</strong>
+                        </div>
+                        <div>
+                          <span>Hài lòng</span>
+                          <strong>{branch.satisfaction}</strong>
+                        </div>
+                      </div>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+            ) : null}
+
+            {activeTab === 'specialties' ? (
+              <div className="clinic-list">
+                {filteredSpecialties.map((specialty) => (
+                  <article className="clinic-list-row" key={specialty.id}>
+                    <ClinicIcon tone="mint" />
+                    <div className="clinic-list-main">
+                      <span>{specialty.id}</span>
+                      <h3>{specialty.name}</h3>
+                      <p>{specialty.description}</p>
+                    </div>
+                    <div className="clinic-row-meta">
+                      <span>Phụ trách</span>
+                      <strong>{specialty.leadDoctor}</strong>
+                    </div>
+                    <div className="clinic-row-mini">
+                      <span>{specialty.branchCount} chi nhánh</span>
+                      <span>{specialty.serviceCount} dịch vụ</span>
+                    </div>
+                    <StatusBadge status={specialty.status} />
+                    <IconButton label={`Chỉnh sửa ${specialty.name}`} onClick={() => showToast(`Mở chỉnh sửa chuyên khoa ${specialty.name}.`, 'info')}>
+                      <EditIcon />
+                    </IconButton>
+                  </article>
+                ))}
+              </div>
+            ) : null}
+
+            {activeTab === 'services' ? (
+              <div className="clinic-service-grid">
+                {filteredServices.map((service) => (
+                  <article className="clinic-service-card" key={service.id}>
+                    <div className="clinic-card-head">
+                      <span className={`clinic-item-icon clinic-item-icon-${service.accent}`}>
+                        <ServiceIcon serviceId={service.id} />
+                      </span>
+                      <StatusBadge status={service.status} />
+                    </div>
+                    <div className="clinic-card-title">
+                      <span>{service.id}</span>
+                      <h3>{service.name}</h3>
+                    </div>
+                    <p className="clinic-service-description">{service.description}</p>
+                    <div className="clinic-service-meta">
+                      <span>{service.billing === 'free' ? 'Miễn phí' : 'Trả phí'}</span>
+                      <strong>
+                        {service.feeLabel}
+                        {service.unit ? <small>{service.unit}</small> : null}
+                      </strong>
+                    </div>
+                    <div className="clinic-card-actions">
+                      <span className={`clinic-billing-pill clinic-billing-${service.billing}`}>
+                        {service.billing === 'free' ? 'Dịch vụ miễn phí' : 'Có thu phí'}
+                      </span>
+                      <IconButton label={`Chỉnh sửa ${service.name}`} onClick={() => showToast(`Mở chỉnh sửa dịch vụ ${service.name}.`, 'info')}>
+                        <EditIcon />
+                      </IconButton>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : null}
           </section>
         </section>
       </main>

@@ -13,11 +13,18 @@
   font: inherit;
   font-size: 14px;
   font-weight: 500;
+  line-height: 1;
   cursor: pointer;
   transition:
     background 160ms ease,
     border-color 160ms ease;
   white-space: nowrap;
+}
+
+.date-filter-button span {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
 }
 
 .date-filter-button:hover {

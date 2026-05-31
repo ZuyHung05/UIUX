@@ -2,7 +2,7 @@
   background: #fbfdff;
 }
 
-.services-pricing-content {
+.clinic-settings-content {
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -12,275 +12,76 @@
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-.services-heading {
+.clinic-settings-heading,
+.clinic-panel-toolbar,
+.clinic-toolbar,
+.clinic-panel-filters,
+.clinic-toolbar-actions,
+.clinic-card-head,
+.clinic-card-actions,
+.clinic-list-row,
+.clinic-row-mini,
+.clinic-service-meta {
   display: flex;
   align-items: center;
+}
+
+.clinic-settings-heading,
+.clinic-panel-toolbar {
   justify-content: space-between;
   gap: 16px;
+}
+
+.clinic-settings-heading {
   padding-top: 2px;
 }
 
-.services-heading h1,
-.medical-price-toolbar h2 {
+.clinic-settings-heading h1,
+.clinic-panel-toolbar h2 {
   margin: 0;
   color: #1a365d;
   font-family: 'Outfit', system-ui, -apple-system, sans-serif;
   letter-spacing: 0;
 }
 
-.services-heading h1 {
+.clinic-settings-heading h1 {
   font-size: clamp(21px, 2vw, 25px);
   font-weight: 700;
   line-height: 1.1;
 }
 
-.services-heading p {
+.clinic-settings-heading p {
   margin: 6px 0 0;
   color: rgba(74, 85, 104, 0.72);
   font-size: 13px;
 }
 
-.service-card-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+.clinic-tabs {
+  align-self: flex-start;
+  min-width: 360px;
 }
 
-.service-card {
-  position: relative;
-  min-height: 184px;
-  border: 1px solid rgba(220, 236, 255, 0.7);
-  border-radius: 24px;
-  background: #ffffff;
-  padding: 18px 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.015);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.service-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.03);
-}
-
-.service-card-topline,
-.service-card-body,
-.service-row-actions,
-.medical-price-toolbar,
-.medical-price-filters,
-.specialty-row,
-.service-fee-value {
-  display: flex;
-  align-items: center;
-}
-
-.service-card-topline,
-.medical-price-toolbar {
-  justify-content: space-between;
-}
-
-.service-card-topline {
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.service-card-body {
-  margin-top: 16px;
-}
-
-.service-card-icon {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  flex: 0 0 auto;
-  border-radius: 16px;
-}
-
-.icon-mint {
-  background: #e6f6ee;
-  color: #1b8a6b;
-}
-
-.icon-blue {
-  background: #eef4ff;
-  color: #285f99;
-}
-
-.icon-rose {
-  background: #ffeff3;
-  color: #c93452;
-}
-
-.service-card-icon svg {
-  width: 24px;
-  height: 24px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.service-card-copy {
-  min-width: 0;
-}
-
-.service-card h2 {
-  margin: 0 0 12px;
-  color: #1a365d;
-  font-size: 17px;
-  font-weight: 650;
-  line-height: 1.28;
-}
-
-.service-fee-info {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 12px;
-}
-
-.service-fee-label {
-  color: #6c8197;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.billing-text {
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.billing-free {
-  color: #25785f;
-}
-
-.billing-paid {
-  color: #6c8197;
-}
-
-.service-fee-value {
-  min-height: 44px;
-  width: min(280px, 100%);
-}
-
-.fee-display {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-}
-
-.fee-display strong {
-  color: #1a365d;
-  font-size: 22px;
-  font-weight: 700;
-}
-
-.fee-display span {
-  color: #6c8197;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.fee-input-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 1.5px solid #dcebff;
-  border-radius: 14px;
-  background: #ffffff;
-  padding: 0 14px;
-  height: 44px;
-  width: 100%;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.fee-input-wrapper:focus-within {
-  border-color: #91c3ff;
-  box-shadow: 0 0 0 4px rgba(145, 195, 255, 0.15);
-}
-
-.fee-input-wrapper input {
-  flex: 1;
-  min-width: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: #1a365d;
-  font: inherit;
-  font-size: 18px;
-  font-weight: 700;
-  padding: 0;
-}
-
-.fee-input-wrapper .fee-unit {
-  color: #6c8197;
-  font-size: 13px;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.service-card-actions {
-  position: absolute;
-  right: 14px;
-  bottom: 14px;
-}
-
-.service-card-actions .ui-icon-button,
-.service-row-actions .ui-icon-button {
-  border-radius: 12px;
-}
-
-.services-badge {
-  display: inline-flex;
-  align-items: center;
-  min-height: 26px;
-  border-radius: 999px;
-  padding: 0 10px;
-  font-size: 11px;
-  font-weight: 650;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.services-badge-free,
-.services-badge-active {
-  background: #e0f7ee;
-  color: #25785f;
-}
-
-.services-badge-paid {
-  background: #dcebff;
-  color: #285f99;
-}
-
-.services-badge-inactive {
-  background: #ffe7ec;
-  color: #9b1c31;
-}
-
-.medical-price-panel {
+.clinic-panel {
   display: flex;
   flex: 1;
   flex-direction: column;
-  min-height: 460px;
+  min-height: 500px;
   border: 1px solid #dcecff;
-  border-radius: 26px;
-  background: #ffffff;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
   padding: 16px;
 }
 
-.medical-price-toolbar {
-  gap: 16px;
-  margin-bottom: 14px;
+.clinic-panel-toolbar {
+  margin-bottom: 10px;
 }
 
-.medical-price-toolbar h2 {
+.clinic-panel-toolbar h2 {
   font-size: clamp(18px, 1.6vw, 22px);
   font-weight: 700;
 }
 
-.medical-price-toolbar span {
+.clinic-panel-toolbar span {
   display: inline-block;
   margin-top: 5px;
   color: #7f91a4;
@@ -288,250 +89,368 @@
   font-weight: 500;
 }
 
-.medical-price-filters {
-  justify-content: flex-end;
+.clinic-panel-filters {
+  justify-content: flex-start;
   gap: 10px;
   min-width: 0;
 }
 
-.specialty-catalog-grid {
-  display: grid;
+.clinic-toolbar {
+  justify-content: space-between;
   gap: 12px;
-  max-height: calc(100vh - 410px);
-  min-height: 350px;
-  overflow: auto;
-  padding-right: 4px;
+  margin-bottom: 14px;
 }
 
-.specialty-card {
-  overflow: hidden;
-  border: 1px solid rgba(220, 236, 255, 0.8);
-  border-radius: 20px;
-  background: #ffffff;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.01);
+.clinic-toolbar-actions {
+  justify-content: flex-end;
+  flex: 0 0 auto;
 }
 
-.specialty-row {
-  width: 100%;
-  min-height: 72px;
+.clinic-branch-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-  border: 0;
+}
+
+.clinic-branch-card,
+.clinic-list-row,
+.clinic-service-card {
+  border: 1px solid rgba(220, 236, 255, 0.82);
   background: #ffffff;
-  color: #1a365d;
-  cursor: pointer;
-  padding: 0 20px;
-  text-align: left;
-  border-bottom: 1px solid transparent;
-  transition: background 0.2s ease;
 }
 
-.specialty-row[aria-expanded='true'] {
-  background: #f8fbff;
-  border-bottom-color: rgba(220, 236, 255, 0.5);
+.clinic-branch-card,
+.clinic-service-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 312px;
+  border-radius: 24px;
+  padding: 18px;
 }
 
-.specialty-row:hover .specialty-toggle,
-.specialty-row:focus-visible .specialty-toggle {
-  background: #dcebff;
+.clinic-card-head {
+  justify-content: space-between;
+  gap: 10px;
 }
 
-.specialty-toggle {
+.clinic-item-icon {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 46px;
+  height: 46px;
   flex: 0 0 auto;
-  border-radius: 12px;
-  background: #ffffff;
-  color: #244a6b;
-  transition: background 160ms ease;
+  border-radius: 16px;
 }
 
-.specialty-toggle svg {
-  width: 18px;
-  height: 18px;
+.clinic-item-icon svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.clinic-item-icon-blue {
+  background: #eef4ff;
+  color: #285f99;
+}
+
+.clinic-item-icon-mint {
+  background: #e6f6ee;
+  color: #1b8a6b;
+}
+
+.clinic-item-icon-rose {
+  background: #ffeff3;
+  color: #c93452;
+}
+
+.clinic-card-title {
+  margin-top: 16px;
+}
+
+.clinic-card-title span,
+.clinic-list-main span {
+  color: #7f91a4;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.clinic-card-title h3,
+.clinic-list-main h3 {
+  margin: 5px 0 0;
+  color: #1a365d;
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.clinic-info-list {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 42px;
+}
+
+.clinic-info-list div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.clinic-info-list dt {
+  color: #7f91a4;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.clinic-info-list dd {
+  margin: 0;
+  color: #244a6b;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.clinic-card-actions {
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 2px;
+}
+
+.clinic-detail-toggle {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #dcebff;
+  border-radius: 999px;
+  background: #f8fbff;
+  color: #244a6b;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.clinic-detail-toggle:hover {
+  border-color: #8dc1ff;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.clinic-detail-toggle svg {
+  width: 15px;
+  height: 15px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
-  transition: transform 180ms ease;
+  transition: transform 160ms ease;
 }
 
-.specialty-row[aria-expanded='true'] .specialty-toggle svg {
+.clinic-detail-toggle svg.is-open {
   transform: rotate(180deg);
 }
 
-.specialty-name {
+.clinic-branch-details {
   display: grid;
-  flex: 1;
-  gap: 3px;
-  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #edf4fb;
 }
 
-.specialty-name strong {
-  color: #1a365d;
-  font-size: 16px;
-  font-weight: 650;
+.clinic-branch-details div {
+  border: 1px solid #e7f0fb;
+  border-radius: 16px;
+  background: #fbfdff;
+  padding: 12px;
 }
 
-.specialty-name small,
-.specialty-branch {
-  color: #6c8197;
+.clinic-branch-details span {
+  display: block;
+  color: #7f91a4;
   font-size: 12px;
   font-weight: 500;
 }
 
-.specialty-branch {
-  flex: 0 0 auto;
-  border-radius: 999px;
-  background: #ffffff;
-  padding: 7px 10px;
+.clinic-branch-details strong {
+  display: block;
+  margin-top: 5px;
+  color: #244a6b;
+  font-size: 15px;
+  font-weight: 650;
 }
 
-.service-rows {
+.clinic-list {
   display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 220ms ease;
-}
-
-.service-rows.is-open {
-  grid-template-rows: 1fr;
-}
-
-.service-table {
-  overflow: hidden;
-}
-
-.service-table-head,
-.service-price-row {
-  display: grid;
-  grid-template-columns: 120px minmax(220px, 1.45fr) minmax(140px, 0.8fr) 140px 134px 112px;
-  align-items: center;
   gap: 12px;
 }
 
-.service-table-head {
-  min-height: 46px;
-  padding: 0 18px;
-  border-top: 1px solid #e8f1fb;
-  background: #ffffff;
+.clinic-list-row {
+  gap: 14px;
+  min-height: 94px;
+  border-radius: 22px;
+  padding: 16px;
+}
+
+.clinic-list-main {
+  flex: 1;
+  min-width: 240px;
+}
+
+.clinic-list-main p {
+  margin: 6px 0 0;
   color: #6c8197;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.clinic-row-meta {
+  display: grid;
+  gap: 5px;
+  min-width: 160px;
+}
+
+.clinic-row-meta span,
+.clinic-row-mini span {
+  color: #7f91a4;
   font-size: 12px;
+  font-weight: 500;
+}
+
+.clinic-row-meta strong {
+  color: #244a6b;
+  font-size: 14px;
   font-weight: 600;
 }
 
-.service-price-row {
-  min-height: 58px;
-  padding: 0 18px;
-  border-top: 1px solid #edf4fb;
-  color: #526a82;
+.clinic-row-mini {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 94px;
+}
+
+.clinic-service-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.clinic-service-card {
+  min-height: 278px;
+}
+
+.clinic-service-description {
+  margin: 14px 0 18px;
+  color: #6c8197;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.clinic-service-meta {
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: auto;
+  border: 1px solid #e7f0fb;
+  border-radius: 18px;
+  background: #fbfdff;
+  padding: 13px 14px;
+}
+
+.clinic-service-meta span {
+  color: #7f91a4;
   font-size: 13px;
   font-weight: 500;
-  animation: service-row-in 220ms ease both;
 }
 
-.service-price-row:hover {
-  background: #ffffff;
-}
-
-.service-code,
-.service-price {
-  color: #244a6b;
+.clinic-service-meta strong {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  color: #1a365d;
+  font-size: 20px;
   font-weight: 650;
 }
 
-.service-price strong {
-  font-size: 15px;
-}
-
-.service-price strong span {
+.clinic-service-meta small {
   color: #6c8197;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  margin-left: 2px;
 }
 
-.price-input-wrapper {
-  display: flex;
+.clinic-billing-pill {
+  min-height: 30px;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  border: 1.5px solid #dcebff;
-  border-radius: 12px;
-  background: #ffffff;
-  height: 38px;
-  width: 140px;
-  padding: 0 12px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.price-input-wrapper:focus-within {
-  border-color: #91c3ff;
-  box-shadow: 0 0 0 4px rgba(145, 195, 255, 0.15);
-}
-
-.price-input-wrapper input {
-  flex: 1;
-  min-width: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: #1a365d;
-  font: inherit;
-  font-size: 15px;
-  font-weight: 700;
-  padding: 0;
-}
-
-.price-input-wrapper .price-unit {
-  color: #6c8197;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.service-name {
-  color: #1f3f5b;
+  border-radius: 999px;
+  padding: 0 11px;
+  font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
-.service-row-actions {
-  justify-content: flex-start;
-  gap: 8px;
+.clinic-billing-free {
+  background: #e0f7ee;
+  color: #25785f;
 }
 
-@keyframes service-row-in {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
+.clinic-billing-paid {
+  background: #dcebff;
+  color: #285f99;
+}
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.clinic-panel .ui-icon-button {
+  border-radius: 12px;
 }
 
 @media (max-width: 1180px) {
-  .service-card-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .medical-price-toolbar {
+  .clinic-settings-heading,
+  .clinic-panel-toolbar {
     align-items: stretch;
     flex-direction: column;
   }
 
-  .medical-price-filters {
+  .clinic-panel-filters {
     justify-content: flex-start;
     flex-wrap: wrap;
   }
 
-  .specialty-card {
-    overflow-x: auto;
+  .clinic-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
-  .service-table-head,
-  .service-price-row {
-    min-width: 860px;
+  .clinic-toolbar-actions {
+    justify-content: flex-start;
+  }
+
+  .clinic-branch-grid,
+  .clinic-service-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .clinic-list-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 760px) {
+  .clinic-settings-content {
+    padding: 16px;
+  }
+
+  .clinic-tabs {
+    width: 100%;
   }
 }
