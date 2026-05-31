@@ -1,18 +1,23 @@
 import { Bell } from 'lucide-react-native';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { COLORS } from '../../utils/theme';
+import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 
-export const HomeHeader = () => {
+
+interface HeaderProps {
+    title?: string;
+    subtitle?: string;
+}
+export const AppHeader = ({ title, subtitle }: HeaderProps) => {
     return (
-        <View style={styles.header}>
+        <View style={[styles.header]}>
             <View style={styles.headerLeft}>
                 <Image
                     source={require('../../assets/SerenaIcon.png')}
                     style={styles.logo}
                 />
                 <View>
-                    <Text style={styles.brandName}>Serena Health</Text>
-                    <Text style={styles.brandSub}>Tôi có thể giúp gì cho bạn ?</Text>
+                    <Text style={styles.brandName}>{title}</Text>
+                    <Text style={styles.brandSub}>{subtitle}</Text>
                 </View>
             </View>
             <TouchableOpacity style={styles.notificationBtn}>
@@ -34,8 +39,8 @@ const styles = StyleSheet.create({
     },
     headerLeft: { flexDirection: 'row', alignItems: 'center' },
     logo: { width: 45, height: 45, marginRight: 12 },
-    brandName: { fontSize: 22, fontWeight: 'bold', color: COLORS.secondary },
-    brandSub: { fontSize: 13, color: '#666', marginTop: 2 },
+    brandName: { ...TYPOGRAPHY.h1, color: COLORS.secondary },
+    brandSub: { ...TYPOGRAPHY.caption, color: '#666', marginTop: 2 },
     notificationBtn: { padding: 5, position: 'relative' },
     badge: {
         position: 'absolute',
