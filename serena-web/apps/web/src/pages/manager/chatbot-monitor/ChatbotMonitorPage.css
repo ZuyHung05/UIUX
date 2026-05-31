@@ -103,37 +103,6 @@
   padding: 14px 15px 10px;
 }
 
-.chatbot-quick-tabs {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  border: 1px solid #dcebff;
-  border-radius: 999px;
-  background: #f3f6ff;
-  padding: 5px;
-}
-
-.chatbot-quick-tabs button {
-  min-height: 34px;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  background: transparent;
-  color: #244a6b;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    background 160ms ease,
-    border-color 160ms ease;
-}
-
-.chatbot-quick-tabs button:hover,
-.chatbot-quick-tabs button.is-active {
-  border-color: #8dc1ff;
-  background: #fff;
-}
-
 .chatbot-conversation-list {
   flex: 0 0 auto;
   min-height: 0;

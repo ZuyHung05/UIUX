@@ -11,6 +11,7 @@ import { CheckMetricIcon, ClockMetricIcon, StarMetricIcon, UsersMetricIcon } fro
 import { Pagination } from '../../../components/ui/Pagination'
 import { SearchInput } from '../../../components/ui/SearchInput'
 import { StatusBadge } from '../../../components/ui/StatusBadge'
+import { useToast } from '../../../components/ui/Toast'
 import { managerSidebarConfig } from '../managerSidebarConfig'
 import { branches, deriveDoctorStatus, specialties } from './doctorMockData'
 import { useDoctorsData } from './DoctorsDataContext'
@@ -40,6 +41,7 @@ function DoctorAvatar() {
 
 export function DoctorManagementPage() {
   const navigate = useNavigate()
+  const { showToast } = useToast()
   const { doctors, deleteDoctor } = useDoctorsData()
   const [query, setQuery] = useState('')
   const [specialty, setSpecialty] = useState('all')
@@ -112,7 +114,7 @@ export function DoctorManagementPage() {
     {
       key: 'status',
       header: 'Trạng thái',
-      width: '120px',
+      width: '150px',
       align: 'center',
       render: (doctor) => <StatusBadge status={deriveDoctorStatus(doctor)} />,
     },
@@ -214,12 +216,22 @@ export function DoctorManagementPage() {
                 ]}
               />
             </div>
-            <PrimaryButton onClick={() => navigate('/manager/doctors/new')}>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 5v14M5 12h14" />
-              </svg>
-              Thêm bác sĩ mới
-            </PrimaryButton>
+            <div className="doctor-toolbar-actions">
+              <PrimaryButton variant="ghost" onClick={() => showToast('Đã nhận file Excel. Chức năng xử lý sẽ được kết nối sau.', 'info')}>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 4v11" />
+                  <path d="m8 8 4-4 4 4" />
+                  <path d="M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" />
+                </svg>
+                Tải Excel
+              </PrimaryButton>
+              <PrimaryButton onClick={() => navigate('/manager/doctors/new')}>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                Thêm bác sĩ mới
+              </PrimaryButton>
+            </div>
           </div>
 
           <div className="doctor-table-controls">
@@ -270,6 +282,7 @@ export function DoctorManagementPage() {
                   variant="danger"
                   onClick={() => {
                     deleteDoctor(deleteCandidate.id)
+                    showToast(`Đã xóa hồ sơ ${deleteCandidate.fullName}.`, 'danger')
                     setDeleteCandidate(null)
                   }}
                 >
