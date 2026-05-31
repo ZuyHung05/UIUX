@@ -5,10 +5,11 @@
 .manager-dashboard-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
+  gap: 10px;
+  min-height: 100%;
+  padding: clamp(12px, 1.8vh, 18px) clamp(14px, 1.6vw, 24px);
+  color: #244a6b;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 /* 1. Emergency Alert Bar */
@@ -66,10 +67,11 @@
 
 .dashboard-heading-row h1 {
   margin: 0;
-  color: #1e293b;
-  font-size: 28px;
+  color: #244a6b;
+  font-size: clamp(20px, 2vw, 24px);
   font-weight: 800;
   line-height: 1.2;
+  
 }
 
 .dashboard-heading-row p {
@@ -98,7 +100,7 @@
 
 .dashboard-card h2 {
   margin: 0;
-  color: #1e293b;
+  color: #244a6b;
   font-size: 18px;
   font-weight: 700;
 }
@@ -118,8 +120,13 @@
 
 .dashboard-hero-grid {
   display: grid;
-  grid-template-columns: 340px 1fr;
+  grid-template-columns: minmax(240px, 0.72fr) minmax(420px, 1.28fr);
   gap: 24px;
+}
+
+.donut-hero-card,
+.combined-hero-card {
+  min-width: 0;
 }
 
 /* Hero Chatbot Donut Section */
@@ -154,7 +161,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 10px;
+  gap: 4px;
   flex: 1;
 }
 
@@ -162,7 +169,7 @@
   position: relative;
   width: 100%;
   flex: 1;
-  min-height: 220px;
+  min-height: 214px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -197,21 +204,26 @@
 .hero-donut-legend {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  gap: 6px 8px;
   margin-top: auto;
-  padding-top: 10px;
+  padding-top: 0;
 }
 
 .hero-legend-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0;
 }
 
 .legend-label-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  min-width: 0;
+  border: 1px solid #eef3f7;
+  border-radius: 999px;
+  padding: 5px 7px;
+  background: #fbfdff;
 }
 
 .dot-outline {
@@ -224,8 +236,19 @@
 }
 
 .hero-legend-item .label {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.legend-percent {
+  margin-left: auto;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 700;
 }
 
 .hero-legend-item .value {
@@ -281,6 +304,168 @@
   min-height: 0;
 }
 
+.chart-tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 120px;
+  padding: 9px 11px;
+  color: #244a6b;
+  background: #ffffff;
+  border: 1px solid #edf2f7;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+  font-size: 12px;
+}
+
+.chart-tooltip strong {
+  color: #1e293b;
+  font-size: 12px;
+}
+
+.chart-tooltip span {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.mixed-chart-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mixed-chart-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-bar-swatch {
+  width: 14px;
+  height: 9px;
+  border-radius: 3px 3px 1px 1px;
+  background: #dcebff;
+  border: 1px solid #c8dcf7;
+}
+
+.legend-line-swatch {
+  width: 18px;
+  height: 0;
+  border-top: 3px solid;
+  border-radius: 999px;
+}
+
+.legend-line-green {
+  border-color: #82c98d;
+}
+
+.legend-line-amber {
+  border-color: #f6ad55;
+  border-top-style: dashed;
+}
+
+.doctor-insights-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.55fr);
+  gap: 24px;
+}
+
+.doctor-scatter-frame {
+  height: 330px;
+}
+
+.doctor-side-stack {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 16px;
+  min-width: 0;
+}
+
+.leaderboard-card,
+.workforce-card {
+  border-color: #eef3f7;
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border: 1px solid #eef3f7;
+  border-radius: 12px;
+  background: #fbfdff;
+}
+
+.leaderboard-rank {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  color: #244a6b;
+  background: #dcebff;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.leaderboard-name {
+  min-width: 0;
+  overflow: hidden;
+  color: #244a6b;
+  font-size: 13px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderboard-row strong {
+  color: #82c98d;
+  font-size: 15px;
+}
+
+.workforce-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.workforce-summary-item {
+  padding: 10px;
+  border: 1px solid #eef3f7;
+  border-radius: 12px;
+  background: #fbfdff;
+}
+
+.workforce-summary-item span {
+  display: block;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.workforce-summary-item strong {
+  display: block;
+  margin-top: 5px;
+  color: #244a6b;
+  font-size: 20px;
+  line-height: 1;
+}
+
 /* Recharts Tooltip Styling overrides */
 .recharts-wrapper text {
   font-family: Inter, system-ui, -apple-system, sans-serif !important;
@@ -305,8 +490,27 @@
 /* Responsiveness */
 @media (max-width: 1200px) {
   .dashboard-split-grid,
-  .dashboard-hero-grid {
+  .doctor-insights-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 960px) {
+  .dashboard-hero-grid {
+    grid-template-columns: minmax(210px, 0.76fr) minmax(300px, 1.24fr);
+    gap: 14px;
+  }
+
+  .dashboard-card {
+    padding: 18px;
+  }
+
+  .hero-donut-legend {
+    grid-template-columns: 1fr;
+  }
+
+  .donut-inner-text .inner-value {
+    font-size: 28px;
   }
 }
 
@@ -335,6 +539,20 @@
   }
 }
 
+@media (max-width: 760px) {
+  .dashboard-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-donut-legend {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .doctor-scatter-frame {
+    height: 300px;
+  }
+}
+
 @media (max-width: 640px) {
   .metrics-grid {
     grid-template-columns: 1fr;
@@ -344,5 +562,9 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
+  }
+
+  .workforce-summary-grid {
+    grid-template-columns: 1fr;
   }
 }
