@@ -1,66 +1,74 @@
-# Serene Health
+# Serene Health - Multiplatform Workspace
 
-Hệ thống chatbot hỗ trợ chuỗi phòng khám gia đình. Chatbot giúp người dùng khảo sát
-tình trạng sức khỏe ban đầu, nhận định hướng xử lý, chuyển ca sang bác sĩ khi cần và
-hỗ trợ đặt lịch khám.
+Chào mừng bạn đến với kho lưu trữ chính thức của **Serene Health** - Hệ thống trợ lý y tế thông minh và quản lý phòng khám toàn diện.
 
-> Chatbot chỉ hỗ trợ tư vấn ban đầu. Hệ thống không kê đơn thuốc và không thay thế chẩn đoán của bác sĩ.
+Repository này được tái cấu trúc thành không gian làm việc đa nền tảng (Multi-platform Workspace) để hỗ trợ song song các dự án ứng dụng web và ứng dụng di động.
 
-## Kiến trúc project
+---
 
-Project dùng cấu trúc monorepo để tách rõ frontend và backend:
+## 📂 Cấu trúc thư mục (Repository Architecture)
 
-```txt
-UIUX/
-  apps/
-    web/      # Frontend React + Vite
-    api/      # Backend NestJS + TypeScript skeleton
-  docs/
-  package.json
-  README.md
+```text
+/ (Thư mục gốc)
+├── serena-web/          # Toàn bộ mã nguồn hệ thống Web (Vite + React + TypeScript)
+│   ├── apps/
+│   │   ├── web/         # Client frontend dành cho Bác sĩ và Quản lý phòng khám
+│   │   └── api/         # Backend API phục vụ chatbot và tích hợp hệ thống
+│   ├── docs/            # Tài liệu thiết kế hệ thống, kiến trúc và UX
+│   ├── package.json     # Quản lý thư viện và scripts toàn hệ thống Web
+│   └── ...
+│
+├── serena-mobile/       # Không gian phát triển ứng dụng di động (Mobile App)
+│   └── .gitkeep
+│
+├── .gitignore           # File loại trừ Git toàn cục ở thư mục gốc
+└── README.md            # Tài liệu hướng dẫn cấu trúc dự án chính này
 ```
 
-## Chạy frontend
+---
 
-```bash
-cd apps/web
-npm install
-npm run dev
-```
+## 💻 Hướng dẫn phát triển Web (`serena-web`)
 
-Frontend chạy mặc định tại:
+Thành phần Web hiện tại là một monorepo quản lý song song ứng dụng Web Portal (apps/web) và API Services (apps/api).
 
-```txt
-http://localhost:5173
-```
+### 🚀 Khởi chạy nhanh (Quick Start)
 
-Hoặc chạy từ root:
+1. **Di chuyển vào thư mục Web:**
+   ```bash
+   cd serena-web
+   ```
 
-```bash
-npm run dev:web
-```
+2. **Cài đặt các gói phụ thuộc (Dependencies):**
+   ```bash
+   npm install
+   ```
 
-Khi chạy từ root, frontend vẫn dùng cổng mặc định:
+3. **Khởi chạy ứng dụng môi trường nhà phát triển (Development):**
+   * Chạy riêng ứng dụng Web Portal:
+     ```bash
+     npm run dev:web
+     ```
+   * Chạy riêng ứng dụng API Backend:
+     ```bash
+     npm run dev:api
+     ```
 
-```txt
-http://localhost:5173
-```
+4. **Biên dịch ứng dụng (Production Build):**
+   ```bash
+   npm run build:web
+   ```
 
-## Kiểm tra frontend
+---
 
-```bash
-npm run lint:web
-npm run build:web
-```
+## 📱 Định hướng phát triển ứng dụng di động (`serena-mobile`)
 
-## Backend
+Thư mục `serena-mobile/` được thiết lập sẵn để sẵn sàng cho quá trình phát triển ứng dụng di động (dự kiến sử dụng React Native hoặc Flutter) phục vụ trực tiếp cho người bệnh/khách hàng. 
 
-Backend nằm trong `apps/api` và dùng NestJS + TypeScript theo định hướng triển khai.
-Giai đoạn hiện tại mới có skeleton, chưa có API thật.
+Tài liệu hướng dẫn khởi tạo dự án di động sẽ được cập nhật chi tiết ngay khi dự án bắt đầu triển khai phase tiếp theo.
 
-## Tài liệu
+---
 
-- [Kiến trúc hệ thống](docs/ARCHITECTURE.md)
-- [Giới thiệu hệ thống](docs/SYSTEM_OVERVIEW.md)
-- [Hướng dẫn chạy hệ thống](docs/RUN_GUIDE.md)
-- [Quy ước đặt tên nhóm](docs/NAMING_CONVENTIONS.md)
+## 🛠️ Tiêu chuẩn phát triển (Development Standards)
+
+* **Git Workflow:** Vui lòng tạo branch mới từ nhánh `main` cho từng tính năng và gửi Pull Request để kiểm duyệt.
+* **Mã hóa màu sắc & UI:** Đảm bảo tuân thủ nghiêm ngặt các quy tắc thiết kế Premium và bảng mã màu trong tài liệu thiết kế UX/UI.
