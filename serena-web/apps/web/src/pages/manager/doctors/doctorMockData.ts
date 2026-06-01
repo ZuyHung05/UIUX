@@ -1,8 +1,9 @@
 import type { Branch, Doctor, DoctorFormValues, DoctorSchedule, DoctorStatus, Gender, Specialty } from './doctorTypes'
+import { branchNames } from '../../../data/branchMockData'
 
 export const specialties: Specialty[] = ['Nội tiết', 'Tim mạch', 'Sản phụ khoa', 'Nhi khoa', 'Da liễu', 'Tai Mũi Họng']
 
-export const branches: Branch[] = ['Chi nhánh A', 'Chi nhánh B', 'Chi nhánh C']
+export const branches: Branch[] = branchNames
 
 const defaultAvatarColor = '#dcebff'
 
@@ -96,32 +97,32 @@ type DoctorSeed = {
 }
 
 const doctorSeeds: DoctorSeed[] = [
-  { id: '67890', fullName: 'BS. Nguyễn Thu Thủy', gender: 'Nữ', specialty: 'Nội tiết', branch: 'Chi nhánh A', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.8 },
-  { id: '24680', fullName: 'BS. Trần Văn Nam', gender: 'Nam', specialty: 'Tim mạch', branch: 'Chi nhánh B', hasCurrentShift: true, hasActiveAppointment: true, rating: 4.9 },
-  { id: '13579', fullName: 'BS. Lê Thị Mai', gender: 'Nữ', specialty: 'Sản phụ khoa', branch: 'Chi nhánh C', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.7 },
-  { id: '98765', fullName: 'BS. Hoàng Quốc Việt', gender: 'Nam', specialty: 'Nhi khoa', branch: 'Chi nhánh A', hasCurrentShift: false, hasActiveAppointment: false, rating: 4.6 },
-  { id: '54321', fullName: 'BS. Phạm Thanh Hà', gender: 'Nữ', specialty: 'Da liễu', branch: 'Chi nhánh B', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.8 },
-  { id: '10234', fullName: 'BS. Đỗ Minh Quân', gender: 'Nam', specialty: 'Tai Mũi Họng', branch: 'Chi nhánh C', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.5 },
-  { id: '11235', fullName: 'BS. Võ Anh Khoa', gender: 'Nam', specialty: 'Nội tiết', branch: 'Chi nhánh B', hasCurrentShift: true, hasActiveAppointment: true, rating: 4.6 },
-  { id: '12236', fullName: 'BS. Bùi Hồng Nhung', gender: 'Nữ', specialty: 'Tim mạch', branch: 'Chi nhánh A', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.7 },
-  { id: '13237', fullName: 'BS. Nguyễn Gia Hân', gender: 'Nữ', specialty: 'Sản phụ khoa', branch: 'Chi nhánh B', hasCurrentShift: false, hasActiveAppointment: false, rating: 4.4 },
-  { id: '14238', fullName: 'BS. Đặng Nhật Minh', gender: 'Nam', specialty: 'Nhi khoa', branch: 'Chi nhánh C', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.8 },
-  { id: '15239', fullName: 'BS. Lâm Thảo Vy', gender: 'Nữ', specialty: 'Da liễu', branch: 'Chi nhánh A', hasCurrentShift: true, hasActiveAppointment: true, rating: 4.9 },
-  { id: '16240', fullName: 'BS. Trịnh Quốc Bảo', gender: 'Nam', specialty: 'Tai Mũi Họng', branch: 'Chi nhánh B', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.3 },
-  { id: '17241', fullName: 'BS. Huỳnh Kim Ngân', gender: 'Nữ', specialty: 'Nội tiết', branch: 'Chi nhánh C', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.6 },
-  { id: '18242', fullName: 'BS. Mai Đức Huy', gender: 'Nam', specialty: 'Tim mạch', branch: 'Chi nhánh A', hasCurrentShift: false, hasActiveAppointment: false, rating: 4.5 },
-  { id: '19243', fullName: 'BS. Phan Khánh Linh', gender: 'Nữ', specialty: 'Sản phụ khoa', branch: 'Chi nhánh B', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.8 },
-  { id: '20244', fullName: 'BS. Cao Thanh Tùng', gender: 'Nam', specialty: 'Nhi khoa', branch: 'Chi nhánh C', hasCurrentShift: true, hasActiveAppointment: true, rating: 4.7 },
-  { id: '21245', fullName: 'BS. Lý Minh Châu', gender: 'Nữ', specialty: 'Da liễu', branch: 'Chi nhánh A', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.6 },
-  { id: '22246', fullName: 'BS. Hà Tuấn Kiệt', gender: 'Nam', specialty: 'Tai Mũi Họng', branch: 'Chi nhánh C', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.4 },
-  { id: '23247', fullName: 'BS. Vũ Quỳnh Anh', gender: 'Nữ', specialty: 'Nội tiết', branch: 'Chi nhánh B', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.9 },
-  { id: '24248', fullName: 'BS. Trương Hải Đăng', gender: 'Nam', specialty: 'Tim mạch', branch: 'Chi nhánh A', hasCurrentShift: true, hasActiveAppointment: true, rating: 4.8 },
-  { id: '25249', fullName: 'BS. Đinh Phương Nhi', gender: 'Nữ', specialty: 'Sản phụ khoa', branch: 'Chi nhánh C', hasCurrentShift: false, hasActiveAppointment: false, rating: 4.5 },
-  { id: '26250', fullName: 'BS. Hồ Bảo Long', gender: 'Nam', specialty: 'Nhi khoa', branch: 'Chi nhánh B', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.7 },
-  { id: '27251', fullName: 'BS. Châu Mỹ Duyên', gender: 'Nữ', specialty: 'Da liễu', branch: 'Chi nhánh C', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.6 },
-  { id: '28252', fullName: 'BS. Dương Khắc Hưng', gender: 'Nam', specialty: 'Tai Mũi Họng', branch: 'Chi nhánh A', hasCurrentShift: true, hasActiveAppointment: true, rating: 4.5 },
-  { id: '29253', fullName: 'BS. Tạ Ngọc Diệp', gender: 'Nữ', specialty: 'Nội tiết', branch: 'Chi nhánh B', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.8 },
-  { id: '30254', fullName: 'BS. Lưu Thành Đạt', gender: 'Nam', specialty: 'Tim mạch', branch: 'Chi nhánh C', hasCurrentShift: false, hasActiveAppointment: false, rating: 4.4 },
+  { id: '67890', fullName: 'BS. Nguyễn Thu Thủy', gender: 'Nữ', specialty: 'Nội tiết', branch: 'Chi nhánh Hà Nội', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.8 },
+  { id: '24680', fullName: 'BS. Trần Văn Nam', gender: 'Nam', specialty: 'Tim mạch', branch: 'Chi nhánh Đà Nẵng', hasCurrentShift: true, hasActiveAppointment: true, rating: 4.9 },
+  { id: '13579', fullName: 'BS. Lê Thị Mai', gender: 'Nữ', specialty: 'Sản phụ khoa', branch: 'Chi nhánh Hồ Chí Minh', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.7 },
+  { id: '98765', fullName: 'BS. Hoàng Quốc Việt', gender: 'Nam', specialty: 'Nhi khoa', branch: 'Chi nhánh Hà Nội', hasCurrentShift: false, hasActiveAppointment: false, rating: 4.6 },
+  { id: '54321', fullName: 'BS. Phạm Thanh Hà', gender: 'Nữ', specialty: 'Da liễu', branch: 'Chi nhánh Đà Nẵng', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.8 },
+  { id: '10234', fullName: 'BS. Đỗ Minh Quân', gender: 'Nam', specialty: 'Tai Mũi Họng', branch: 'Chi nhánh Hồ Chí Minh', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.5 },
+  { id: '11235', fullName: 'BS. Võ Anh Khoa', gender: 'Nam', specialty: 'Nội tiết', branch: 'Chi nhánh Đà Nẵng', hasCurrentShift: true, hasActiveAppointment: true, rating: 4.6 },
+  { id: '12236', fullName: 'BS. Bùi Hồng Nhung', gender: 'Nữ', specialty: 'Tim mạch', branch: 'Chi nhánh Hà Nội', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.7 },
+  { id: '13237', fullName: 'BS. Nguyễn Gia Hân', gender: 'Nữ', specialty: 'Sản phụ khoa', branch: 'Chi nhánh Đà Nẵng', hasCurrentShift: false, hasActiveAppointment: false, rating: 4.4 },
+  { id: '14238', fullName: 'BS. Đặng Nhật Minh', gender: 'Nam', specialty: 'Nhi khoa', branch: 'Chi nhánh Hồ Chí Minh', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.8 },
+  { id: '15239', fullName: 'BS. Lâm Thảo Vy', gender: 'Nữ', specialty: 'Da liễu', branch: 'Chi nhánh Hà Nội', hasCurrentShift: true, hasActiveAppointment: true, rating: 4.9 },
+  { id: '16240', fullName: 'BS. Trịnh Quốc Bảo', gender: 'Nam', specialty: 'Tai Mũi Họng', branch: 'Chi nhánh Đà Nẵng', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.3 },
+  { id: '17241', fullName: 'BS. Huỳnh Kim Ngân', gender: 'Nữ', specialty: 'Nội tiết', branch: 'Chi nhánh Hồ Chí Minh', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.6 },
+  { id: '18242', fullName: 'BS. Mai Đức Huy', gender: 'Nam', specialty: 'Tim mạch', branch: 'Chi nhánh Hà Nội', hasCurrentShift: false, hasActiveAppointment: false, rating: 4.5 },
+  { id: '19243', fullName: 'BS. Phan Khánh Linh', gender: 'Nữ', specialty: 'Sản phụ khoa', branch: 'Chi nhánh Đà Nẵng', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.8 },
+  { id: '20244', fullName: 'BS. Cao Thanh Tùng', gender: 'Nam', specialty: 'Nhi khoa', branch: 'Chi nhánh Hồ Chí Minh', hasCurrentShift: true, hasActiveAppointment: true, rating: 4.7 },
+  { id: '21245', fullName: 'BS. Lý Minh Châu', gender: 'Nữ', specialty: 'Da liễu', branch: 'Chi nhánh Hà Nội', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.6 },
+  { id: '22246', fullName: 'BS. Hà Tuấn Kiệt', gender: 'Nam', specialty: 'Tai Mũi Họng', branch: 'Chi nhánh Hồ Chí Minh', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.4 },
+  { id: '23247', fullName: 'BS. Vũ Quỳnh Anh', gender: 'Nữ', specialty: 'Nội tiết', branch: 'Chi nhánh Đà Nẵng', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.9 },
+  { id: '24248', fullName: 'BS. Trương Hải Đăng', gender: 'Nam', specialty: 'Tim mạch', branch: 'Chi nhánh Hà Nội', hasCurrentShift: true, hasActiveAppointment: true, rating: 4.8 },
+  { id: '25249', fullName: 'BS. Đinh Phương Nhi', gender: 'Nữ', specialty: 'Sản phụ khoa', branch: 'Chi nhánh Hồ Chí Minh', hasCurrentShift: false, hasActiveAppointment: false, rating: 4.5 },
+  { id: '26250', fullName: 'BS. Hồ Bảo Long', gender: 'Nam', specialty: 'Nhi khoa', branch: 'Chi nhánh Đà Nẵng', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.7 },
+  { id: '27251', fullName: 'BS. Châu Mỹ Duyên', gender: 'Nữ', specialty: 'Da liễu', branch: 'Chi nhánh Hồ Chí Minh', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.6 },
+  { id: '28252', fullName: 'BS. Dương Khắc Hưng', gender: 'Nam', specialty: 'Tai Mũi Họng', branch: 'Chi nhánh Hà Nội', hasCurrentShift: true, hasActiveAppointment: true, rating: 4.5 },
+  { id: '29253', fullName: 'BS. Tạ Ngọc Diệp', gender: 'Nữ', specialty: 'Nội tiết', branch: 'Chi nhánh Đà Nẵng', hasCurrentShift: true, hasActiveAppointment: false, rating: 4.8 },
+  { id: '30254', fullName: 'BS. Lưu Thành Đạt', gender: 'Nam', specialty: 'Tim mạch', branch: 'Chi nhánh Hồ Chí Minh', hasCurrentShift: false, hasActiveAppointment: false, rating: 4.4 },
 ]
 
 function makeDoctor(seed: DoctorSeed, index: number): Doctor {
