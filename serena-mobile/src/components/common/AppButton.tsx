@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     large: { paddingVertical: 16, width: '100%' },
 
     // Variants
-    primaryBtn: { backgroundColor: COLORS.lightBlue },
+    primaryBtn: { backgroundColor: COLORS.primary },
     outlineBtn: { backgroundColor: 'white', borderWidth: 1.5, borderColor: COLORS.secondary },
     ghostBtn: { backgroundColor: '#F0F7FF' },
     dangerBtn: { backgroundColor: 'white', borderWidth: 1.5, borderColor: COLORS.warning },

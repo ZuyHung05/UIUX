@@ -22,7 +22,7 @@ export const MainLayout = ({
     title,
     subtitle,
     isScrollable = true,
-    backgroundColor = '#F9FAFB',
+    backgroundColor = '#FFFDF1',
     padding = 20,
     showBack = false,
     showRightIcon = false
