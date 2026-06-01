@@ -6,20 +6,20 @@ export const doctorSidebarConfig: SidebarConfig = {
   groups: [
     {
       title: 'Tổng quan',
-      items: [{ label: 'Dashboard', icon: 'grid' }],
+      items: [{ label: 'Dashboard', icon: 'grid', href: '/doctor/dashboard?tab=Dashboard' }],
     },
     {
       title: 'Khám & tư vấn',
       items: [
-        { label: 'Tư vấn trực tiếp', icon: 'message' },
-        { label: 'Danh sách bệnh nhân', icon: 'users' },
+        { label: 'Tư vấn trực tiếp', icon: 'message', href: '/doctor/dashboard?tab=Tư vấn trực tiếp' },
+        { label: 'Danh sách bệnh nhân', icon: 'users', href: '/doctor/dashboard?tab=Danh sách bệnh nhân' },
       ],
     },
     {
       title: 'Lịch trình',
       items: [
-        { label: 'Lịch làm việc', icon: 'calendar' },
-        { label: 'Lịch hẹn khám', icon: 'calendar-check' },
+        { label: 'Lịch làm việc', icon: 'calendar', href: '/doctor/dashboard?tab=Lịch làm việc' },
+        { label: 'Lịch làm việc V2 ✨', icon: 'calendar-check', href: '/doctor/schedule-v2' },
       ],
     },
   ],

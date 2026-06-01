@@ -78,25 +78,37 @@ const baseScheduleData: Record<string, Shift[]> = {
   '2026-05-08': [{ id: 'm08_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 2, patients: [{ name: 'Phạm Văn E', id: '#12348', time: '10:00' }] }],
 
   // Week 2 (11 - 15 May)
-  // Thứ 2 - Ngày 11/05/2026
-  '2026-05-11': [
+  '2026-05-10': [
     {
-      id: 'm11_morning',
+      id: 'm10_morning',
       title: 'Ca sáng',
       time: '08:00 - 12:00',
       count: 8,
       status: 'Đang diễn ra',
       patients: [
         { name: 'Nguyễn Thị B', id: '#12345', time: '08:00' },
+        { name: 'Lê Mạnh T', id: '#12344', time: '08:30' },
         { name: 'Trần Văn C', id: '#12346', time: '09:00' },
+        { name: 'Lê Thị D', id: '#12347', time: '09:30' },
+        { name: 'Phạm Văn E', id: '#12348', time: '10:00' },
+        { name: 'Vũ Văn X', id: '#12399', time: '10:30' },
+        { name: 'Đặng Thị Y', id: '#12400', time: '11:00' },
+        { name: 'Trần Diệu N', id: '#12341', time: '11:30' },
       ],
     },
     {
-      id: 'm11_afternoon',
+      id: 'm10_afternoon',
       title: 'Ca chiều',
       time: '14:00 - 18:00',
       count: 6,
-      patients: [{ name: 'Phạm Văn E', id: '#12348', time: '14:30' }],
+      patients: [
+        { name: 'Hoàng Văn A', id: '#12350', time: '14:00' },
+        { name: 'Lý Thị K', id: '#12351', time: '14:30' },
+        { name: 'Nguyễn Thị Hoa', id: '#12352', time: '15:00' },
+        { name: 'Đỗ Hoàng Quân', id: '#12353', time: '15:30' },
+        { name: 'Trần Văn Tú', id: '#12354', time: '16:00' },
+        { name: 'Lê Văn Khang', id: '#12355', time: '16:30' },
+      ],
     },
   ],
   '2026-05-12': [{ id: 'm12_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 4, patients: [{ name: 'Vũ Văn X', id: '#12399', time: '10:30' }] }],
@@ -138,6 +150,49 @@ export const SCHEDULE_DATA: Record<string, Shift[]> = new Proxy(baseScheduleData
     if (typeof prop !== 'string') {
       return Reflect.get(target, prop);
     }
+
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const todayStr = `${yyyy}-${mm}-${dd}`;
+
+    if (prop === todayStr) {
+      return [
+        {
+          id: `m-today-morning`,
+          title: 'Ca sáng',
+          time: '08:00 - 12:00',
+          count: 8,
+          status: 'Đang diễn ra',
+          patients: [
+            { name: 'Nguyễn Thị B', id: '#12345', time: '08:00' },
+            { name: 'Lê Mạnh T', id: '#12344', time: '08:30' },
+            { name: 'Trần Văn C', id: '#12346', time: '09:00' },
+            { name: 'Lê Thị D', id: '#12347', time: '09:30' },
+            { name: 'Phạm Văn E', id: '#12348', time: '10:00' },
+            { name: 'Vũ Văn X', id: '#12399', time: '10:30' },
+            { name: 'Đặng Thị Y', id: '#12400', time: '11:00' },
+            { name: 'Trần Diệu N', id: '#12341', time: '11:30' },
+          ],
+        },
+        {
+          id: `m-today-afternoon`,
+          title: 'Ca chiều',
+          time: '14:00 - 18:00',
+          count: 6,
+          patients: [
+            { name: 'Hoàng Văn A', id: '#12350', time: '14:00' },
+            { name: 'Lý Thị K', id: '#12351', time: '14:30' },
+            { name: 'Nguyễn Thị Hoa', id: '#12352', time: '15:00' },
+            { name: 'Đỗ Hoàng Quân', id: '#12353', time: '15:30' },
+            { name: 'Trần Văn Tú', id: '#12354', time: '16:00' },
+            { name: 'Lê Văn Khang', id: '#12355', time: '16:30' },
+          ],
+        },
+      ];
+    }
+
     // If the date is explicitly defined in target, return it
     if (prop in target) {
       return target[prop];

@@ -1,92 +1,158 @@
 .calendar-container {
   background: white;
-  padding: 24px;
-  border-radius: 16px;
-  border: 1px solid #8DC1FF;
+  padding: 28px;
+  border-radius: 24px;
+  border: 1.5px solid #BFDBFE;
   flex: 1;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.03);
 }
+
 .calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
-.month-select {
-  width: fit-content;
-  height: fit-content;
-  position: relative;
+
+.calendar-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1E293B;
+  letter-spacing: -0.02em;
+}
+
+/* Filter select customization for calendar month dropdown */
+.calendar-header select {
   border-radius: 10px;
-  border: 1px solid #91C3FF;
-  background: #F3F6FF;
-  padding: 4px 12px;
+  border: 1px solid #BFDBFE;
+  background-color: #EFF6FF;
+  color: #1E40AF;
+  font-weight: 600;
+  padding: 6px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
 }
-.calendar-grid-header, .calendar-grid {
+
+.calendar-header select:hover {
+  background-color: #DBEAFE;
+  border-color: #93C5FD;
+}
+
+.calendar-grid-header {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
+  gap: 10px;
   text-align: center;
   width: 100%;
-  max-width: 450px;
-  margin: 0 auto;
+  margin-bottom: 12px;
 }
+
 .day-name {
-  color: #6A7282;
-  font-weight: 500;
-  margin-bottom: 16px;
+  color: #64748B;
+  font-weight: 600;
+  font-size: 13px;
+  padding-bottom: 6px;
+  text-transform: uppercase;
 }
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  text-align: center;
+  width: 100%;
+}
+
 .calendar-day {
-  height: auto;
+  aspect-ratio: 1 / 1;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid #DCEBFF;
-  border-radius: 12px;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 16px;
   cursor: pointer;
   position: relative;
-  color: #6A7282;
-  aspect-ratio: 1 / 1;
+  color: #475569;
   font-size: 14px;
+  font-weight: 600;
   background: white;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 4px;
 }
+
+.calendar-day:hover {
+  border-color: #3B82F6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
+}
+
 .calendar-day.has-schedule {
   background: #EFF6FF;
-  color: #244a6b;
-  border-color: #DCEBFF;
+  color: #1E40AF;
+  border-color: #BFDBFE;
 }
-/* .calendar-day.today styling removed to avoid bold borders on non-selected today */
+
+.calendar-day.has-schedule:hover {
+  background: #DBEAFE;
+  border-color: #3B82F6;
+}
+
 .calendar-day.selected {
-  background: #82B1FF !important;
-  color: #244A6B !important;
-  border-color: #82B1FF !important;
-  font-weight: 700;
+  background: #60A5FA !important;
+  color: white !important;
+  border-color: #60A5FA !important;
+  box-shadow: 0 4px 14px rgba(96, 165, 250, 0.4);
 }
+
 .calendar-day.selected .day-number {
-  color: #244A6B !important;
+  color: white !important;
 }
-.calendar-day.selected .event-dot {
-  background: #244A6B !important;
+
+.calendar-day.selected:hover {
+  transform: translateY(-2px);
+  background: #3B82F6 !important;
+  border-color: #3B82F6 !important;
 }
+
 .calendar-day.weekend {
-  color: #A3B8CE;
+  color: #94A3B8;
+  border-color: #F1F5F9;
 }
+
+.calendar-day.weekend.has-schedule {
+  background: #EFF6FF;
+  color: #1E40AF;
+  border-color: #BFDBFE;
+}
+
 .event-dot {
-  width: 6px;
-  height: 6px;
-  background: #244A6B;
+  width: 5px;
+  height: 5px;
+  background: #3B82F6;
   border-radius: 50%;
-  margin-top: 4px;
+  margin-top: 3px;
+  transition: all 0.2s ease;
 }
+
+.event-dot.selected {
+  background: white !important;
+}
+
 .empty-cell {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    height: auto;
-    border: 1px solid transparent; 
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid transparent; 
 }
-/* khi dùng ở dashboard, cần bỏ border và padding để đồng bộ với style của dashboard */
+
+/* dashboard specific styling integration */
 .calendar-container.dashboard-calendar {
-    border: none;
-    padding: 0;
-    background: transparent;
+  border: none;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
 }

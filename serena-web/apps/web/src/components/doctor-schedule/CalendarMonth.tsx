@@ -12,8 +12,10 @@ interface CalendarMonthProps {
 const CalendarMonth = ({ selectedDate, onDateSelect, className }: CalendarMonthProps) => {
     const daysOfWeek = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
-    // Default to May 2026 (index 4)
-    const [viewDate, setViewDate] = useState(new Date(2026, 4, 1));
+    const [viewDate, setViewDate] = useState(() => {
+        const today = new Date();
+        return new Date(today.getFullYear(), today.getMonth(), 1);
+    });
 
     const currentMonth = viewDate.getMonth();
     const currentYear = viewDate.getFullYear();
@@ -90,7 +92,7 @@ const CalendarMonth = ({ selectedDate, onDateSelect, className }: CalendarMonthP
                             onClick={() => onDateSelect(dateStr)}
                         >
                             <span className="day-number">{day}</span>
-                            {hasWorkSchedule && hasAppointments && <div className="event-dot"></div>}
+                            {hasWorkSchedule && <div className={`event-dot ${isSelected ? 'selected' : ''}`}></div>}
                         </div>
                     );
                 })}

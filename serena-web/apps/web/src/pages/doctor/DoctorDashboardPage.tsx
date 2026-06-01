@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import '../../components/layout/DesktopShell.css'
 import { Header } from '../../components/layout/header/Header'
 import { Sidebar } from '../../components/layout/sidebar/Sidebar'
-import { AppointmentListTab } from './appointments/AppointmentListTab'
 import { LiveConsultationTab, ChatItem, initialChats } from './consultation/LiveConsultationTab'
 import { DashboardTab } from './dashboard/DashboardTab'
 import './DoctorDashboardPage.css'
@@ -11,7 +11,15 @@ import { PatientListTab } from './patients/PatientListTab'
 import SchedulePage from './schedule/DoctorSchedulePage'
 
 export function DoctorDashboardPage() {
-  const [activeTab, setActiveTab] = useState<string>('Dashboard')
+  const [searchParams] = useSearchParams()
+  const tabFromQuery = searchParams.get('tab')
+  const [activeTab, setActiveTab] = useState<string>(tabFromQuery || 'Dashboard')
+
+  useEffect(() => {
+    if (tabFromQuery) {
+      setActiveTab(tabFromQuery)
+    }
+  }, [tabFromQuery])
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null)
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null)
   const [selectedEncounterDate, setSelectedEncounterDate] = useState<string | null>(null)
@@ -82,17 +90,7 @@ export function DoctorDashboardPage() {
         )
       case 'Lịch làm việc':
         return <SchedulePage onBackToDashboard={handleBackToDashboard} />
-      case 'Lịch hẹn khám':
-        return (
-          <AppointmentListTab
-            onBackToDashboard={handleBackToDashboard}
-            onViewPatientProfile={(patientId) => {
-              setSelectedPatientId(patientId)
-              setReferrerTab('Lịch hẹn khám')
-              setActiveTab('Danh sách bệnh nhân')
-            }}
-          />
-        )
+
       default:
         return <DashboardTab onNavigateTab={setActiveTab} />
     }
