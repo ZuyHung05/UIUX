@@ -1,8 +1,8 @@
+import type { Branch } from '../../../data/branchMockData'
+
 export type DoctorStatus = 'online' | 'offline' | 'busy'
 
 export type Specialty = 'Nội tiết' | 'Tim mạch' | 'Sản phụ khoa' | 'Nhi khoa' | 'Da liễu' | 'Tai Mũi Họng'
-
-export type Branch = 'Chi nhánh A' | 'Chi nhánh B' | 'Chi nhánh C'
 
 export type Gender = 'Nam' | 'Nữ' | 'Khác'
 

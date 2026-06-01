@@ -12,9 +12,10 @@ export type FilterSelectProps = {
   defaultValue?: string
   value?: string
   onChange?: (event: ChangeEvent<HTMLSelectElement>) => void
+  className?: string
 }
 
-export function FilterSelect({ options, defaultValue, value, onChange }: FilterSelectProps) {
+export function FilterSelect({ options, defaultValue, value, onChange, className }: FilterSelectProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [internalVal, setInternalVal] = useState(defaultValue || options[0]?.value)
   const [isOpen, setIsOpen] = useState(false)
@@ -43,7 +44,7 @@ export function FilterSelect({ options, defaultValue, value, onChange }: FilterS
   const selectedLabel = options.find((option) => option.value === currentVal)?.label || 'Chọn...'
 
   return (
-    <div className="filter-select-wrapper" ref={wrapperRef}>
+    <div className={['filter-select-wrapper', className].filter(Boolean).join(' ')} ref={wrapperRef}>
       <button
         className="date-filter-button"
         type="button"
