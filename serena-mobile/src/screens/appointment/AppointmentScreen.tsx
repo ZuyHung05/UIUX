@@ -167,10 +167,12 @@ export default function AppointmentScreen() {
   const [confirmVisible, setConfirmVisible] = React.useState(false);
   const [addressVisible, setAddressVisible] = React.useState(false);
   const [contactVisible, setContactVisible] = React.useState(false);
+  const [qrVisible, setQrVisible] = React.useState(false);
   const [selectedDateIndex, setSelectedDateIndex] = React.useState(0);
   const [selectedTimeIndex, setSelectedTimeIndex] = React.useState(1);
   const [selectedDoctor, setSelectedDoctor] = React.useState<DoctorCard | null>(null);
   const [selectedInfo, setSelectedInfo] = React.useState<{ name: string; specialty: string } | null>(null);
+  const [qrAppointment, setQrAppointment] = React.useState<Appointment | null>(null);
   const [upcomingAppointments, setUpcomingAppointments] = React.useState<Appointment[]>(initialAppointments);
 
   const handleBookDoctor = (doctor: DoctorCard) => {
@@ -204,14 +206,25 @@ export default function AppointmentScreen() {
       const selectedTime = timeSlots[selectedTimeIndex];
       const dateNum = parseInt(selectedDate.date, 10);
       const refDate = new Date(2026, 4, dateNum);
-      const dayName = dayNames[refDate.getDay()];
+      
+      const fullDayNames = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
+      const dayName = fullDayNames[refDate.getDay()];
       const scheduleStr = `${dayName}, ${String(dateNum).padStart(2, "0")}/05/2026`;
+
+      const formatTimeAMPM = (timeStr: string) => {
+        const [hourStr, minStr] = timeStr.split(":");
+        let hour = parseInt(hourStr, 10);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        hour = hour % 12;
+        hour = hour ? hour : 12;
+        return `${hour}:${minStr} ${ampm}`;
+      };
 
       const newAppointment: Appointment = {
         name: selectedDoctor.name,
         specialty: selectedDoctor.specialty,
         schedule: scheduleStr,
-        time: selectedTime.label,
+        time: formatTimeAMPM(selectedTime.label),
         locationName: selectedDoctor.location ?? "Phòng khám MN",
         locationAddress: "123 Main Street, Downtown",
       };
@@ -271,6 +284,16 @@ export default function AppointmentScreen() {
                 <Text style={styles.doctorName}>{appt.name}</Text>
                 <Text style={styles.doctorSpecialty}>{appt.specialty}</Text>
               </View>
+              <Pressable
+                onPress={() => {
+                  setQrAppointment(appt);
+                  setQrVisible(true);
+                }}
+                hitSlop={8}
+                style={styles.qrIconBtn}
+              >
+                <QrScanIcon />
+              </Pressable>
             </View>
 
             <View style={styles.infoPanel}>
@@ -625,6 +648,65 @@ export default function AppointmentScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* ===== QR CHECK-IN MODAL ===== */}
+      <Modal
+        visible={qrVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setQrVisible(false)}
+      >
+        <View style={styles.confirmOverlay}>
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={() => setQrVisible(false)}
+          />
+          <View style={styles.qrCard}>
+            <View style={styles.qrHeader}>
+              <View style={styles.qrIconHeaderWrap}>
+                <QrScanIcon size={28} color="#5B9DFF" />
+              </View>
+              <Text style={styles.qrTitle}>Mã QR Check-in</Text>
+            </View>
+
+            <Text style={styles.qrSubtitle}>
+              Xuất trình mã này tại quầy lễ tân để check-in
+            </Text>
+
+            <View style={styles.qrCodeWrap}>
+              <QrCodePattern data={qrAppointment ? `${qrAppointment.name}-${qrAppointment.schedule}-${qrAppointment.time}` : "SERENA"} />
+            </View>
+
+            {qrAppointment && (
+              <View style={styles.qrInfoSection}>
+                <View style={styles.qrInfoRow}>
+                  <Text style={styles.qrInfoLabel}>Bác sĩ</Text>
+                  <Text style={styles.qrInfoValue}>{qrAppointment.name}</Text>
+                </View>
+                <View style={styles.qrInfoRow}>
+                  <Text style={styles.qrInfoLabel}>Lịch hẹn</Text>
+                  <Text style={styles.qrInfoValue}>{qrAppointment.schedule}</Text>
+                </View>
+                <View style={styles.qrInfoRow}>
+                  <Text style={styles.qrInfoLabel}>Giờ khám</Text>
+                  <Text style={styles.qrInfoValue}>{qrAppointment.time}</Text>
+                </View>
+                <View style={[styles.qrInfoRow, { borderBottomWidth: 0 }]}>
+                  <Text style={styles.qrInfoLabel}>Phòng khám</Text>
+                  <Text style={styles.qrInfoValue}>{qrAppointment.locationName}</Text>
+                </View>
+              </View>
+            )}
+
+            <TouchableOpacity
+              style={styles.qrCloseBtn}
+              onPress={() => setQrVisible(false)}
+            >
+              <Text style={styles.qrCloseText}>Đóng</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -719,6 +801,79 @@ function ActionChip({ icon, label, onPress }: { icon: React.ReactNode; label: st
       {icon}
       <Text style={styles.chipText}>{label}</Text>
     </Pressable>
+  );
+}
+
+function QrScanIcon({ size = 24, color = "#6A7282" }: { size?: number; color?: string }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 38 38" fill="none">
+      <Path
+        d="M37.375 4.3125V11.0208C37.375 11.8143 36.731 12.4583 35.9375 12.4583C35.144 12.4583 34.5 11.8143 34.5 11.0208V4.3125C34.5 3.18358 34.1914 2.875 33.0625 2.875H26.3542C25.5607 2.875 24.9167 2.231 24.9167 1.4375C24.9167 0.644 25.5607 0 26.3542 0H33.0625C35.7631 0 37.375 1.61192 37.375 4.3125ZM1.4375 12.4583C2.231 12.4583 2.875 11.8143 2.875 11.0208V4.3125C2.875 3.18358 3.18358 2.875 4.3125 2.875H11.0208C11.8143 2.875 12.4583 2.231 12.4583 1.4375C12.4583 0.644 11.8143 0 11.0208 0H4.3125C1.61192 0 0 1.61192 0 4.3125V11.0208C0 11.8143 0.644 12.4583 1.4375 12.4583ZM11.0208 34.5H4.3125C3.18358 34.5 2.875 34.1914 2.875 33.0625V26.3542C2.875 25.5607 2.231 24.9167 1.4375 24.9167C0.644 24.9167 0 25.5607 0 26.3542V33.0625C0 35.7631 1.61192 37.375 4.3125 37.375H11.0208C11.8143 37.375 12.4583 36.731 12.4583 35.9375C12.4583 35.144 11.8143 34.5 11.0208 34.5ZM35.9375 24.9167C35.144 24.9167 34.5 25.5607 34.5 26.3542V33.0625C34.5 34.1914 34.1914 34.5 33.0625 34.5H26.3542C25.5607 34.5 24.9167 35.144 24.9167 35.9375C24.9167 36.731 25.5607 37.375 26.3542 37.375H33.0625C35.7631 37.375 37.375 35.7631 37.375 33.0625V26.3542C37.375 25.5607 36.731 24.9167 35.9375 24.9167ZM19.1667 15.3333V10.5417C19.1667 8.79558 20.2956 7.66667 22.0417 7.66667H26.8333C28.5794 7.66667 29.7083 8.79558 29.7083 10.5417V15.3333C29.7083 17.0794 28.5794 18.2083 26.8333 18.2083H22.0417C20.2956 18.2083 19.1667 17.0794 19.1667 15.3333ZM22.0417 15.3333H26.8179L26.8333 10.557L22.0571 10.5417L22.0417 15.3333ZM18.2083 10.5417V15.3333C18.2083 17.0794 17.0794 18.2083 15.3333 18.2083H10.5417C8.79558 18.2083 7.66667 17.0794 7.66667 15.3333V10.5417C7.66667 8.79558 8.79558 7.66667 10.5417 7.66667H15.3333C17.0794 7.66667 18.2083 8.79558 18.2083 10.5417ZM15.3333 10.557L10.5571 10.5417L10.5417 15.3333H15.3179L15.3333 10.557ZM26.8333 29.7083H22.0417C20.2956 29.7083 19.1667 28.5794 19.1667 26.8333V22.0417C19.1667 20.2956 20.2956 19.1667 22.0417 19.1667H26.8333C28.5794 19.1667 29.7083 20.2956 29.7083 22.0417V26.8333C29.7083 28.5794 28.5794 29.7083 26.8333 29.7083ZM26.8179 26.8333L26.8333 22.057L22.0571 22.0417L22.0417 26.8333H26.8179ZM18.2083 22.0417V26.8333C18.2083 28.5794 17.0794 29.7083 15.3333 29.7083H10.5417C8.79558 29.7083 7.66667 28.5794 7.66667 26.8333V22.0417C7.66667 20.2956 8.79558 19.1667 10.5417 19.1667H15.3333C17.0794 19.1667 18.2083 20.2956 18.2083 22.0417ZM15.3333 22.057L10.5571 22.0417L10.5417 26.8333H15.3179L15.3333 22.057Z"
+        fill={color}
+      />
+    </Svg>
+  );
+}
+
+function QrCodePattern({ data }: { data: string }) {
+  const GRID = 21;
+  const CELL = 8;
+  const SIZE = GRID * CELL;
+
+  // Simple hash to generate deterministic pattern
+  const hash = (str: string) => {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+      h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+    }
+    return Math.abs(h);
+  };
+
+  const seed = hash(data);
+  const cells: { x: number; y: number }[] = [];
+
+  // QR finder patterns (3 corners)
+  const addFinder = (ox: number, oy: number) => {
+    for (let r = 0; r < 7; r++) {
+      for (let c = 0; c < 7; c++) {
+        if (
+          r === 0 || r === 6 || c === 0 || c === 6 ||
+          (r >= 2 && r <= 4 && c >= 2 && c <= 4)
+        ) {
+          cells.push({ x: ox + c, y: oy + r });
+        }
+      }
+    }
+  };
+  addFinder(0, 0);
+  addFinder(GRID - 7, 0);
+  addFinder(0, GRID - 7);
+
+  // Data pattern from seed
+  let s = seed;
+  for (let r = 0; r < GRID; r++) {
+    for (let c = 0; c < GRID; c++) {
+      // Skip finder areas
+      if ((r < 8 && c < 8) || (r < 8 && c >= GRID - 8) || (r >= GRID - 8 && c < 8)) continue;
+      s = ((s * 1103515245 + 12345) >>> 0) & 0x7fffffff;
+      if (s % 3 !== 0) cells.push({ x: c, y: r });
+    }
+  }
+
+  return (
+    <Svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`}>
+      <Rect width={SIZE} height={SIZE} fill="white" />
+      {cells.map((cell, i) => (
+        <Rect
+          key={i}
+          x={cell.x * CELL}
+          y={cell.y * CELL}
+          width={CELL}
+          height={CELL}
+          fill="#1E3A52"
+        />
+      ))}
+    </Svg>
   );
 }
 
@@ -1284,5 +1439,105 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.body,
     color: "#64748B",
     fontSize: 14,
+  },
+
+  /* ===== QR CHECK-IN ===== */
+  qrIconBtn: {
+    width: 24,
+    height: 24,
+
+    
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  qrCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 28,
+    paddingHorizontal: 28,
+    paddingTop: 28,
+    paddingBottom: 24,
+    alignItems: "center",
+    width: "100%",
+    maxWidth: 340,
+    shadowColor: "#000",
+    shadowOpacity: 0.18,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 12,
+  },
+  qrHeader: {
+    flexDirection: "row" as const,
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 8,
+  },
+  qrIconHeaderWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: "rgba(91, 157, 255, 0.12)",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+  },
+  qrTitle: {
+    ...TYPOGRAPHY.h2,
+    color: "#3F83F8",
+    fontSize: 22,
+  },
+  qrSubtitle: {
+    ...TYPOGRAPHY.body,
+    color: "#94A3B8",
+    fontSize: 13,
+    textAlign: "center" as const,
+    marginBottom: 20,
+  },
+  qrCodeWrap: {
+    padding: 14,
+    borderRadius: 18,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 2,
+    borderColor: "#E5E7EB",
+    marginBottom: 20,
+  },
+  qrInfoSection: {
+    width: "100%" as const,
+    backgroundColor: "#F8FAFC",
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+    marginBottom: 18,
+  },
+  qrInfoRow: {
+    flexDirection: "row" as const,
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+  },
+  qrInfoLabel: {
+    ...TYPOGRAPHY.body,
+    color: "#94A3B8",
+    fontSize: 13,
+  },
+  qrInfoValue: {
+    ...TYPOGRAPHY.title,
+    color: "#1E3A52",
+    fontSize: 14,
+  },
+  qrCloseBtn: {
+    width: "100%" as const,
+    height: 48,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: "#D1D5DB",
+    backgroundColor: "#FFFFFF",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+  },
+  qrCloseText: {
+    ...TYPOGRAPHY.button,
+    color: "#4B5563",
+    fontSize: 16,
   },
 });
