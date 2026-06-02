@@ -57,13 +57,13 @@
 }
 
 .chatbot-monitor-count {
-  height: 36px;
+  height: 32px;
   min-width: 128px;
   flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
+  gap: 7px;
   border: 1px solid #8dc1ff;
   border-radius: 20px;
   background: #dcebff;

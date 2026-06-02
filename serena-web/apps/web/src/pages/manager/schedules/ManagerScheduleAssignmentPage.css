@@ -92,7 +92,7 @@
 
 .view-mode-tabs {
   width: 256px;
-  min-height: 38px;
+  min-height: 34px;
 }
 
 .view-mode-tabs button {
@@ -320,7 +320,7 @@
   justify-content: space-between;
   gap: 5px;
   min-width: 0;
-  min-height: 38px;
+  min-height: 34px;
   border: 1px solid transparent;
   border-radius: 12px;
   padding: 6px 7px;
@@ -387,7 +387,7 @@
 
 .shift-add-card {
   width: 100%;
-  min-height: 38px;
+  min-height: 34px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -435,7 +435,7 @@
 }
 
 .shift-picker-menu button {
-  min-height: 36px;
+  min-height: 32px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

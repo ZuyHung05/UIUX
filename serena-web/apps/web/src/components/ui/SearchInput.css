@@ -1,16 +1,16 @@
 .search-input {
   width: 280px;
   min-width: 220px;
-  height: 36px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   border: 1px solid transparent;
   border-radius: 999px;
   border-color: #dcebff;
   background: #f5f9f9;
   color: #7f9dbb;
-  padding: 0 16px;
+  padding: 0 13px;
   transition: background 160ms ease, border-color 160ms ease;
 }
 
@@ -20,8 +20,8 @@
 }
 
 .search-input svg {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   flex: 0 0 auto;
   fill: none;
   stroke: currentColor;
@@ -37,7 +37,7 @@
   background: transparent;
   color: #244a6b;
   font: inherit;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .search-input input::placeholder {
