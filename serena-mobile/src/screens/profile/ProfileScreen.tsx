@@ -30,7 +30,7 @@ export default function ProfileScreen() {
                     <View style={styles.nameRow}>
                         <Text style={styles.userName}>Nguyễn Thị Mai</Text>
                         <TouchableOpacity style={styles.editBtn}>
-                            <Edit2 size={16} color={COLORS.primaryDark} />
+                            <Edit2 size={16} color={COLORS.primary} />
                         </TouchableOpacity>
                     </View>
                     <View style={styles.idBadge}>
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
         borderRadius: 20, marginTop: 8
     },
     idDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: COLORS.primary, marginRight: 8 },
-    idText: { fontSize: 12, fontWeight: '700', color: COLORS.primaryDark },
+    idText: { fontSize: 12, fontWeight: '700', color: COLORS.primary },
     userStats: { ...TYPOGRAPHY.caption, color: '#4A5565', marginTop: 8 },
 
     // EMR Section

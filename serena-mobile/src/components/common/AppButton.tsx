@@ -64,7 +64,7 @@ export const AppButton = ({
 
 const styles = StyleSheet.create({
     baseBtn: {
-        borderRadius: 25,
+        borderRadius: 28,
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',

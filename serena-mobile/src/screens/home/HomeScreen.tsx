@@ -3,9 +3,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import {
     Bot,
     Calendar,
+    ChevronRight,
     ClipboardList,
     MessageSquare,
-    UserPlus
+    Stethoscope
 } from 'lucide-react-native';
 import React from 'react';
 import {
@@ -22,24 +23,20 @@ export default function HomeScreen() {
     const navigation = useNavigation<any>();
     return (
         <MainLayout title="Serena Health" subtitle="Serena - Trợ lý y tế thông minh">
-            <LinearGradient
-                colors={['#3F83F8', '#2563EB']}
-                style={styles.appointmentCard}
-            >
+            <TouchableOpacity style={styles.appointmentCard}>
                 <View style={styles.cardHeader}>
-                    <Text style={styles.appointmentTitle}>Bạn có lịch khám lúc{"\n"}10:00 hôm nay</Text>
-                    <View style={styles.glassIcon}>
-                        <Calendar size={18} color="#4E9FFF" />
+                    <View>
+                        <Text style={styles.appointmentTitle}>Bạn có lịch khám lúc 10:00 hôm nay</Text>
+                        <Text style={styles.appointmentSub}>Đa khoa Tâm Anh, Q.1</Text>
+                    </View>
+                    <View style={styles.arrowIcon}>
+                        <ChevronRight size={18} color="white" />
                     </View>
                 </View>
-                <Text style={styles.appointmentSub}>Phòng khám Đa khoa Tâm Anh, Q.1</Text>
-
-                {/* Hiệu ứng hình tròn mờ phía sau Card (Blur Effect) */}
-                <View style={styles.blurCircle} />
-            </LinearGradient>
+            </TouchableOpacity>
 
             <LinearGradient
-                colors={['rgba(252, 253, 250, 0.44)', 'rgba(174, 211, 255, 0.5)']}
+                colors={['rgba(174, 211, 255, 0.5)', 'rgba(252, 253, 250, 0.44)']}
                 style={styles.aiCard}
             >
                 <View style={styles.aiHeader}>
@@ -61,61 +58,48 @@ export default function HomeScreen() {
                 />
             </LinearGradient>
 
-            <Text style={styles.sectionTitle}>Tính năng chính</Text>
-            {/* <View style={styles.featureList}>
-                <FeatureItem
-                    icon={<MessageSquare color="#4E9FFF" size={24} />}
-                    title="Tư vấn từ xa"
-                    bgColor="rgba(186, 217, 255, 0.58)"
-                />
-                <FeatureItem
-                    icon={<Calendar color="#34C759" size={24} />}
-                    title="Đặt lịch khám"
-                    bgColor="#E0FFE6"
-                />
-                <FeatureItem
-                    icon={<ClipboardList color="#FFEB50" size={24} />}
-                    title="Theo dõi hồ sơ sức khỏe"
-                    bgColor="#FDF3E4"
-                />
-                <FeatureItem
-                    icon={<UserPlus color="#004AC6" size={24} />}
-                    title="Kết nối bác sĩ"
-                    bgColor="rgba(247, 226, 255, 0.58)"
-                />
-            </View> */}
+            <Text style={styles.sectionTitle}>Dịch vụ dành cho bạn</Text>
             <View style={styles.featureGrid}>
                 <FeatureItem
-                    icon={<MessageSquare color="#4E9FFF" size={24} />}
-                    title="Tư vấn từ xa"
-                    bgColor="rgba(186, 217, 255, 0.58)"
+                    icon={<MessageSquare color="#7EB9FF" size={26} />}
+                    title="Tư vấn với AI"
+                    subtitle="Tư vấn sức khỏe ban đầu với AI"
+                    bgColor="#E3F0FF"
                 />
                 <FeatureItem
-                    icon={<Calendar color="#34C759" size={24} />}
+                    icon={<Stethoscope color="#B694FF" size={26} />}
+                    title="Tư vấn Bác sĩ"
+                    subtitle="Kết nối trực tiếp với bác sĩ"
+                    bgColor="#F3E8FF"
+                />
+                <FeatureItem
+                    icon={<Calendar color="#6BCF6B" size={26} />}
                     title="Đặt lịch khám"
-                    bgColor="#E0FFE6"
+                    subtitle="Đặt lịch hẹn trực tiếp với bác sĩ"
+                    bgColor="#E8FFE8"
                 />
                 <FeatureItem
-                    icon={<ClipboardList color="#FFEB50" size={20} />}
-                    title="Hồ sơ sức khỏe" // Rút ngắn tiêu đề để không bị nhảy dòng quá nhiều
-                    bgColor="#FDF3E4"
-                />
-                <FeatureItem
-                    icon={<UserPlus color="#004AC6" size={24} />}
-                    title="Kết nối bác sĩ"
-                    bgColor="rgba(247, 226, 255, 0.58)"
+                    icon={<ClipboardList color="#FFA94D" size={26} />}
+                    title="Hồ sơ sức khỏe"
+                    subtitle="Quản lý thông tin y tế cá nhân"
+                    bgColor="#FFF8E8"
                 />
             </View>
 
         </MainLayout>
     );
 }
-const FeatureItem = ({ icon, title, bgColor }: any) => (
+const FeatureItem = ({ icon, title, subtitle, bgColor }: any) => (
     <TouchableOpacity style={styles.featureBox}>
         <View style={[styles.iconCircle, { backgroundColor: bgColor }]}>
             {icon}
         </View>
-        <Text style={styles.featureLabel} numberOfLines={2}>{title}</Text>
+        <Text style={styles.featureLabel} numberOfLines={2}>
+            {title}
+        </Text>
+        <Text style={styles.featureSubLabel} numberOfLines={2}>
+            {subtitle}
+        </Text>
     </TouchableOpacity>
 );
 const styles = StyleSheet.create({
@@ -127,23 +111,20 @@ const styles = StyleSheet.create({
 
     // Appointment Card
     appointmentCard: {
+        backgroundColor: COLORS.primary, // #3F6DC9
         borderRadius: 24,
-        padding: 20,
+        padding: 16,
         marginBottom: 20,
-        overflow: 'hidden',
-        elevation: 5,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
     },
     cardHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'flex-start',
+        alignItems: 'center',
+        // 'flex-start'
     },
     appointmentTitle: {
         ...TYPOGRAPHY.h2,
-        color: 'white',
+        color: COLORS.white,
         lineHeight: 28,
     },
     glassIcon: {
@@ -156,9 +137,17 @@ const styles = StyleSheet.create({
     },
     appointmentSub: {
         ...TYPOGRAPHY.body,
-        color: 'white',
-        marginTop: 10,
+        color: 'rgba(255, 255, 255, 0.9)',
+        marginTop: 4,
         opacity: 0.9,
+    },
+    arrowIcon: {
+        width: 28,
+        height: 28,
+        borderRadius: 14,
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     blurCircle: {
         position: 'absolute',
@@ -187,7 +176,7 @@ const styles = StyleSheet.create({
         width: 52,
         height: 52,
         borderRadius: 26,
-        backgroundColor: '#4E9FFF',
+        backgroundColor: COLORS.primary,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -203,64 +192,50 @@ const styles = StyleSheet.create({
     },
     aiBtn: {
         borderRadius: 20,
+        height: 56,
     },
 
     // Features
     sectionTitle: {
-        ...TYPOGRAPHY.title,
-        color: COLORS.primary,
-        marginBottom: 15,
-        marginLeft: 5,
-    },
-    featureList: {
-        gap: 12,
-    },
-    featureItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 10,
-        borderWidth: 1,
-        borderColor: '#91C3FF',
+        fontSize: 16,
+        fontWeight: '700',
+        color: COLORS.text,
+        marginBottom: 12,
+        marginTop: -10,
     },
     featureGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
-        gap: 12, // Khoảng cách giữa các ô
+        gap: 12,
     },
-
-    // TỪNG Ô TÍNH NĂNG (DẠNG GRID)
     featureBox: {
-        width: '48%', // Để 2 ô nằm trên 1 hàng (có chừa khoảng trống gap)
+        width: '48%',
         backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 15,
-        alignItems: 'center', // Căn giữa nội dung theo chiều dọc
-        borderWidth: 1,
-        borderColor: '#91C3FF',
-        // Đổ bóng nhẹ
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05,
+        borderRadius: 28,
+        padding: 16,
+        alignItems: 'center',
+        borderWidth: 1.27,
+        borderColor: '#E3F0FF',
     },
-
     iconCircle: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
+        width: 56,
+        height: 56,
+        borderRadius: 28,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: 12,
     },
-
     featureLabel: {
-        ...TYPOGRAPHY.caption,
         fontSize: 14,
-        fontWeight: '600',
-        textAlign: 'center', // Căn giữa chữ
-        color: '#101828',
+        fontWeight: '700',
+        color: '#1A202C',
+        textAlign: 'center',
+    },
+    featureSubLabel: {
+        fontSize: 9,
+        color: '#A0AEC0',
+        textAlign: 'center',
+        marginTop: 4,
     },
 });

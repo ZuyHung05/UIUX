@@ -1,22 +1,18 @@
-import { StyleSheet } from 'react-native';
+import { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
+import AuthScreen from './src/screens/auth/AuthScreen';
+
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   return (
-    <>
-      <SafeAreaProvider>
+    <SafeAreaProvider>
+      {isAuthenticated ? (
         <AppNavigator />
-      </SafeAreaProvider>
-    </>
-
-  )
+      ) : (
+        <AuthScreen onAuthenticated={() => setIsAuthenticated(true)} />
+      )}
+    </SafeAreaProvider>
+  );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
