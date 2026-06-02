@@ -313,32 +313,74 @@ const specialtyRevenueData = uniqueSpecialties
   .sort((a, b) => b.value - a.value)
   .slice(0, 5)
 
-const branchComparisonData = monthlyBranchMetrics.map((branch) => ({
-  branch: branch.branch,
-  ai: branch.aiConsults,
-  appointments: branch.appointments,
-  revenue: branch.revenue,
+const branchRevenueTrendData = ([
+  { key: 'today', time: 'Hôm nay' },
+  { key: 'week', time: 'Tuần này' },
+  { key: 'month', time: 'Tháng này' },
+] as const).map((period) => ({
+  time: period.time,
+  hanoi: branchDashboardMetrics[period.key].hanoi.revenue,
+  danang: branchDashboardMetrics[period.key].danang.revenue,
+  hochiminh: branchDashboardMetrics[period.key].hochiminh.revenue,
 }))
 
-const branchSummaryRows = monthlyBranchMetrics.map((branch) => ({
+const branchConversionData = monthlyBranchMetrics.map((branch) => ({
   branch: branch.branch,
-  ai: branch.aiConsults.toLocaleString('vi-VN'),
-  appointments: branch.appointments.toLocaleString('vi-VN'),
-  revenue: `${branch.revenue.toLocaleString('vi-VN')} trđ`,
-  conversion: `${branch.conversion}%`,
-  csat: averageRating.toFixed(1),
+  conversion: Number((((branch.doctorConsults + branch.appointments) / branch.aiConsults) * 100).toFixed(1)),
 }))
 
-const branchRankingData = [...monthlyBranchMetrics]
-  .sort((a, b) => b.revenue - a.revenue)
-  .map((branch) => ({ name: branch.branch, value: branch.revenue }))
+const chatbotBranchRatingMap: Record<string, string> = {
+  hanoi: 'Chi nhánh A',
+  danang: 'Chi nhánh B',
+  hochiminh: 'Chi nhánh C',
+}
+
+const branchSatisfactionData = branchMockData.map((branch) => {
+  const sourceBranch = chatbotBranchRatingMap[branch.id]
+  const conversations = chatbotMonitorConversations.filter((conversation) => conversation.branch === sourceBranch)
+  const rating = conversations.length
+    ? conversations.reduce((sum, conversation) => sum + conversation.rating, 0) / conversations.length
+    : averageRating
+
+  return {
+    branch: branch.shortName,
+    satisfaction: Number(rating.toFixed(1)),
+  }
+})
+
+const branchSatisfactionLeaderboard = [...branchSatisfactionData].sort((a, b) => b.satisfaction - a.satisfaction)
+
+const branchSummaryRows = monthlyBranchMetrics.map((branch) => {
+  const branchInfo = branchMockData.find((item) => item.shortName === branch.branch)
+  const weeklyRevenueForGrowth = branchInfo ? branchDashboardMetrics.week[branchInfo.id].revenue : 0
+  const normalizedPreviousRevenue = weeklyRevenueForGrowth * 4
+  const growth = normalizedPreviousRevenue
+    ? ((branch.revenue - normalizedPreviousRevenue) / normalizedPreviousRevenue) * 100
+    : 0
+  const satisfaction = branchSatisfactionData.find((item) => item.branch === branch.branch)?.satisfaction ?? Number(averageRating.toFixed(1))
+
+  return {
+    branch: branch.branch,
+    appointments: branch.appointments.toLocaleString('vi-VN'),
+    revenue: `${branch.revenue.toLocaleString('vi-VN')} trđ`,
+    conversion: `${Number((((branch.doctorConsults + branch.appointments) / branch.aiConsults) * 100).toFixed(1))}%`,
+    csat: satisfaction.toFixed(1),
+    growth: `${growth >= 0 ? '▲' : '▼'} ${Math.abs(growth).toFixed(1)}%`,
+    growthTrend: growth >= 0 ? 'positive' : 'negative',
+  }
+})
 
 function metricFormatter(value: number | string, name: string) {
   const labels: Record<string, string> = {
     consultations: 'Lượt tư vấn AI',
     revenue: 'Doanh thu',
+    hanoi: 'Hà Nội',
+    danang: 'Đà Nẵng',
+    hochiminh: 'TP.HCM',
     ai: 'Lượt tư vấn AI',
     appointments: 'Lịch hẹn',
+    conversion: 'Tỷ lệ chuyển đổi',
+    satisfaction: 'Điểm hài lòng',
     doctorConversion: 'Chuyển đổi tư vấn chuyên sâu bác sĩ',
     appointmentConversion: 'Chuyển đổi đặt lịch hẹn',
     handled: 'AI tự xử lý',
@@ -350,6 +392,14 @@ function metricFormatter(value: number | string, name: string) {
 
   if (name === 'doctorConversion' || name === 'appointmentConversion') {
     return [`${value}%`, labels[name]]
+  }
+
+  if (name === 'conversion') {
+    return [`${value}%`, labels[name]]
+  }
+
+  if (name === 'satisfaction') {
+    return [`${value}/5`, labels[name]]
   }
 
   if (name === 'revenue' && typeof value === 'number' && value < 20) {
@@ -663,83 +713,102 @@ export function ManagerReportAnalysisPage() {
           ) : null}
 
           {activeTab === 'branch' ? (
-            <div className="report-body-grid">
-              <section className="report-card report-main-chart">
+            <div className="branch-report-grid">
+              <section className="report-card branch-revenue-trend-card">
                 <div className="report-card-heading">
-                  <span>So sánh hiệu quả giữa các chi nhánh</span>
-                  <h2>Lượt tư vấn AI, lịch hẹn và doanh thu</h2>
+                  <span>Xu hướng doanh thu theo chi nhánh</span>
+                  <h2>Doanh thu theo thời gian</h2>
                 </div>
                 <div className="report-chart-frame">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={branchComparisonData} margin={{ top: 12, right: 18, left: -18, bottom: 2 }} barGap={5}>
+                    <LineChart data={branchRevenueTrendData} margin={{ top: 10, right: 18, left: -18, bottom: 0 }}>
                       <CartesianGrid stroke="#e8eef6" strokeDasharray="3 4" vertical={false} />
-                      <XAxis dataKey="branch" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#64748b' }} />
+                      <XAxis dataKey="time" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#64748b' }} />
                       <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#64748b' }} />
                       <Tooltip formatter={(value, name) => metricFormatter(value as number | string, name as string)} cursor={{ fill: '#f6f9ff' }} />
-                      <Bar dataKey="ai" fill="#8dc1ff" radius={[6, 6, 0, 0]} />
-                      <Bar dataKey="appointments" fill="#9fe3b8" radius={[6, 6, 0, 0]} />
-                      <Bar dataKey="revenue" fill="#ffd97a" radius={[6, 6, 0, 0]} />
-                    </BarChart>
+                      <Line type="monotone" dataKey="hanoi" stroke={reportPalette.blueInk} strokeWidth={3} dot={{ r: 4, fill: reportPalette.blueInk, strokeWidth: 0 }} />
+                      <Line type="monotone" dataKey="danang" stroke="#f0ad2d" strokeWidth={3} dot={{ r: 4, fill: '#f0ad2d', strokeWidth: 0 }} />
+                      <Line type="monotone" dataKey="hochiminh" stroke="#2f9e6b" strokeWidth={3} dot={{ r: 4, fill: '#2f9e6b', strokeWidth: 0 }} />
+                    </LineChart>
                   </ResponsiveContainer>
                 </div>
                 <div className="report-inline-legend">
-                  <span><i style={{ background: '#8dc1ff' }} />Lượt tư vấn AI</span>
-                  <span><i style={{ background: '#9fe3b8' }} />Lịch hẹn</span>
-                  <span><i style={{ background: '#ffd97a' }} />Doanh thu</span>
+                  <span><i style={{ background: reportPalette.blueInk }} />Hà Nội</span>
+                  <span><i style={{ background: '#f0ad2d' }} />Đà Nẵng</span>
+                  <span><i style={{ background: '#2f9e6b' }} />TP.HCM</span>
                 </div>
               </section>
 
-              <div className="report-side-stack">
-                <section className="report-card report-compact-card">
-                  <div className="report-card-heading">
-                    <span>Xếp hạng chi nhánh</span>
-                    <h2>Theo doanh thu trong kỳ</h2>
-                  </div>
-                  <div className="report-mini-chart">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={branchRankingData} layout="vertical" margin={{ top: 0, right: 18, left: 8, bottom: 0 }} barSize={18}>
-                        <XAxis type="number" hide />
-                        <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#475569' }} width={82} />
-                        <Tooltip formatter={(value) => [`${value} triệu`, 'Doanh thu']} cursor={{ fill: '#f6f9ff' }} />
-                        <Bar dataKey="value" fill="#f8a5b7" radius={[0, 7, 7, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </section>
+              <section className="report-card branch-conversion-card">
+                <div className="report-card-heading">
+                  <span>Tỷ lệ chuyển đổi theo chi nhánh</span>
+                  <h2>Từ tư vấn AI sang bác sĩ hoặc lịch hẹn</h2>
+                </div>
+                <div className="report-mini-chart">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={branchConversionData} layout="vertical" margin={{ top: 0, right: 18, left: 8, bottom: 0 }} barSize={18}>
+                      <XAxis type="number" unit="%" hide />
+                      <YAxis dataKey="branch" type="category" interval={0} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#475569' }} width={82} />
+                      <Tooltip formatter={(value, name) => metricFormatter(value as number | string, name as string)} cursor={{ fill: '#f6f9ff' }} />
+                      <Bar dataKey="conversion" fill={reportPalette.yellow} radius={[0, 7, 7, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </section>
 
-                <section className="report-card report-compact-card branch-table-card">
-                  <div className="report-card-heading">
-                    <span>Bảng tổng hợp chi nhánh</span>
-                    <h2>Hiệu quả vận hành từng cơ sở</h2>
-                  </div>
-                  <div className="branch-summary-table">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Chi nhánh</th>
-                          <th>AI</th>
-                          <th>Lịch</th>
-                          <th>Doanh thu</th>
-                          <th>Chuyển đổi</th>
-                          <th>CSAT</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {branchSummaryRows.map((row) => (
-                          <tr key={row.branch}>
-                            <td>{row.branch}</td>
-                            <td>{row.ai}</td>
-                            <td>{row.appointments}</td>
-                            <td>{row.revenue}</td>
-                            <td>{row.conversion}</td>
-                            <td>{row.csat}</td>
-                          </tr>
+              <section className="report-card branch-satisfaction-card">
+                <div className="report-card-heading">
+                  <span>Điểm hài lòng theo chi nhánh</span>
+                  <h2>Leaderboard CSAT trung bình</h2>
+                </div>
+                <div className="branch-satisfaction-leaderboard">
+                  {branchSatisfactionLeaderboard.map((item, index) => (
+                    <div className="branch-satisfaction-row" key={item.branch}>
+                      <span className="branch-rank">{index + 1}</span>
+                      <strong>{item.branch}</strong>
+                      <span className="branch-stars" aria-label={`${item.satisfaction} sao`}>
+                        {Array.from({ length: 5 }).map((_, starIndex) => (
+                          <span key={starIndex} className={starIndex < Math.round(item.satisfaction) ? 'is-filled' : undefined}>★</span>
                         ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </section>
-              </div>
+                      </span>
+                      <span className="branch-csat-score">{item.satisfaction.toFixed(1)}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="report-card branch-table-card">
+                <div className="report-card-heading">
+                  <span>Bảng tổng hợp chi nhánh</span>
+                  <h2>Doanh thu, lịch hẹn, chuyển đổi và hài lòng</h2>
+                </div>
+                <div className="branch-summary-table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Tên chi nhánh</th>
+                        <th>Doanh thu</th>
+                        <th>Lịch hẹn</th>
+                        <th>Chuyển đổi</th>
+                        <th>Hài lòng</th>
+                        <th>Tăng trưởng</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {branchSummaryRows.map((row) => (
+                        <tr key={row.branch}>
+                          <td>{row.branch}</td>
+                          <td>{row.revenue}</td>
+                          <td>{row.appointments}</td>
+                          <td>{row.conversion}</td>
+                          <td>{row.csat}/5</td>
+                          <td className={`branch-growth-${row.growthTrend}`}>{row.growth}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
             </div>
           ) : null}
         </section>
