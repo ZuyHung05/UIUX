@@ -24,11 +24,13 @@ import { MetricCard } from '../../../components/ui/MetricCard'
 import { ClockMetricIcon, CurrencyMetricIcon, MessageMetricIcon, StarMetricIcon } from '../../../components/ui/metricIcons'
 import { FilterSelect } from '../../../components/ui/FilterSelect'
 import { SegmentedTabs } from '../../../components/ui/SegmentedTabs'
+import { useToast } from '../../../components/ui/Toast'
 import { branchDashboardMetrics, branchMockData } from '../../../data/branchMockData'
 import { chatbotMonitorConversations } from '../chatbot-monitor/chatbotMonitorMockData'
 
 type ReportTab = 'chatbot' | 'revenue' | 'branch'
 type DeltaTrend = 'positive' | 'negative' | 'neutral'
+type ExportFormat = 'pdf' | 'excel'
 
 type ReportMetric = {
   label: string
@@ -77,11 +79,18 @@ const periodOptions = [
 ]
 
 const exportReportOptions = [
-  { value: 'all', label: 'Tất cả' },
-  { value: 'chatbot', label: 'Báo cáo chatbot' },
-  { value: 'revenue', label: 'Báo cáo doanh thu' },
-  { value: 'branch', label: 'Báo cáo chi nhánh' },
+  { value: 'all', label: 'Tải báo cáo tất cả' },
+  { value: 'chatbot', label: 'Tải báo cáo chatbot' },
+  { value: 'revenue', label: 'Tải báo cáo doanh thu' },
+  { value: 'branch', label: 'Tải báo cáo chi nhánh' },
 ]
+
+const exportScopeSuccessLabels: Record<string, string> = {
+  all: 'báo cáo tất cả',
+  chatbot: 'báo cáo chatbot',
+  revenue: 'báo cáo doanh thu',
+  branch: 'báo cáo chi nhánh',
+}
 
 const reportPalette = {
   blue: '#8dc1ff',
@@ -388,20 +397,29 @@ function DonutPanel({ data, centerValue, centerLabel }: { data: DonutData; cente
 
 export function ManagerReportAnalysisPage() {
   const navigate = useNavigate()
+  const { showToast } = useToast()
   const [searchParams, setSearchParams] = useSearchParams()
   const [activeTab, setActiveTab] = useState<ReportTab>(() => parseReportTab(searchParams.get('tab')))
   const [periodFilter, setPeriodFilter] = useState('this-month')
   const [branchFilter, setBranchFilter] = useState('all-branches')
   const [specialtyFilter, setSpecialtyFilter] = useState('all-specialties')
-  const [isExportMenuOpen, setIsExportMenuOpen] = useState(false)
-  const [exportReportScope, setExportReportScope] = useState('all')
+  const [activeExportMenu, setActiveExportMenu] = useState<ExportFormat | null>(null)
+  const [exportReportScopeByFormat, setExportReportScopeByFormat] = useState<Record<ExportFormat, string>>({
+    pdf: 'all',
+    excel: 'all',
+  })
 
   const isBranchReport = activeTab === 'branch'
   const currentMetrics = activeTab === 'chatbot' ? chatbotMetrics : activeTab === 'revenue' ? revenueMetrics : branchMetrics
-  const selectedExportLabel = exportReportOptions.find((option) => option.value === exportReportScope)?.label ?? 'Tất cả'
   const handleReportTabChange = (nextTab: ReportTab) => {
     setActiveTab(nextTab)
     setSearchParams({ tab: nextTab })
+  }
+  const handleExportScopeSelect = (format: ExportFormat, scope: string) => {
+    setExportReportScopeByFormat((current) => ({ ...current, [format]: scope }))
+    setActiveExportMenu(null)
+    const fileType = format === 'pdf' ? 'PDF' : 'Excel'
+    showToast(`Đã tải ${exportScopeSuccessLabels[scope]} dạng ${fileType} thành công.`, 'success')
   }
 
   return (
@@ -435,43 +453,43 @@ export function ManagerReportAnalysisPage() {
                   options={periodOptions}
                 />
               </div>
-              <div className="export-report-menu">
-                <button
-                  className="export-report-button"
-                  type="button"
-                  aria-expanded={isExportMenuOpen}
-                  aria-label="Chọn phạm vi xuất báo cáo PDF"
-                  onClick={() => setIsExportMenuOpen((open) => !open)}
-                >
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 3v10" />
-                    <path d="m7 9 5 5 5-5" />
-                    <path d="M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" />
-                  </svg>
-                  <span>Xuất PDF</span>
-                  <em>{selectedExportLabel}</em>
-                  <svg className="export-report-chevron" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="m6 9 6 6 6-6" />
-                  </svg>
-                </button>
-                {isExportMenuOpen ? (
-                  <div className="export-report-dropdown" role="menu" aria-label="Phạm vi xuất báo cáo PDF">
-                    {exportReportOptions.map((option) => (
-                      <button
-                        key={option.value}
-                        type="button"
-                        role="menuitem"
-                        className={option.value === exportReportScope ? 'is-selected' : undefined}
-                        onClick={() => {
-                          setExportReportScope(option.value)
-                          setIsExportMenuOpen(false)
-                        }}
-                      >
-                        {option.label}
-                      </button>
-                    ))}
+              <div className="export-report-actions">
+                {(['pdf', 'excel'] as const).map((format) => (
+                  <div className="export-report-menu" key={format}>
+                    <button
+                      className="export-report-button"
+                      type="button"
+                      aria-expanded={activeExportMenu === format}
+                      aria-label={`Chọn phạm vi tải ${format === 'pdf' ? 'PDF' : 'Excel'}`}
+                      onClick={() => setActiveExportMenu((current) => (current === format ? null : format))}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 3v10" />
+                        <path d="m7 9 5 5 5-5" />
+                        <path d="M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" />
+                      </svg>
+                      <span>{format === 'pdf' ? 'Tải PDF' : 'Tải Excel'}</span>
+                      <svg className="export-report-chevron" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m6 9 6 6 6-6" />
+                      </svg>
+                    </button>
+                    {activeExportMenu === format ? (
+                      <div className="export-report-dropdown" role="menu" aria-label={`Phạm vi tải ${format === 'pdf' ? 'PDF' : 'Excel'}`}>
+                        {exportReportOptions.map((option) => (
+                          <button
+                            key={option.value}
+                            type="button"
+                            role="menuitem"
+                            className={option.value === exportReportScopeByFormat[format] ? 'is-selected' : undefined}
+                            onClick={() => handleExportScopeSelect(format, option.value)}
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
-                ) : null}
+                ))}
               </div>
             </div>
           </div>
@@ -557,7 +575,7 @@ export function ManagerReportAnalysisPage() {
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={ratingDistributionData} layout="vertical" margin={{ top: 0, right: 18, left: 8, bottom: 0 }} barSize={17}>
                       <XAxis type="number" allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 10.5, fill: '#64748b' }} />
-                      <YAxis dataKey="rating" type="category" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#475569' }} width={54} />
+                      <YAxis dataKey="rating" type="category" interval={0} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#475569' }} width={54} />
                       <Tooltip formatter={(value, name) => metricFormatter(value as number | string, name as string)} cursor={{ fill: '#f6f9ff' }} />
                       <Bar dataKey="count" fill={reportPalette.rose} radius={[0, 7, 7, 0]} />
                     </BarChart>
