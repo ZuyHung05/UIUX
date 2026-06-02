@@ -1,4 +1,3 @@
-import { NavigationContainer } from '@react-navigation/native';
 import { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
@@ -9,13 +8,11 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
-        {isAuthenticated ? (
-          <AppNavigator /> // Đã đổi từ BottomTabNavigator sang AppNavigator của nhánh chat
-        ) : (
-          <AuthScreen onAuthenticated={() => setIsAuthenticated(true)} />
-        )}
-      </NavigationContainer>
+      {isAuthenticated ? (
+        <AppNavigator />
+      ) : (
+        <AuthScreen onAuthenticated={() => setIsAuthenticated(true)} />
+      )}
     </SafeAreaProvider>
   );
 }
