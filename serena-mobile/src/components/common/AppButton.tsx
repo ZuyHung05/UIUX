@@ -56,7 +56,9 @@ export const AppButton = ({
             {loading ? (
                 <ActivityIndicator color={variant === 'primary' ? 'white' : COLORS.secondary} />
             ) : (
-                <Text style={[styles.baseText, getTextStyle()]}>{title}</Text>
+                <Text style={[styles.baseText, getTextStyle()]} numberOfLines={1}>
+                    {title}
+                </Text>
             )}
         </TouchableOpacity>
     );
@@ -68,10 +70,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
+        minWidth: 100,
     },
     // Kích thước
     small: { paddingVertical: 6, paddingHorizontal: 16 },
-    medium: { paddingVertical: 12, paddingHorizontal: 24 },
+    medium: { paddingVertical: 12, paddingHorizontal: 12 },
     large: { paddingVertical: 16, width: '100%' },
 
     // Variants

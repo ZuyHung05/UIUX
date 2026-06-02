@@ -1,6 +1,9 @@
+import { Star } from 'lucide-react-native/icons';
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ConfirmModal } from '../../components/common/ConfirmModal';
 import { RatingModal } from '../../components/common/RatingModal';
+import { StatusModal } from '../../components/common/StatusModal';
 import ClinicVisitCard from '../../components/history/ClinicVisitCard';
 import ConsultationItem from '../../components/history/ConsultationtItem';
 import { MainLayout } from '../../components/layout/MainLayout';
@@ -11,6 +14,10 @@ export const HistoryScreen = () => {
     const [tab, setTab] = useState('tu-van');
 
     const [isRatingVisible, setIsRatingVisible] = useState(false);
+    const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+    const [isStatusVisible, setIsStatusVisible] = useState(false);
+    const [ratingData, setRatingData] = useState({ rating: 0, comment: '' });
+
     const [selectedItem, setSelectedItem] = useState(null);
     const handleOpenRating = (item: any) => {
         setSelectedItem(item);
@@ -18,8 +25,24 @@ export const HistoryScreen = () => {
     };
     const handleRatingSubmit = (rating: number, comment: string) => {
         console.log(`Đã đánh giá ${rating} sao với nội dung: ${comment}`);
+        setRatingData({ rating, comment });
+        setTimeout(() => {
+            setIsConfirmVisible(true);
+        }, 400);
+    };
+    const handleConfirmSend = () => {
         setIsRatingVisible(false);
-        // có thể hiện thông báo "Cảm ơn bạn đã đánh giá" ở đây
+        setIsConfirmVisible(false);
+        // Giả lập gửi API lên server...
+        setTimeout(() => {
+            setIsStatusVisible(true);
+        }, 400);
+    };
+    const handleCloseAll = () => {
+        setIsStatusVisible(false);
+        setIsRatingVisible(false);
+        setIsConfirmVisible(false);
+        setSelectedItem(null);
     };
 
     return (
@@ -52,6 +75,22 @@ export const HistoryScreen = () => {
                 onClose={() => setIsRatingVisible(false)}
                 onSubmit={handleRatingSubmit}
             />
+            <ConfirmModal
+                isVisible={isConfirmVisible}
+                title="Xác nhận gửi"
+                description="Bạn có chắc chắn muốn gửi đánh giá này cho hệ thống không?"
+                icon={<Star size={32} color={COLORS.secondary} fill={COLORS.secondary} />}
+                confirmText="Gửi ngay"
+                onCancel={() => setIsConfirmVisible(false)}
+                onConfirm={handleConfirmSend}
+            />
+
+            <StatusModal
+                isVisible={isStatusVisible}
+                title="Cảm ơn bạn!"
+                description="Đánh giá của bạn giúp Serena Health ngày càng hoàn thiện hơn."
+                onClose={handleCloseAll}
+            />
         </MainLayout>
     );
 };
@@ -83,8 +122,8 @@ const styles = StyleSheet.create({
     iconCircle: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#F0F7FF', justifyContent: 'center', alignItems: 'center' },
     itemTitle: { fontSize: 16, fontWeight: 'bold', color: COLORS.text },
     itemDoctor: { fontSize: 13, color: COLORS.secondary, marginTop: 2 },
-    itemSub: { fontSize: 14, color: COLORS.gray, marginTop: 4 },
-    itemDate: { fontSize: 12, color: COLORS.gray },
+    itemSub: { fontSize: 14, color: COLORS.secondary, marginTop: 4 },
+    itemDate: { fontSize: 12, color: COLORS.secondary },
     newBadge: { backgroundColor: COLORS.secondary, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 10, marginLeft: 8 },
     newBadgeText: { color: COLORS.white, fontSize: 10, fontWeight: 'bold' },
 
@@ -96,7 +135,7 @@ const styles = StyleSheet.create({
     cardHeader: { flexDirection: 'row', alignItems: 'center' },
     doctorAvatar: { width: 50, height: 50, borderRadius: 12, backgroundColor: '#E0E0E0' },
     cardDoctor: { fontSize: 16, fontWeight: 'bold' },
-    cardSpecialty: { fontSize: 13, color: COLORS.gray },
+    cardSpecialty: { fontSize: 13, color: COLORS.secondary },
     statusBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
     cardInfoBox: { backgroundColor: '#F8F9FA', padding: 12, borderRadius: 12, marginVertical: 12 },
     infoText: { fontSize: 14, color: COLORS.text, marginBottom: 4 },
