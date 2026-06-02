@@ -1,25 +1,21 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { StyleSheet } from 'react-native';
+import { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import BottomTabNavigator from './src/navigation/BottomTabNavigator';
-export default function App() {
-  return (
-    <>
-      <SafeAreaProvider>
-        <NavigationContainer>
-          <BottomTabNavigator />
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </>
+import AuthScreen from './src/screens/auth/AuthScreen';
 
+export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  return (
+    <SafeAreaProvider>
+      <NavigationContainer>
+        {isAuthenticated ? (
+          <BottomTabNavigator />
+        ) : (
+          <AuthScreen onAuthenticated={() => setIsAuthenticated(true)} />
+        )}
+      </NavigationContainer>
+    </SafeAreaProvider>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

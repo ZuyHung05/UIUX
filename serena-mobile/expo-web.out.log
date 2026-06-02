@@ -1,0 +1,12 @@
+
+> serena-mobile@1.0.0 web
+> expo start --web --port 8081
+
+Starting project at D:\2025.2\UI_UX\UIUX\serena-mobile
+Starting Metro Bundler
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+Web .\index.ts ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 98.8% (168/169)
+Web Bundled 6049ms index.ts (2295 modules)
+Web .\index.ts ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (2295/2295)
+ LOG  [web] Logs will appear in the browser console
