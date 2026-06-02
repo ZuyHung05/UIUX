@@ -2,6 +2,7 @@ import React from "react";
 import {
   Dimensions,
   Image,
+  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -17,7 +18,11 @@ import {
   Calendar,
   ChevronLeft,
   ChevronRight,
+  Clock,
+  ExternalLink,
   MapPin,
+  MessageCircle,
+  Navigation,
   Phone,
   X,
 } from "lucide-react-native";
@@ -30,6 +35,14 @@ type DoctorCard = {
   specialty: string;
   highlight?: boolean;
   location?: string;
+};
+
+type DoctorInfo = {
+  phone: string;
+  clinicName: string;
+  address: string;
+  openHours: string;
+  mapUrl: string;
 };
 
 type Appointment = {
@@ -67,6 +80,49 @@ const initialAppointments: Appointment[] = [
 ];
 
 const dayNames = ["CN", "Th 2", "Th 3", "Th 4", "Th 5", "Th 6", "Th 7"];
+
+const avatarMap: Record<string, string> = {
+  "BS. Lê Minh K": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face",
+  "BS. Nguyễn Văn M": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=face",
+  "BS. Kiều Thanh N": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face",
+  "BS. Trần Văn A": "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=200&h=200&fit=crop&crop=face",
+};
+
+const doctorInfoMap: Record<string, DoctorInfo> = {
+  "BS. Lê Minh K": {
+    phone: "028 3822 1234",
+    clinicName: "Phòng khám MN",
+    address: "123 Main Street, Downtown, TP.HCM",
+    openHours: "Thứ 2 - Thứ 7: 07:30 - 17:00",
+    mapUrl: "https://maps.google.com",
+  },
+  "BS. Nguyễn Văn M": {
+    phone: "028 3822 5678",
+    clinicName: "Phòng khám MN",
+    address: "123 Main Street, Downtown, TP.HCM",
+    openHours: "Thứ 2 - Thứ 6: 08:00 - 17:00",
+    mapUrl: "https://maps.google.com",
+  },
+  "BS. Kiều Thanh N": {
+    phone: "028 3822 9012",
+    clinicName: "Phòng khám MN",
+    address: "123 Main Street, Downtown, TP.HCM",
+    openHours: "Thứ 2 - Thứ 7: 07:00 - 16:30",
+    mapUrl: "https://maps.google.com",
+  },
+  "BS. Trần Văn A": {
+    phone: "028 3822 3456",
+    clinicName: "Phòng khám MN",
+    address: "123 Main Street, Downtown, TP.HCM",
+    openHours: "Thứ 3 - Thứ 7: 08:00 - 17:30",
+    mapUrl: "https://maps.google.com",
+  },
+};
+
+const getAvatarSource = (name: string) => {
+  const uri = avatarMap[name];
+  return uri ? { uri } : undefined;
+};
 
 const doctors: DoctorCard[] = [
   {
@@ -109,14 +165,27 @@ const timeSlots: TimeSlot[] = [
 export default function AppointmentScreen() {
   const [bookingVisible, setBookingVisible] = React.useState(false);
   const [confirmVisible, setConfirmVisible] = React.useState(false);
+  const [addressVisible, setAddressVisible] = React.useState(false);
+  const [contactVisible, setContactVisible] = React.useState(false);
   const [selectedDateIndex, setSelectedDateIndex] = React.useState(0);
   const [selectedTimeIndex, setSelectedTimeIndex] = React.useState(1);
   const [selectedDoctor, setSelectedDoctor] = React.useState<DoctorCard | null>(null);
+  const [selectedInfo, setSelectedInfo] = React.useState<{ name: string; specialty: string } | null>(null);
   const [upcomingAppointments, setUpcomingAppointments] = React.useState<Appointment[]>(initialAppointments);
 
   const handleBookDoctor = (doctor: DoctorCard) => {
     setSelectedDoctor(doctor);
     setBookingVisible(true);
+  };
+
+  const handleShowAddress = (name: string, specialty: string) => {
+    setSelectedInfo({ name, specialty });
+    setAddressVisible(true);
+  };
+
+  const handleShowContact = (name: string, specialty: string) => {
+    setSelectedInfo({ name, specialty });
+    setContactVisible(true);
   };
 
   const handleRequestConfirm = () => {
@@ -134,7 +203,7 @@ export default function AppointmentScreen() {
       const selectedDate = dateChips[selectedDateIndex];
       const selectedTime = timeSlots[selectedTimeIndex];
       const dateNum = parseInt(selectedDate.date, 10);
-      const refDate = new Date(2026, 4, dateNum); // May 2026
+      const refDate = new Date(2026, 4, dateNum);
       const dayName = dayNames[refDate.getDay()];
       const scheduleStr = `${dayName}, ${String(dateNum).padStart(2, "0")}/05/2026`;
 
@@ -158,6 +227,8 @@ export default function AppointmentScreen() {
     const date = dateChips[selectedDateIndex]?.date ?? "";
     return { doctorName, time, date: `${date}/05/2026` };
   };
+
+  const currentInfo = selectedInfo ? doctorInfoMap[selectedInfo.name] : null;
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
@@ -191,7 +262,11 @@ export default function AppointmentScreen() {
         {upcomingAppointments.map((appt, idx) => (
           <View key={`${appt.name}-${idx}`} style={styles.upcomingCard}>
             <View style={styles.cardDoctorRow}>
-              <View style={styles.avatar} />
+              {getAvatarSource(appt.name) ? (
+                <Image source={getAvatarSource(appt.name)!} style={styles.avatarImage} />
+              ) : (
+                <View style={styles.avatar} />
+              )}
               <View style={styles.doctorMeta}>
                 <Text style={styles.doctorName}>{appt.name}</Text>
                 <Text style={styles.doctorSpecialty}>{appt.specialty}</Text>
@@ -219,10 +294,12 @@ export default function AppointmentScreen() {
               <ActionChip
                 icon={<MapPin size={15} color="#244A6B" />}
                 label="Địa chỉ"
+                onPress={() => handleShowAddress(appt.name, appt.specialty)}
               />
               <ActionChip
                 icon={<Phone size={15} color="#244A6B" />}
                 label="Liên hệ"
+                onPress={() => handleShowContact(appt.name, appt.specialty)}
               />
             </View>
           </View>
@@ -232,7 +309,13 @@ export default function AppointmentScreen() {
 
         <View style={styles.doctorList}>
           {doctors.map((doctor) => (
-            <DoctorCardItem key={doctor.name} doctor={doctor} onBook={() => handleBookDoctor(doctor)} />
+            <DoctorCardItem
+              key={doctor.name}
+              doctor={doctor}
+              onBook={() => handleBookDoctor(doctor)}
+              onAddress={() => handleShowAddress(doctor.name, doctor.specialty)}
+              onContact={() => handleShowContact(doctor.name, doctor.specialty)}
+            />
           ))}
         </View>
 
@@ -267,7 +350,11 @@ export default function AppointmentScreen() {
             </View>
 
             <View style={styles.selectedDoctorCard}>
-              <View style={styles.modalAvatar} />
+              {getAvatarSource(selectedDoctor?.name ?? "") ? (
+                <Image source={getAvatarSource(selectedDoctor?.name ?? "")!} style={styles.modalAvatarImage} />
+              ) : (
+                <View style={styles.modalAvatar} />
+              )}
               <View style={styles.selectedDoctorMeta}>
                 <Text style={styles.modalDoctorName}>{selectedDoctor?.name ?? "BS. Kiều Thanh N"}</Text>
                 <Text style={styles.modalDoctorSpecialty}>{selectedDoctor?.specialty ?? "Khoa Da liễu"}</Text>
@@ -390,6 +477,154 @@ export default function AppointmentScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* ===== ADDRESS MODAL ===== */}
+      <Modal
+        visible={addressVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setAddressVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={() => setAddressVisible(false)}
+          />
+          <View style={styles.sheet}>
+            <View style={styles.sheetHandle} />
+            <View style={styles.sheetHeader}>
+              <Text style={styles.sheetTitle}>Địa chỉ phòng khám</Text>
+              <TouchableOpacity
+                onPress={() => setAddressVisible(false)}
+                style={styles.closeButton}
+                hitSlop={10}
+              >
+                <X size={22} color="#1E293B" />
+              </TouchableOpacity>
+            </View>
+
+            {selectedInfo && currentInfo && (
+              <>
+                <View style={styles.addressDoctorRow}>
+                  {getAvatarSource(selectedInfo.name) ? (
+                    <Image source={getAvatarSource(selectedInfo.name)!} style={styles.addressAvatar} />
+                  ) : (
+                    <View style={[styles.addressAvatar, { backgroundColor: "#A3B8CE" }]} />
+                  )}
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.modalDoctorName}>{selectedInfo.name}</Text>
+                    <Text style={styles.modalDoctorSpecialty}>{selectedInfo.specialty}</Text>
+                  </View>
+                </View>
+
+                <View style={styles.addressCard}>
+                  <View style={styles.addressInfoRow}>
+                    <View style={styles.addressIconCircle}>
+                      <MapPin size={18} color="#5B9DFF" />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.addressLabel}>{currentInfo.clinicName}</Text>
+                      <Text style={styles.addressValue}>{currentInfo.address}</Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.addressDivider} />
+
+                  <View style={styles.addressInfoRow}>
+                    <View style={styles.addressIconCircle}>
+                      <Clock size={18} color="#5B9DFF" />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.addressLabel}>Giờ làm việc</Text>
+                      <Text style={styles.addressValue}>{currentInfo.openHours}</Text>
+                    </View>
+                  </View>
+                </View>
+
+                <TouchableOpacity
+                  style={styles.addressDirectionBtn}
+                  onPress={() => Linking.openURL(currentInfo.mapUrl)}
+                >
+                  <Navigation size={20} color="#FFFFFF" />
+                  <Text style={styles.addressDirectionText}>Chỉ đường đến phòng khám</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
+
+      {/* ===== CONTACT MODAL ===== */}
+      <Modal
+        visible={contactVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setContactVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={() => setContactVisible(false)}
+          />
+          <View style={styles.sheet}>
+            <View style={styles.sheetHandle} />
+            <View style={styles.sheetHeader}>
+              <Text style={styles.sheetTitle}>Liên hệ</Text>
+              <TouchableOpacity
+                onPress={() => setContactVisible(false)}
+                style={styles.closeButton}
+                hitSlop={10}
+              >
+                <X size={22} color="#1E293B" />
+              </TouchableOpacity>
+            </View>
+
+            {selectedInfo && currentInfo && (
+              <>
+                <View style={styles.addressDoctorRow}>
+                  {getAvatarSource(selectedInfo.name) ? (
+                    <Image source={getAvatarSource(selectedInfo.name)!} style={styles.addressAvatar} />
+                  ) : (
+                    <View style={[styles.addressAvatar, { backgroundColor: "#A3B8CE" }]} />
+                  )}
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.modalDoctorName}>{selectedInfo.name}</Text>
+                    <Text style={styles.modalDoctorSpecialty}>{selectedInfo.specialty}</Text>
+                  </View>
+                </View>
+
+                <TouchableOpacity
+                  style={styles.contactOptionCard}
+                  onPress={() => Linking.openURL(`tel:${currentInfo.phone.replace(/\s/g, "")}`)}
+                >
+                  <View style={[styles.contactIconCircle, { backgroundColor: "rgba(34, 197, 94, 0.12)" }]}>
+                    <Phone size={22} color="#22C55E" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.contactOptionTitle}>Gọi điện thoại</Text>
+                    <Text style={styles.contactOptionSub}>{currentInfo.phone}</Text>
+                  </View>
+                  <ExternalLink size={18} color="#94A3B8" />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.contactOptionCard}
+                  onPress={() => Linking.openURL(`sms:${currentInfo.phone.replace(/\s/g, "")}`)}
+                >
+                  <View style={[styles.contactIconCircle, { backgroundColor: "rgba(91, 157, 255, 0.12)" }]}>
+                    <MessageCircle size={22} color="#5B9DFF" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.contactOptionTitle}>Gửi tin nhắn SMS</Text>
+                    <Text style={styles.contactOptionSub}>Nhắn tin trực tiếp</Text>
+                  </View>
+                  <ExternalLink size={18} color="#94A3B8" />
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -398,7 +633,7 @@ function SectionTitle({ label }: { label: string }) {
   return <Text style={styles.sectionTitle}>{label}</Text>;
 }
 
-function DoctorCardItem({ doctor, onBook }: { doctor: DoctorCard; onBook: () => void }) {
+function DoctorCardItem({ doctor, onBook, onAddress, onContact }: { doctor: DoctorCard; onBook: () => void; onAddress: () => void; onContact: () => void }) {
   return (
     <View
       style={[
@@ -407,7 +642,11 @@ function DoctorCardItem({ doctor, onBook }: { doctor: DoctorCard; onBook: () => 
       ]}
     >
       <View style={styles.cardDoctorRow}>
-        <View style={styles.avatar} />
+        {getAvatarSource(doctor.name) ? (
+          <Image source={getAvatarSource(doctor.name)!} style={styles.avatarImage} />
+        ) : (
+          <View style={styles.avatar} />
+        )}
         <View style={styles.doctorMeta}>
           <Text style={styles.doctorName}>{doctor.name}</Text>
           <Text style={styles.doctorSpecialty}>{doctor.specialty}</Text>
@@ -418,10 +657,12 @@ function DoctorCardItem({ doctor, onBook }: { doctor: DoctorCard; onBook: () => 
         <ActionChip
           icon={<MapPin size={15} color="#244A6B" />}
           label="Địa chỉ"
+          onPress={onAddress}
         />
         <ActionChip
           icon={<Phone size={15} color="#244A6B" />}
           label="Liên hệ"
+          onPress={onContact}
         />
         <ActionChip
           icon={<CalendarBookIcon />}
@@ -582,6 +823,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "#A3B8CE",
   },
+  avatarImage: {
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+  },
   doctorMeta: {
     flex: 1,
   },
@@ -707,6 +953,11 @@ const styles = StyleSheet.create({
     height: 64,
     borderRadius: 14,
     backgroundColor: "#A3B8CE",
+  },
+  modalAvatarImage: {
+    width: 64,
+    height: 64,
+    borderRadius: 14,
   },
   selectedDoctorMeta: {
     flex: 1,
@@ -931,5 +1182,107 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.button,
     color: "#FFFFFF",
     fontSize: 16,
+  },
+
+  /* ===== ADDRESS MODAL ===== */
+  addressDoctorRow: {
+    flexDirection: "row" as const,
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 20,
+  },
+  addressAvatar: {
+    width: 52,
+    height: 52,
+    borderRadius: 14,
+  },
+  addressCard: {
+    backgroundColor: "#F8FAFC",
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  addressInfoRow: {
+    flexDirection: "row" as const,
+    alignItems: "flex-start",
+    gap: 12,
+  },
+  addressIconCircle: {
+    width: 38,
+    height: 38,
+    borderRadius: 99,
+    backgroundColor: "rgba(91, 157, 255, 0.12)",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    marginTop: 2,
+  },
+  addressLabel: {
+    ...TYPOGRAPHY.title,
+    color: "#1E3A52",
+    fontSize: 15,
+    marginBottom: 2,
+  },
+  addressValue: {
+    ...TYPOGRAPHY.body,
+    color: "#64748B",
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  addressDivider: {
+    height: 1,
+    backgroundColor: "#E5E7EB",
+    marginVertical: 14,
+  },
+  addressDirectionBtn: {
+    flexDirection: "row" as const,
+    height: 52,
+    borderRadius: 18,
+    backgroundColor: "#5B9DFF",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    gap: 10,
+    shadowColor: "#5B9DFF",
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 5,
+  },
+  addressDirectionText: {
+    ...TYPOGRAPHY.button,
+    color: "#FFFFFF",
+    fontSize: 16,
+  },
+
+  /* ===== CONTACT MODAL ===== */
+  contactOptionCard: {
+    flexDirection: "row" as const,
+    alignItems: "center",
+    gap: 14,
+    padding: 16,
+    backgroundColor: "#F8FAFC",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    marginBottom: 12,
+  },
+  contactIconCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 99,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+  },
+  contactOptionTitle: {
+    ...TYPOGRAPHY.title,
+    color: "#1E3A52",
+    fontSize: 16,
+    marginBottom: 2,
+  },
+  contactOptionSub: {
+    ...TYPOGRAPHY.body,
+    color: "#64748B",
+    fontSize: 14,
   },
 });
