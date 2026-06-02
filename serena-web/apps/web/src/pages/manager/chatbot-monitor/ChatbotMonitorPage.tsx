@@ -7,6 +7,7 @@ import { ConversationCard } from '../../../components/chat/ConversationCard'
 import { DetailModal } from '../../../components/ui/DetailModal'
 import { FilterSelect } from '../../../components/ui/FilterSelect'
 import { Pagination } from '../../../components/ui/Pagination'
+import { SegmentedTabs } from '../../../components/ui/SegmentedTabs'
 import { managerSidebarConfig } from '../managerSidebarConfig'
 import { chatbotMonitorConversations } from './chatbotMonitorMockData'
 import './ChatbotMonitorPage.css'
@@ -142,18 +143,13 @@ export function ChatbotMonitorPage() {
 
           <div className="chatbot-monitor-layout">
             <aside className="chatbot-conversation-panel" aria-label="Danh sách cuộc hội thoại">
-              <div className="chatbot-quick-tabs" role="tablist" aria-label="Lọc nhanh hội thoại">
-                {quickTabs.map((tab) => (
-                  <button
-                    key={tab.value}
-                    type="button"
-                    className={activeTab === tab.value ? 'is-active' : ''}
-                    onClick={() => setActiveTab(tab.value)}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
+              <SegmentedTabs
+                className="chatbot-quick-tabs"
+                options={quickTabs}
+                value={activeTab}
+                ariaLabel="Lọc nhanh hội thoại"
+                onChange={setActiveTab}
+              />
 
               <div className="chatbot-conversation-list">
                 {paginatedConversations.length > 0 ? (

@@ -1,29 +1,41 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Calendar, History, Home, User } from 'lucide-react-native';
+import { BotMessageSquare, Calendar, History, Home, User } from 'lucide-react-native';
+import { View } from 'react-native';
 import AppointmentScreen from '../screens/appointment/AppointmentScreen';
+import ChatScreen from '../screens/chat/ChatScreen';
 import { HistoryScreen } from '../screens/history/HistoryScreen';
 import HomeScreen from '../screens/home/HomeScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
-import { COLORS, TYPOGRAPHY } from '../utils/theme';
+import { COLORS } from '../utils/theme';
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomTabNavigator() {
     return (
         <Tab.Navigator
+            // screenOptions={{
+            //     headerShown: false,
+            //     tabBarActiveTintColor: COLORS.secondary,
+            //     tabBarInactiveTintColor: '#999',
+            //     tabBarStyle: {
+            //         height: 90,
+            //         paddingBottom: 10,
+            //         paddingTop: 10,
+            //         borderTopLeftRadius: 20,
+            //         borderTopRightRadius: 20,
+            //         position: 'absolute',
+            //     },
+            //     tabBarLabelStyle: { ...TYPOGRAPHY.caption, fontWeight: '600' },
+            // }}
             screenOptions={{
                 headerShown: false,
-                tabBarActiveTintColor: COLORS.secondary,
-                tabBarInactiveTintColor: '#999',
+                tabBarActiveTintColor: COLORS.primary,
                 tabBarStyle: {
-                    height: 90,
-                    paddingBottom: 10,
-                    paddingTop: 10,
-                    borderTopLeftRadius: 20,
-                    borderTopRightRadius: 20,
-                    position: 'absolute',
+                    height: 80,
+                    borderTopWidth: 1.27,
+                    borderTopColor: COLORS.border,
+                    backgroundColor: COLORS.white,
                 },
-                tabBarLabelStyle: { ...TYPOGRAPHY.caption, fontWeight: '600' },
             }}
         >
             <Tab.Screen
@@ -40,6 +52,31 @@ export default function BottomTabNavigator() {
                 options={{
                     tabBarLabel: 'Lịch sử',
                     tabBarIcon: ({ color }) => <History color={color} size={24} />,
+                }}
+            />
+            <Tab.Screen
+                name="Consultation"
+                component={ChatScreen}
+                options={{
+                    tabBarLabel: '',
+                    tabBarIcon: ({ color }) => (
+                        <View style={{
+                            width: 56,
+                            height: 56,
+                            backgroundColor: COLORS.primary,
+                            borderRadius: 28,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginBottom: 13,
+                            elevation: 5,
+                            shadowColor: '#000',
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 0.2,
+                        }}>
+                            <BotMessageSquare color="white" size={28} />
+                        </View>
+                    ),
+
                 }}
             />
             <Tab.Screen

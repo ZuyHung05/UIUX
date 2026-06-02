@@ -64,7 +64,7 @@ export const AppButton = ({
 
 const styles = StyleSheet.create({
     baseBtn: {
-        borderRadius: 25,
+        borderRadius: 28,
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
@@ -75,16 +75,16 @@ const styles = StyleSheet.create({
     large: { paddingVertical: 16, width: '100%' },
 
     // Variants
-    primaryBtn: { backgroundColor: COLORS.secondary },
+    primaryBtn: { backgroundColor: COLORS.primary },
     outlineBtn: { backgroundColor: 'white', borderWidth: 1.5, borderColor: COLORS.secondary },
     ghostBtn: { backgroundColor: '#F0F7FF' },
-    dangerBtn: { backgroundColor: 'white', borderWidth: 1.5, borderColor: '#FF5454' },
+    dangerBtn: { backgroundColor: 'white', borderWidth: 1.5, borderColor: COLORS.warning },
 
     // Text Styles
     baseText: { ...TYPOGRAPHY.button, textAlign: 'center' },
     primaryText: { color: 'white' },
     outlineText: { color: COLORS.secondary },
-    ghostText: { color: COLORS.secondary },
-    dangerText: { color: '#FF5454' },
+    ghostText: { color: COLORS.accent, ...TYPOGRAPHY.body },
+    dangerText: { color: COLORS.warning },
     disabled: { opacity: 0.5 }
 });

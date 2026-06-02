@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import sereneHealthLogo from '../../assets/icons/serene_health_logo_blue.svg'
+import { useToast } from '../../components/ui/Toast'
 import './AuthPage.css'
 
 type AuthMode = 'login' | 'forgot' | 'signup' | 'forgotLoading' | 'forgotSuccess'
@@ -262,6 +263,7 @@ function AuthHeader({ mode }: { mode: AuthMode }) {
 
 export function AuthPage() {
   const navigate = useNavigate()
+  const { showToast } = useToast()
   const [mode, setMode] = useState<AuthMode>('login')
   const [accounts, setAccounts] = useState<Account[]>(initialAccounts)
   const [loginForm, setLoginForm] = useState<LoginForm>(initialLoginForm)
@@ -272,7 +274,6 @@ export function AuthPage() {
   const [signupErrors, setSignupErrors] = useState<FormErrors<keyof SignupForm>>({})
   const [forgotStatus, setForgotStatus] = useState('')
   const [loginStatus, setLoginStatus] = useState('')
-  const [showToast, setShowToast] = useState(false)
 
   const accountByIdentifier = useMemo(
     () => findAccount(accounts, forgotForm.identifier),
@@ -290,18 +291,6 @@ export function AuthPage() {
 
     return () => window.clearTimeout(timeoutId)
   }, [mode])
-
-  useEffect(() => {
-    if (!showToast) {
-      return undefined
-    }
-
-    const timeoutId = window.setTimeout(() => {
-      setShowToast(false)
-    }, 2600)
-
-    return () => window.clearTimeout(timeoutId)
-  }, [showToast])
 
   function resetToLogin(message = '') {
     setMode('login')
@@ -374,7 +363,7 @@ export function AuthPage() {
 
     setLoginErrors({})
     setLoginStatus('')
-    setShowToast(true)
+    showToast('Đăng nhập thành công!')
     window.setTimeout(() => {
       navigate(account.role === 'doctor' ? '/doctor/dashboard' : '/manager/dashboard')
     }, 650)
@@ -739,7 +728,6 @@ export function AuthPage() {
   return (
     <main className="auth-page">
       <AuthBackground />
-      {showToast ? <div className="auth-toast">Đăng nhập thành công!</div> : null}
       <section className={`auth-modal auth-modal-${mode}`} aria-label="Biểu mẫu xác thực">
         <div className="auth-modal-scroll">
           <AuthHeader mode={mode} />

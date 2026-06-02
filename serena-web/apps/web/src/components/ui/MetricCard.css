@@ -18,14 +18,7 @@
   background: #fff;
   padding: clamp(10px, 1.1vw, 14px);
   box-shadow: none;
-  transition: transform 0.2s ease, border-color 0.2s ease;
   animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.metric-card:hover {
-  transform: translateY(-2px);
-  border-color: #8dc1ff;
-  box-shadow: none;
 }
 
 .metric-icon {

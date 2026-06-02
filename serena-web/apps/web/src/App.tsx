@@ -8,6 +8,7 @@ import { DoctorDetailPage } from './pages/manager/doctors/DoctorDetailPage'
 import { DoctorManagementPage } from './pages/manager/doctors/DoctorManagementPage'
 import { DoctorNewPage } from './pages/manager/doctors/DoctorNewPage'
 import { DoctorsDataProvider } from './pages/manager/doctors/DoctorsDataContext'
+import { ManagerServicesPricingPage } from './pages/manager/services-pricing/ManagerServicesPricingPage'
 
 
 function App() {
@@ -21,6 +22,8 @@ function App() {
         <Route path="/manager/doctors" element={<DoctorManagementPage />} />
         <Route path="/manager/doctors/new" element={<DoctorNewPage />} />
         <Route path="/manager/doctors/:doctorId" element={<DoctorDetailPage />} />
+        <Route path="/manager/clinic-settings" element={<ManagerServicesPricingPage />} />
+        <Route path="/manager/services" element={<ManagerServicesPricingPage />} />
 
         <Route path="/manager/chatbot-monitor" element={<ChatbotMonitorPage />} />
         <Route path="/doctor/dashboard" element={<DoctorDashboardPage />} />

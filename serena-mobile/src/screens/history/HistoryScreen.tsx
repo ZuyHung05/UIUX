@@ -5,7 +5,7 @@ import ClinicVisitCard from '../../components/history/ClinicVisitCard';
 import ConsultationItem from '../../components/history/ConsultationtItem';
 import { MainLayout } from '../../components/layout/MainLayout';
 import { CLINIC_HISTORY, CONSULTATION_HISTORY } from '../../services/mockData';
-import { COLORS } from '../../utils/theme';
+import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 
 export const HistoryScreen = () => {
     const [tab, setTab] = useState('tu-van');
@@ -70,10 +70,10 @@ const styles = StyleSheet.create({
         borderRadius: 21,
     },
     activeTab: {
-        backgroundColor: COLORS.secondary,
+        backgroundColor: COLORS.primary,
     },
-    tabText: { color: '#666', fontWeight: '600' },
-    activeTabText: { color: 'white' },
+    tabText: { color: COLORS.subtext, ...TYPOGRAPHY.tabLabel, fontWeight: '600' },
+    activeTabText: { ...TYPOGRAPHY.tabLabel, color: COLORS.white, fontWeight: '700' },
     // Consultation Styles
     consultItem: {
         flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.white,

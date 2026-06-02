@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         padding: 15,
         marginBottom: 12,
+        borderColor: COLORS.lightGray
     },
     iconCircle: {
         width: 40,
@@ -77,9 +78,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    itemTitle: { ...TYPOGRAPHY.title, color: COLORS.secondary },
-    itemDoctor: { ...TYPOGRAPHY.caption, color: COLORS.primary, marginTop: 2 },
-    itemSub: { ...TYPOGRAPHY.body, color: '#666', marginTop: 4 },
+    itemTitle: { ...TYPOGRAPHY.title, color: COLORS.accent },
+    itemDoctor: { ...TYPOGRAPHY.caption, color: COLORS.primaryDark, marginTop: 2, fontWeight: '600' },
+    itemSub: { ...TYPOGRAPHY.body, color: COLORS.subtext, marginTop: 4 },
     itemDate: { ...TYPOGRAPHY.caption, color: COLORS.gray },
     itemTime: { ...TYPOGRAPHY.caption, color: COLORS.gray, marginRight: 4 },
     rightSection: {
