@@ -71,6 +71,7 @@ const resultSeries = [
 
 const dashboardData: Record<TimeRange, {
   heading: string
+  subheading: string
   kpis: Kpi[]
   trend: TrendPoint[]
   stacked: StackedPoint[]
@@ -78,6 +79,7 @@ const dashboardData: Record<TimeRange, {
 }> = {
   today: {
     heading: 'Tổng quan hôm nay',
+    subheading: 'Theo dõi nhanh hiệu quả tư vấn, lịch hẹn và doanh thu trong ngày.',
     kpis: [
       {
         label: 'Tổng lượt tư vấn AI',
@@ -142,6 +144,7 @@ const dashboardData: Record<TimeRange, {
   },
   week: {
     heading: 'Tổng quan tuần này',
+    subheading: 'Theo dõi hiệu quả chatbot, tư vấn bác sĩ và phân công vận hành trong tuần.',
     kpis: [
       {
         label: 'Tổng lượt tư vấn AI',
@@ -206,6 +209,7 @@ const dashboardData: Record<TimeRange, {
   },
   month: {
     heading: 'Tổng quan tháng này',
+    subheading: 'Theo dõi xu hướng tư vấn, lịch hẹn và doanh thu toàn hệ thống trong tháng.',
     kpis: [
       {
         label: 'Tổng lượt tư vấn AI',
@@ -267,6 +271,7 @@ const dashboardData: Record<TimeRange, {
 function branchMetricFormatter(value: number | string, name: string) {
   const labels: Record<string, string> = {
     aiConsults: 'Lượt tư vấn AI (lượt)',
+    doctorConsults: 'Lượt tư vấn Bác sĩ (lượt)',
     appointments: 'Số lịch hẹn (lịch)',
     revenue: 'Doanh thu (trđ)',
   }
@@ -318,7 +323,10 @@ export function ManagerDashboardPage() {
       <main className="desktop-shell-main manager-dashboard-main" aria-label="Nội dung dashboard quản lý">
         <section className="manager-dashboard-content">
           <div className="dashboard-heading-row">
-            <h1>{selectedData.heading}</h1>
+            <div>
+              <h1>{selectedData.heading}</h1>
+              <p>{selectedData.subheading}</p>
+            </div>
             <FilterSelect
               className="dashboard-time-filter"
               options={timeRangeOptions}
@@ -346,8 +354,7 @@ export function ManagerDashboardPage() {
             <section className="dashboard-card chatbot-combined-card">
               <div className="card-title-row">
                 <div>
-                  <span className="section-kicker">Vận hành &amp; kết quả</span>
-                  <h2>Hiệu quả Chatbot</h2>
+                  <span className="section-kicker">Vận hành &amp; kết quả Chatbot</span>
                 </div>
                 <button
                   type="button"
@@ -363,7 +370,7 @@ export function ManagerDashboardPage() {
 
               <div className="chatbot-combined-body">
                 <div className="chatbot-part chatbot-trend-part">
-                  <h3 className="chatbot-part-title">Lượt tư vấn Chatbot theo thời gian</h3>
+                  <h2 className="chatbot-part-title">Lượt tư vấn AI theo thời gian</h2>
                   <div className="dashboard-chart-frame">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={selectedData.trend} margin={{ top: 8, right: 14, left: 6, bottom: 0 }}>
@@ -403,7 +410,7 @@ export function ManagerDashboardPage() {
                 <div className="chatbot-divider" aria-hidden="true" />
 
                 <div className="chatbot-part chatbot-result-part">
-                  <h3 className="chatbot-part-title">Kết quả xử lý sau sàng lọc AI</h3>
+                  <h2 className="chatbot-part-title">Kết quả xử lý sau sàng lọc AI</h2>
                   <div className="donut-area">
                     <div className="donut-wrapper">
                       <ResponsiveContainer width="100%" height="100%">
@@ -484,7 +491,7 @@ export function ManagerDashboardPage() {
               </div>
               <div className="dashboard-chart-frame">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={branchPerformance} margin={{ top: 8, right: 14, left: 6, bottom: 0 }} barGap={5} barCategoryGap="28%">
+                  <BarChart data={branchPerformance} margin={{ top: 8, right: 14, left: 6, bottom: 0 }} barGap={4} barCategoryGap="22%">
                     <CartesianGrid stroke="#eef3f7" strokeDasharray="3 4" vertical={false} />
                     <XAxis dataKey="branch" tickLine={false} axisLine={false} tick={{ fill: '#718096', fontSize: 11 }} />
                     <YAxis tickLine={false} axisLine={false} tick={{ fill: '#718096', fontSize: 11 }} width={44} />
@@ -493,14 +500,16 @@ export function ManagerDashboardPage() {
                       formatter={(value, name) => branchMetricFormatter(value as number | string, name as string)}
                       contentStyle={{ borderRadius: '14px', border: '1px solid #eef3f7', boxShadow: 'none' }}
                     />
-                    <Bar dataKey="aiConsults" name="Lượt tư vấn AI" fill={palette.blue} radius={[8, 8, 4, 4]} barSize={22} isAnimationActive={false} />
-                    <Bar dataKey="appointments" name="Số lịch hẹn" fill={palette.yellow} radius={[8, 8, 4, 4]} barSize={22} isAnimationActive={false} />
-                    <Bar dataKey="revenue" name="Doanh thu" fill={palette.pink} radius={[8, 8, 4, 4]} barSize={22} isAnimationActive={false} />
+                    <Bar dataKey="aiConsults" name="Lượt tư vấn AI" fill={palette.blue} radius={[8, 8, 4, 4]} barSize={18} isAnimationActive={false} />
+                    <Bar dataKey="doctorConsults" name="Lượt tư vấn Bác sĩ" fill={palette.green} radius={[8, 8, 4, 4]} barSize={18} isAnimationActive={false} />
+                    <Bar dataKey="appointments" name="Số lịch hẹn" fill={palette.yellow} radius={[8, 8, 4, 4]} barSize={18} isAnimationActive={false} />
+                    <Bar dataKey="revenue" name="Doanh thu" fill={palette.pink} radius={[8, 8, 4, 4]} barSize={18} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
               <div className="dashboard-inline-legend">
                 <span className="inline-legend-item"><span className="legend-swatch" style={{ background: palette.blue }} />Lượt tư vấn AI <em>(lượt)</em></span>
+                <span className="inline-legend-item"><span className="legend-swatch" style={{ background: palette.green }} />Lượt tư vấn Bác sĩ <em>(lượt)</em></span>
                 <span className="inline-legend-item"><span className="legend-swatch" style={{ background: palette.yellow }} />Số lịch hẹn <em>(lịch)</em></span>
                 <span className="inline-legend-item"><span className="legend-swatch" style={{ background: palette.pink }} />Doanh thu <em>(trđ)</em></span>
               </div>

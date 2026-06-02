@@ -5,9 +5,10 @@
 .manager-dashboard-content {
   display: flex;
   flex-direction: column;
-  gap: clamp(6px, 0.9vh, 12px);
+  gap: clamp(5px, 0.75vh, 10px);
   height: 100%;
-  padding: clamp(8px, 1.1vh, 16px) clamp(12px, 1.1vw, 18px);
+  box-sizing: border-box;
+  padding: clamp(8px, 1vh, 14px) clamp(12px, 1.1vw, 18px);
   color: #244a6b;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow: hidden;
@@ -19,14 +20,26 @@
   justify-content: space-between;
   gap: 16px;
   flex: 0 0 auto;
+  min-height: 36px;
+  padding-top: 4px;
+  margin-bottom: 2px;
 }
 
 .dashboard-heading-row h1 {
   margin: 0;
-  color: #244a6b;
-  font-size: clamp(17px, 1.5vw, 22px);
-  font-weight: 650;
-  line-height: 1.15;
+  color: #1a365d;
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  font-size: clamp(20px, 2vw, 24px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.dashboard-heading-row p {
+  margin: 5px 0 0;
+  color: rgba(74, 85, 104, 0.7);
+  font-size: 13px;
+  line-height: 1.25;
 }
 
 .dashboard-time-filter {
@@ -69,19 +82,19 @@
 /* Chart rows */
 .dashboard-charts-row {
   display: grid;
-  gap: clamp(8px, 0.9vw, 14px);
+  gap: clamp(6px, 0.75vw, 12px);
   min-height: 0;
 }
 
-/* Hàng 1: Hiệu quả Chatbot — cao hơn */
+/* Hàng 1: Vận hành & kết quả Chatbot */
 .dashboard-row-chatbot {
   grid-template-columns: minmax(0, 1fr);
-  flex: 1.28 1 0;
+  flex: 1 1 0;
 }
 
-/* Hàng 2: Chi nhánh & Phân công — thấp hơn, chia theo độ dài nội dung */
+/* Hàng 2: Chi nhánh & Phân công */
 .dashboard-row-branch {
-  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.72fr) minmax(260px, 0.9fr);
   flex: 1 1 0;
 }
 
@@ -93,7 +106,7 @@
   border: 1.5px solid #eef2f8;
   border-radius: 22px;
   background: #ffffff;
-  padding: clamp(8px, 1vh, 14px) clamp(12px, 0.95vw, 18px);
+  padding: clamp(10px, 1vh, 14px) clamp(14px, 1.05vw, 20px);
   box-shadow: none;
   animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
   transition: border-color 0.2s ease, background-color 0.2s ease;
@@ -109,8 +122,12 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   flex: 0 0 auto;
+}
+
+.card-title-row > div {
+  min-width: 0;
 }
 
 .section-kicker {
@@ -130,12 +147,22 @@
   line-height: 1.2;
 }
 
+.dashboard-card h2.card-kicker-title {
+  margin: 0;
+  color: #244a6b;
+  font-size: clamp(13.5px, 1vw, 15.5px);
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
 /* Nút điều hướng góc phải trên cùng — đồng nhất các khung */
 .card-link-button {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   flex: 0 0 auto;
+  max-width: min(44%, 220px);
   height: 30px;
   padding: 0 12px;
   border: 1px solid transparent;
@@ -146,6 +173,8 @@
   font-size: 11.5px;
   font-weight: 650;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   cursor: pointer;
   transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
 }
@@ -170,6 +199,12 @@
   flex: 1 1 0;
   min-height: 0;
   width: 100%;
+  box-sizing: border-box;
+  padding: 6px 8px 4px;
+}
+
+.chatbot-combined-card .card-title-row {
+  margin-bottom: 0;
 }
 
 .recharts-wrapper text {
@@ -179,8 +214,8 @@
 /* ===== Card gộp: Hiệu quả Chatbot ===== */
 .chatbot-combined-body {
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) auto minmax(0, 1fr);
-  gap: clamp(10px, 1vw, 18px);
+  grid-template-columns: minmax(0, 1.7fr) auto minmax(320px, 1fr);
+  gap: clamp(6px, 0.7vw, 12px);
   flex: 1 1 0;
   min-height: 0;
 }
@@ -193,10 +228,11 @@
 }
 
 .chatbot-part-title {
-  margin: 0 0 6px;
+  margin: 0 0 4px;
   color: #3a5b78;
-  font-size: 12.5px;
+  font-size: clamp(12.5px, 0.95vw, 14px);
   font-weight: 600;
+  line-height: 1.2;
 }
 
 .chatbot-divider {
@@ -209,16 +245,20 @@
 .donut-area {
   display: flex;
   align-items: center;
-  gap: clamp(8px, 0.8vw, 16px);
+  justify-content: flex-start;
+  gap: clamp(2px, 0.25vw, 5px);
   flex: 1 1 0;
   min-height: 0;
+  box-sizing: border-box;
+  padding: 6px 6px 6px 0;
+  column-gap: 20px;
 }
 
 .donut-wrapper {
   position: relative;
   flex: 0 0 auto;
-  width: clamp(118px, 12vw, 168px);
-  height: 100%;
+  width: clamp(128px, 12vw, 174px);
+  height: clamp(128px, 100%, 174px);
   min-height: 0;
 }
 
@@ -300,8 +340,9 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px 16px;
-  margin-top: 6px;
+  justify-content: center;
+  gap: 5px 12px;
+  margin-top: 4px;
   flex: 0 0 auto;
 }
 
@@ -331,16 +372,31 @@
 .assignment-progress-card .assignment-list {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: clamp(10px, 1.8vh, 18px);
+  justify-content: space-evenly;
+  gap: clamp(6px, 1vh, 10px);
   flex: 1 1 0;
   min-height: 0;
+  overflow: hidden;
+}
+
+.assignment-progress-card {
+  overflow: hidden;
+}
+
+.assignment-progress-card .card-title-row {
+  gap: 6px;
+}
+
+.assignment-progress-card .card-link-button {
+  max-width: 176px;
+  padding-inline: 10px;
 }
 
 .assignment-row {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
+  min-width: 0;
 }
 
 .assignment-row-head {
@@ -351,9 +407,13 @@
 }
 
 .assignment-branch {
+  min-width: 0;
+  overflow: hidden;
   color: #244a6b;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .assignment-percent {
@@ -365,7 +425,7 @@
 
 .assignment-progress-track {
   width: 100%;
-  height: 9px;
+  height: 8px;
   border-radius: 999px;
   background: #eef3f8;
   overflow: hidden;
@@ -391,8 +451,12 @@
 }
 
 .assignment-status {
-  font-size: 11.5px;
+  overflow: hidden;
+  font-size: 11px;
   font-weight: 600;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .assignment-status-completed {
@@ -426,15 +490,15 @@
   }
 
   .dashboard-row-branch {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1.45fr) minmax(238px, 0.9fr);
   }
 
   .chatbot-combined-body {
-    grid-template-columns: minmax(0, 1.4fr) auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.35fr) auto minmax(280px, 1fr);
   }
 
   .manager-dashboard-content {
-    overflow-y: auto;
+    overflow: hidden;
   }
 }
 
@@ -451,6 +515,10 @@
   .donut-wrapper {
     width: clamp(120px, 32vw, 160px);
     height: clamp(120px, 32vw, 160px);
+  }
+
+  .donut-area {
+    justify-content: center;
   }
 }
 
@@ -477,5 +545,13 @@
 
   .dashboard-card {
     padding: 8px 13px;
+  }
+
+  .dashboard-inline-legend {
+    gap-block: 3px;
+  }
+
+  .assignment-progress-card .assignment-list {
+    gap: 5px;
   }
 }
