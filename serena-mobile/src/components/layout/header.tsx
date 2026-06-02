@@ -61,11 +61,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 15,
         backgroundColor: COLORS.white,
+        borderBottomWidth: 1.27,
+        borderBottomColor: COLORS.border,
     },
     headerLeft: { flexDirection: 'row', alignItems: 'center' },
     logo: { width: 45, height: 45, marginRight: 12 },
     brandName: { ...TYPOGRAPHY.h1, color: COLORS.accent },
-    brandSub: { ...TYPOGRAPHY.caption, color: '#666', marginTop: 2 },
+    brandSub: { ...TYPOGRAPHY.caption, color: COLORS.subtext, marginTop: 2 },
     notificationBtn: { padding: 5, position: 'relative' },
     badge: {
         position: 'absolute',
@@ -73,9 +75,9 @@ const styles = StyleSheet.create({
         right: 5,
         width: 10,
         height: 10,
-        backgroundColor: 'red',
+        backgroundColor: COLORS.notification,
         borderRadius: 5,
-        borderWidth: 2,
-        borderColor: 'white'
+        borderWidth: 1.5,
+        borderColor: COLORS.white,
     }
 });

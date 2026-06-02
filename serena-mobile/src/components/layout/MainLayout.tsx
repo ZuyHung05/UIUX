@@ -22,7 +22,7 @@ export const MainLayout = ({
     title,
     subtitle,
     isScrollable = true,
-    backgroundColor = '#FFFDF1',
+    backgroundColor = COLORS.background,
     padding = 20,
     showBack = false,
     showRightIcon = false
@@ -31,7 +31,7 @@ export const MainLayout = ({
     const ContentWrapper = isScrollable ? ScrollView : View;
 
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: COLORS.white }]} edges={['top']}>
+        <SafeAreaView style={[styles.container, { backgroundColor: COLORS.background }]} edges={['top']}>
             <StatusBar style="dark" />
             <AppHeader title={title} subtitle={subtitle} showBack={showBack} showRightIcon={showRightIcon} />
             <ContentWrapper
