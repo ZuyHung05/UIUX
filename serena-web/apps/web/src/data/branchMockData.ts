@@ -10,6 +10,15 @@ export type BranchInfo = {
   timezone: string
 }
 
+export type BranchDashboardPeriod = 'today' | 'week' | 'month'
+
+export type BranchDashboardMetric = {
+  aiConsults: number
+  appointments: number
+  revenue: number
+  conversion: number
+}
+
 export const branchMockData: BranchInfo[] = [
   {
     id: 'hanoi',
@@ -43,3 +52,21 @@ export const branchMockData: BranchInfo[] = [
 export type Branch = (typeof branchMockData)[number]['name']
 
 export const branchNames = branchMockData.map((branch) => branch.name) as Branch[]
+
+export const branchDashboardMetrics: Record<BranchDashboardPeriod, Record<BranchId, BranchDashboardMetric>> = {
+  today: {
+    hanoi: { aiConsults: 156, appointments: 42, revenue: 54, conversion: 26.9 },
+    danang: { aiConsults: 128, appointments: 31, revenue: 39, conversion: 23.8 },
+    hochiminh: { aiConsults: 202, appointments: 65, revenue: 71, conversion: 31.4 },
+  },
+  week: {
+    hanoi: { aiConsults: 1120, appointments: 438, revenue: 542, conversion: 27.8 },
+    danang: { aiConsults: 920, appointments: 318, revenue: 382, conversion: 23.4 },
+    hochiminh: { aiConsults: 1412, appointments: 561, revenue: 688, conversion: 30.6 },
+  },
+  month: {
+    hanoi: { aiConsults: 4860, appointments: 1812, revenue: 2180, conversion: 27.2 },
+    danang: { aiConsults: 3820, appointments: 1325, revenue: 1620, conversion: 22.9 },
+    hochiminh: { aiConsults: 6140, appointments: 2268, revenue: 2790, conversion: 29.8 },
+  },
+}
