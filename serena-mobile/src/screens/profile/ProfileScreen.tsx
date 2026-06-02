@@ -9,13 +9,15 @@ import {
     Share2,
     Stethoscope
 } from 'lucide-react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import { ConfirmModal } from '../../components/common/ConfirmModal';
 import { MainLayout } from '../../components/layout/MainLayout';
 import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 
 export default function ProfileScreen() {
+    const [showLogout, setShowLogout] = useState(false);
     return (
         <MainLayout title="Cá nhân" subtitle="Quản lý hồ sơ của bạn">
 
@@ -95,10 +97,23 @@ export default function ProfileScreen() {
             </LinearGradient>
 
             {/*  Nút Đăng xuất */}
-            <TouchableOpacity style={styles.logoutBtn}>
+            <TouchableOpacity style={styles.logoutBtn}
+                onPress={() => setShowLogout(true)}>
                 <LogOut size={18} color="#E7000B" />
                 <Text style={styles.logoutText}>Đăng xuất</Text>
             </TouchableOpacity>
+            <ConfirmModal
+                isVisible={showLogout}
+                title="Đăng xuất"
+                description="Bạn có chắc chắn muốn đăng xuất khỏi tài khoản Serena Health?"
+                icon={<LogOut size={32} color="#E7000B" />}
+                confirmText="Đăng xuất"
+                type="danger"
+                onCancel={() => setShowLogout(false)}
+                onConfirm={() => {
+                    setShowLogout(false);
+                }}
+            />
 
         </MainLayout>
     );

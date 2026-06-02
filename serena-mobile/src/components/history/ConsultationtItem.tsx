@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { ChevronDown, ChevronRight } from 'lucide-react-native';
 import { useState } from 'react';
 import { Image, LayoutAnimation, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -6,6 +7,7 @@ import { AppButton } from '../common/AppButton';
 
 const ConsultationItem = ({ item, onOpenRating }: { item: any; onOpenRating: () => void }) => {
     const [isExpanded, setIsExpanded] = useState(false);
+    const navigation = useNavigation<any>();
 
     const toggleExpand = () => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -34,7 +36,7 @@ const ConsultationItem = ({ item, onOpenRating }: { item: any; onOpenRating: () 
                     {isExpanded ? (
                         <ChevronDown size={20} color={COLORS.secondary} />
                     ) : (
-                        <ChevronRight size={20} color={COLORS.gray} />
+                        <ChevronRight size={20} color={COLORS.secondary} />
                     )}
                 </View>
             </View>
@@ -44,7 +46,7 @@ const ConsultationItem = ({ item, onOpenRating }: { item: any; onOpenRating: () 
                         title="Xem chi tiết cuộc tư vấn"
                         variant="primary"
                         size="medium"
-                        onPress={() => console.log('Go to detail')}
+                        onPress={() => navigation.navigate('ConsultationDetail', { consultation: item })}
                         style={styles.actionBtn}
                     />
 
@@ -68,7 +70,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         padding: 15,
         marginBottom: 12,
-        borderColor: COLORS.lightGray
+        borderColor: COLORS.border
     },
     iconCircle: {
         width: 40,
@@ -79,10 +81,10 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     itemTitle: { ...TYPOGRAPHY.title, color: COLORS.accent },
-    itemDoctor: { ...TYPOGRAPHY.caption, color: COLORS.primaryDark, marginTop: 2, fontWeight: '600' },
+    itemDoctor: { ...TYPOGRAPHY.caption, color: COLORS.accent, marginTop: 2, fontWeight: '600' },
     itemSub: { ...TYPOGRAPHY.body, color: COLORS.subtext, marginTop: 4 },
-    itemDate: { ...TYPOGRAPHY.caption, color: COLORS.gray },
-    itemTime: { ...TYPOGRAPHY.caption, color: COLORS.gray, marginRight: 4 },
+    itemDate: { ...TYPOGRAPHY.caption, color: COLORS.subtext },
+    itemTime: { ...TYPOGRAPHY.caption, color: COLORS.subtext, marginRight: 4 },
     rightSection: {
         flexDirection: 'row',
         alignItems: 'center',

@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     },
     titleArea: { flex: 1, marginLeft: 12 },
     cardTitle: { ...TYPOGRAPHY.title, color: COLORS.text },
-    cardTime: { ...TYPOGRAPHY.caption, color: COLORS.gray, marginTop: 2 },
+    cardTime: { ...TYPOGRAPHY.caption, color: COLORS.secondary, marginTop: 2 },
     cardContent: { ...TYPOGRAPHY.body, color: '#555', lineHeight: 22, marginBottom: 12 },
 
     actionRow: { flexDirection: 'row', gap: 10 },
