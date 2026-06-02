@@ -2,35 +2,49 @@
   background: white;
   border-radius: 28px;
   margin: 20px;
-  min-height: 100vh;
+  min-height: calc(100% - 40px);
+  padding-bottom: 24px;
 }
 
-.page-header {
-  padding: 33px 26px 0 26px; 
-  margin-bottom: 24px; 
+.schedule-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 24px 26px 16px 26px;
+  margin-bottom: 18px;
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid #EBF3FC;
+  backdrop-filter: blur(8px);
 }
 
-.page-header h2 {
-  margin: 0;
-  color: #1E293B;
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-}
-
-.page-header p {
-  margin: 8px 0 0 0;
-  color: #64748B;
+.schedule-day-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid #DCEBFF;
+  border-radius: 8px;
+  background: #FAFDFF;
+  color: #244A6B;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 700;
+}
+
+.schedule-day-summary span {
+  color: #718096;
+  font-weight: 600;
+}
+
+.schedule-day-summary strong {
+  color: #2563EB;
 }
 
 .schedule-content {
   display: flex;
-  gap: 28px;
+  gap: 20px;
   align-items: flex-start;
-  padding: 0 26px 32px 26px;
+  padding: 0 26px;
 }
 
 .left-column {
@@ -41,25 +55,44 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
 }
 
 .section-card {
-  border: 1.5px solid #BFDBFE;
-  padding: 28px;
-  border-radius: 24px;
+  border: 1px solid #DCEBFF;
+  padding: 20px;
+  border-radius: 16px;
   background: white;
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 20px rgba(59, 130, 246, 0.03);
 }
 
+.schedule-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.schedule-section-heading h3,
 .section-card h3 {
-  margin: 0 0 20px 0;
-  font-size: 18px;
+  margin: 0;
+  font-size: 16px;
   font-weight: 700;
   color: #1E293B;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
+}
+
+.schedule-section-heading span {
+  padding: 4px 8px;
+  border: 1px solid #DCEBFF;
+  border-radius: 6px;
+  background: #FAFDFF;
+  color: #2563EB;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .empty-day-container {
@@ -74,4 +107,30 @@
   color: #64748B;
   font-size: 14px;
   font-weight: 500;
+}
+
+.schedule-empty-inline {
+  min-height: 112px;
+  border: 1px solid #EBF3FC;
+  border-radius: 10px;
+  background: #FAFDFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748B;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
+@media (max-width: 1100px) {
+  .schedule-content {
+    flex-direction: column;
+  }
+
+  .left-column,
+  .right-column {
+    width: 100%;
+    flex: none;
+  }
 }

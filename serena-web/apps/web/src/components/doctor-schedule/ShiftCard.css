@@ -1,10 +1,10 @@
 .shift-card {
   background: #F8FAFC;
   border: 1.5px solid #E2E8F0;
-  border-left: 4.5px solid #60A5FA; /* Beautiful blue accent bar on the left */
-  border-radius: 16px;
-  padding: 20px 24px;
-  margin-bottom: 16px;
+  border-left: 4px solid #3B82F6;
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
   position: relative;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
@@ -31,26 +31,26 @@
 
 .shift-title {
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: #1E293B;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 .shift-time {
   color: #64748B;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 500;
   margin: 6px 0 0 0;
 }
 
 .shift-badge {
-  background: #EFFDF5;
+  background: #ECFDF5;
   color: #16A34A;
   border: 1px solid #BBF7D0;
   padding: 4px 10px;
-  border-radius: 100px;
-  font-size: 11.5px;
+  border-radius: 6px;
+  font-size: 12px;
   font-weight: 700;
   height: fit-content;
   display: inline-flex;
@@ -62,7 +62,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 16px;
+  margin-top: 14px;
   font-size: 13px;
   color: #64748B;
   font-weight: 500;
@@ -71,14 +71,20 @@
 }
 
 .view-detail-text {
+  border: 0;
+  background: transparent;
   color: #334155;
   font-size: 13px;
   font-weight: 700;
   text-decoration: underline;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: inherit;
+  padding: 2px 0;
 }
 
-.view-detail-text:hover {
+.view-detail-text:hover,
+.view-detail-text:focus-visible {
   color: #3B82F6;
+  outline: none;
 }

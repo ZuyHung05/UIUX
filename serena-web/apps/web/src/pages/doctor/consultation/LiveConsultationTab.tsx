@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import '../patients/PatientListTab.css'
 import './LiveConsultationTab.css'
 
 import { initialPatients } from '../patients/PatientListTab'
@@ -25,7 +26,7 @@ export const initialChats: ChatItem[] = [
   {
     id: '1',
     name: 'Nguyễn Văn A',
-    age: 45,
+    age: 22,
     time: '10:30',
     message: 'Bác sĩ ơi, dạo này tôi hay thấy chóng...',
     isNew: true,
@@ -34,7 +35,7 @@ export const initialChats: ChatItem[] = [
       { 
         id: 'm1', 
         sender: 'patient', 
-        text: 'Bác sĩ ơi, dạo này tôi hay thấy chóng mặt và đau đầu. Không biết đây là triệu chứng của bệnh gì vậy ạ?' 
+        text: 'Bác sĩ ơi, dạo này tôi hay thấy chóng mặt và đau đầu kèm sốt nhẹ. Không biết đây là triệu chứng của bệnh gì vậy ạ?' 
       },
     ]
   },
@@ -56,6 +57,18 @@ export const initialChats: ChatItem[] = [
   },
   {
     id: '2',
+    name: 'Trần Thu Thảo',
+    age: 28,
+    time: '09:00',
+    message: 'Chào bác sĩ, tôi bị nhói đau ở vùng ngực trái...',
+    isNew: true,
+    status: 'new',
+    messages: [
+      { id: 'm1', sender: 'patient', text: 'Chào bác sĩ, tôi bị nhói đau ở vùng ngực bên trái từ sáng nay, cơn đau lan ra vai và sau lưng rất khó chịu.' }
+    ]
+  },
+  {
+    id: '5',
     name: 'Trần Thị B',
     age: 32,
     time: '09:15',
@@ -67,6 +80,38 @@ export const initialChats: ChatItem[] = [
       { id: 'm3', sender: 'patient', text: 'Tôi đã uống thuốc theo đơn và thấy đỡ nhiều rồi.' },
       { id: 'm4', sender: 'doctor', text: 'Rất tốt, hãy tiếp tục theo dõi nhé.' },
       { id: 'm5', sender: 'patient', text: 'Cảm ơn bác sĩ' },
+    ]
+  },
+  {
+    id: '6',
+    name: 'Nguyễn Hoàng G',
+    age: 34,
+    time: '14:30',
+    message: 'Tôi bị hắt hơi và ngứa mũi dị ứng phấn hoa...',
+    isNew: true,
+    status: 'new',
+    messages: [
+      { 
+        id: 'm1', 
+        sender: 'patient', 
+        text: 'Chào bác sĩ, dạo này tôi hắt hơi liên tục, ngứa mũi dị ứng rất nhiều mỗi khi ngửi mùi phấn hoa.' 
+      },
+    ]
+  },
+  {
+    id: '9',
+    name: 'Lê Hoàng Nam',
+    age: 45,
+    time: '17:00',
+    message: 'Tái khám định kỳ tăng huyết áp...',
+    isNew: true,
+    status: 'new',
+    messages: [
+      { 
+        id: 'm1', 
+        sender: 'patient', 
+        text: 'Chào bác sĩ, tôi muốn tư vấn tái khám định kỳ về bệnh tăng huyết áp và đái tháo đường ạ.' 
+      },
     ]
   },
   {
@@ -102,12 +147,25 @@ export function LiveConsultationTab({
   const setChats = propSetChats !== undefined ? propSetChats : setInternalChats
 
   const [activeChatId, setActiveChatId] = useState<string | null>(initialActiveChatId || null)
+  const [activeFilter, setActiveFilter] = useState<'pending' | 'history'>('pending')
 
   useEffect(() => {
     if (initialActiveChatId) {
       setActiveChatId(initialActiveChatId)
     }
   }, [initialActiveChatId])
+
+  const pendingCount = chats.filter(c => c.status === 'new').length
+
+  const filteredChats = chats.filter(c => {
+    if (activeFilter === 'pending') {
+      return c.status === 'new'
+    }
+    if (activeFilter === 'history') {
+      return c.status === 'active' || c.status === 'ended'
+    }
+    return true
+  })
   const [inputMessage, setInputMessage] = useState('')
   const [expandedSection, setExpandedSection] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -247,7 +305,7 @@ export function LiveConsultationTab({
   return (
     <div className={`consultation-tab-outer ${isChatActiveMode ? 'active-chat-mode' : ''}`} style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', minHeight: '0' }}>
       {!isChatActiveMode && (
-        <header className="patient-tab-header" style={{ padding: '0 24px 0 24px', flexShrink: 0 }}>
+        <header className="patient-tab-header" style={{ padding: '24px 24px 0 24px', flexShrink: 0 }}>
           <div className="tab-titles">
             <h1>Danh sách tư vấn</h1>
             <p>Trang theo dõi và tư vấn sức khỏe trực tuyến cho bệnh nhân.</p>
@@ -259,45 +317,71 @@ export function LiveConsultationTab({
         {!isChatActiveMode && (
           <div className="consultation-sidebar-pane">
             <h2 className="consultation-title" style={{ display: 'none' }}>Danh sách tư vấn</h2>
+            
+            {/* Real-world Care Team Consultation Sub-tabs */}
+            <div className="consultation-tab-filters">
+              <button 
+                type="button"
+                className={`consultation-filter-btn ${activeFilter === 'history' ? 'active' : ''}`}
+                onClick={() => setActiveFilter('history')}
+              >
+                Đã phản hồi
+              </button>
+              <button 
+                type="button"
+                className={`consultation-filter-btn ${activeFilter === 'pending' ? 'active' : ''}`}
+                onClick={() => setActiveFilter('pending')}
+              >
+                Chưa phản hồi
+                {pendingCount > 0 && <span className="filter-badge">{pendingCount}</span>}
+              </button>
+            </div>
+
             <div className="consultation-list">
-            {chats.map((chat) => {
-              const isActive = chat.id === activeChatId
-              return (
-                <div 
-                  key={chat.id} 
-                  className={`consultation-card ${isActive ? 'active' : ''} ${chat.isNew ? 'unread' : ''}`}
-                  onClick={() => { 
-                    setActiveChatId(chat.id); 
-                    onClearActiveChat?.(); 
-                    setChats(prev => prev.map(c => c.id === chat.id ? { ...c, isNew: false } : c));
-                  }}
-                >
-                  <div className="consultation-card-avatar" style={{ display: 'grid', placeItems: 'center', backgroundColor: '#E6EFFE', color: '#244a6b', border: '1px solid rgba(36, 74, 107, 0.12)' }}>
-                    <svg viewBox="0 0 24 24" style={{ width: '58%', height: '58%', fill: 'none', stroke: 'currentColor', strokeWidth: '1.8' }}>
-                      <circle cx="12" cy="8" r="4" />
-                      <path d="M4.5 21a7.5 7.5 0 0 1 15 0" />
-                    </svg>
-                  </div>
-                  <div className="consultation-card-content">
-                    <div className="consultation-card-header">
-                      <span className="consultation-card-name">{chat.name}</span>
-                      <span className="consultation-card-time">{chat.time}</span>
-                    </div>
-                    <div className="consultation-card-message-row">
-                      <div className="consultation-card-message">
-                        {chat.message}
+              {filteredChats.length > 0 ? (
+                filteredChats.map((chat) => {
+                  const isActive = chat.id === activeChatId
+                  return (
+                    <div 
+                      key={chat.id} 
+                      className={`consultation-card ${isActive ? 'active' : ''} ${chat.isNew ? 'unread' : ''}`}
+                      onClick={() => { 
+                        setActiveChatId(chat.id); 
+                        onClearActiveChat?.(); 
+                        setChats(prev => prev.map(c => c.id === chat.id ? { ...c, isNew: false } : c));
+                      }}
+                    >
+                      <div className="consultation-card-avatar" style={{ display: 'grid', placeItems: 'center', backgroundColor: '#E6EFFE', color: '#244a6b', border: '1px solid rgba(36, 74, 107, 0.12)' }}>
+                        <svg viewBox="0 0 24 24" style={{ width: '58%', height: '58%', fill: 'none', stroke: 'currentColor', strokeWidth: '1.8' }}>
+                          <circle cx="12" cy="8" r="4" />
+                          <path d="M4.5 21a7.5 7.5 0 0 1 15 0" />
+                        </svg>
                       </div>
-                      {chat.isNew && (
-                        <span className="consultation-card-unread-dot"></span>
-                      )}
+                      <div className="consultation-card-content">
+                        <div className="consultation-card-header">
+                          <span className="consultation-card-name">{chat.name}</span>
+                          <span className="consultation-card-time">{chat.time}</span>
+                        </div>
+                        <div className="consultation-card-message-row">
+                          <div className="consultation-card-message">
+                            {chat.message}
+                          </div>
+                          {chat.isNew && (
+                            <span className="consultation-card-unread-dot"></span>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )
+                })
+              ) : (
+                <div style={{ textAlign: 'center', padding: '36px 12px', color: '#718096', fontSize: '13px', fontWeight: 500 }}>
+                  Không có tin nhắn nào trong mục này
                 </div>
-              )
-            })}
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* Right Pane: Chat Area or Empty State */}
       <div className="consultation-main-pane">
@@ -416,7 +500,7 @@ export function LiveConsultationTab({
                   </button>
                   <input 
                     type="text" 
-                    placeholder="Nhập tin nhắn..." 
+                    placeholder="VD: Bác mô tả thêm thời điểm đau và mức độ đau giúp tôi..." 
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
                   />
@@ -609,15 +693,15 @@ export function LiveConsultationTab({
               <div className="workspace-accordion-content notes-content-wrapper">
                 <div className="note-input-group">
                   <label className="note-input-label">Triệu chứng</label>
-                  <textarea className="note-textarea" placeholder="Nhập triệu chứng..." rows={3} />
+                  <textarea className="note-textarea" placeholder="VD: Đau đầu âm ỉ 3 ngày, sốt nhẹ về chiều..." rows={3} />
                 </div>
                 <div className="note-input-group">
                   <label className="note-input-label">Chẩn đoán sơ bộ</label>
-                  <textarea className="note-textarea" placeholder="Nhập chẩn đoán..." rows={3} />
+                  <textarea className="note-textarea" placeholder="VD: Theo dõi viêm đường hô hấp trên, cần tái khám nếu sốt cao..." rows={3} />
                 </div>
                 <div className="note-input-group">
                   <label className="note-input-label">Đơn thuốc</label>
-                  <textarea className="note-textarea" placeholder="Nhập đơn thuốc..." rows={3} />
+                  <textarea className="note-textarea" placeholder="VD: Paracetamol 500mg - uống khi sốt trên 38.5 độ..." rows={3} />
                 </div>
               </div>
             )}

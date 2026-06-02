@@ -26,7 +26,7 @@ const clinicalPatientsMap: Record<string, {
 }> = {
   '2': {
     id: '2',
-    name: 'Trần Thị B',
+    name: 'Trần Thu Thảo',
     age: 28,
     gender: 'Nữ',
     code: 'BN-2026-002',
@@ -117,13 +117,9 @@ const clinicalPatientsMap: Record<string, {
 // Today's dynamic timeline entries (extended to 17:30 per feedback)
 const todayTimeline = [
   { time: '08:00 - 08:30', patientId: '25', name: 'Dương Thị Hoa', type: 'Khám trực tiếp', status: 'Đã khám' },
-  { time: '09:00 - 09:30', patientId: '2', name: 'Trần Thị B', type: 'Tư vấn từ xa', status: 'Đang khám' },
-  { time: '10:00 - 10:30', patientId: '15', name: 'Phan Văn R', type: 'Khám trực tiếp', status: 'Đang chờ' },
-  { time: '10:30 - 11:00', patientId: '1', name: 'Nguyễn Văn A', type: 'Tư vấn từ xa', status: 'Đang chờ' },
-  { time: '14:30 - 15:00', patientId: '6', name: 'Nguyễn Hoàng G', type: 'Tư vấn từ xa', status: 'Đang chờ' },
+  { time: '10:00 - 10:30', patientId: '15', name: 'Phan Văn R', type: 'Khám trực tiếp', status: 'Đang khám' },
   { time: '15:00 - 15:30', patientId: '7', name: 'Vũ Thị H', type: 'Khám trực tiếp', status: 'Đang chờ' },
-  { time: '16:00 - 16:30', patientId: '8', name: 'Phạm Bích Vân', type: 'Khám trực tiếp', status: 'Đang chờ' },
-  { time: '17:00 - 17:30', patientId: '9', name: 'Lê Hoàng Nam', type: 'Tư vấn từ xa', status: 'Đang chờ' }
+  { time: '16:00 - 16:30', patientId: '8', name: 'Phạm Bích Vân', type: 'Khám trực tiếp', status: 'Đang chờ' }
 ]
 
 
@@ -134,11 +130,11 @@ const messages = [
   { id: '4', name: 'Nguyễn Thị N', text: 'Xin chào bác sĩ, tôi đang gặp tình trạng đau đầu...', time: '08:15', unread: false },
 ]
 
-export function DashboardTab({ 
+export function DashboardTab({
   onNavigateTab,
   onViewPatientProfile,
   onViewChatMessage
-}: { 
+}: {
   onNavigateTab?: (tab: string) => void;
   onViewPatientProfile?: (patientId: string) => void;
   onViewChatMessage?: (chatId: string) => void;
@@ -147,7 +143,7 @@ export function DashboardTab({
   const filterOptions = ['Hôm nay', 'Tuần này', 'Tháng này']
 
   // Core state: Admitted Patient in clinic room, dynamically changing
-  const [activePatientId, setActivePatientId] = useState<string>('2') // Default is 'Trần Thị B'
+  const [activePatientId, setActivePatientId] = useState<string>('15') // Default is 'Phan Văn R'
   const [toastMessage, setToastMessage] = useState<string | null>(null)
 
   // Clinical intake form states (for popup modal)
@@ -227,13 +223,12 @@ export function DashboardTab({
   // Admit patient to room via timeline click
   const handleAdmitPatient = (patientId: string, name: string) => {
     setActivePatientId(patientId)
-    triggerToast(`✓ Đã tiếp đón bệnh nhân ${name} vào phòng khám lâm sàng!`)
   }
 
   // If detailed EMR is being viewed locally, render the high-fidelity EMR container immediately
   if (viewingPatientId) {
     const p = initialPatients.find(pat => pat.id === viewingPatientId)
-    
+
     if (p) {
       const enc = p.pastEncounters[selectedEncounterIdx] || p.pastEncounters[0]
       const activePatientFromMap = clinicalPatientsMap[viewingPatientId]
@@ -295,7 +290,7 @@ export function DashboardTab({
                   <line x1="8" y1="2" x2="8" y2="6" />
                   <line x1="3" y1="10" x2="21" y2="10" />
                 </svg>
-                Lịch hẹn khám hiện tại & Lý do khám
+                Ca khám hiện tại & Lý do khám
               </h3>
               <div className="emr-appointment-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '24px', marginTop: '16px' }}>
                 <div className="appt-info-block" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -429,33 +424,35 @@ export function DashboardTab({
       {toastMessage && <div className="dashboard-action-toast">{toastMessage}</div>}
 
       {/* Header section */}
-      <header className="figma-dashboard-header">
-        <div>
+      <header className="patient-tab-header">
+        <div className="tab-titles">
           <h1>Dashboard</h1>
           <p>Trang xem thống kê của bác sĩ</p>
         </div>
 
-        <FilterSelect
-          value={selectedFilter}
-          options={filterOptions.map(opt => ({ label: opt, value: opt }))}
-          onChange={(e) => setSelectedFilter(e.target.value)}
-        />
+        <div className="header-right-filter">
+          <FilterSelect
+            value={selectedFilter}
+            options={filterOptions.map(opt => ({ label: opt, value: opt }))}
+            onChange={(e) => setSelectedFilter(e.target.value)}
+          />
+        </div>
       </header>
 
       {/* Metrics Row */}
       <section className="figma-metrics-row">
-        <MetricCard label="Tổng số lịch hẹn" value={stats.total} delta={getDeltaText("+2%")} icon={icons.pulse} iconClassName="metric-icon-blue" />
+        <MetricCard label="Tổng số ca khám" value={stats.total} delta={getDeltaText("+2%")} icon={icons.pulse} iconClassName="metric-icon-blue" />
         <MetricCard label="Ca chờ khám sảnh" value={stats.waiting} delta={getDeltaText("-1 ca")} icon={icons.clock} iconClassName="metric-icon-yellow" />
-        <MetricCard label="Ca đang khám" value={stats.processing} delta={getDeltaText("+0 ca")} icon={icons.message} iconClassName="metric-icon-pink" />
+        <MetricCard label="Ca đang khám" value={stats.processing} delta={getDeltaText("+0 ca")} icon={icons.message} iconClassName="metric-icon-blue" />
         <MetricCard label="Ca hoàn thành" value={stats.completed} delta={getDeltaText("+12%")} icon={icons.star} iconClassName="metric-icon-green" />
       </section>
 
       {/* Main Grid */}
       <div className="figma-dashboard-grid">
-        
+
         {/* Left Column: Active Clinical Workspace & Slim Messages */}
         <div className="grid-column-left">
-          
+
           {/* 1. CA KHÁM HIỆN TẠI (The Clinical Workstation) */}
           <section className="figma-section-card active-exam-workstation">
             <div className="section-header">
@@ -465,7 +462,6 @@ export function DashboardTab({
                   <span className="live-status-pill animate-pulse-green">Đang ở trong phòng</span>
                 )}
               </div>
-              <span className="exam-room-lbl">Phòng Khám Nội 102</span>
             </div>
 
             {activePatient && (
@@ -487,7 +483,7 @@ export function DashboardTab({
 
                 <div className="workspace-clinical-card">
                   <div className="detail-item-large">
-                    <span className="block-label">Thời gian đặt lịch hẹn:</span>
+                    <span className="block-label">Thời gian ca khám:</span>
                     <strong className="detail-val-time">
                       <svg viewBox="0 0 24 24" style={{ width: '16px', height: '16px', fill: 'none', stroke: '#3B82F6', strokeWidth: '2.5', marginRight: '6px', display: 'inline-block', verticalAlign: 'middle' }}>
                         <circle cx="12" cy="12" r="10" />
@@ -504,7 +500,24 @@ export function DashboardTab({
                 </div>
 
                 <div className="workspace-footer-group">
-                  <button 
+                  {patientTimelineEntry?.type === 'Tư vấn từ xa' && (
+                    <button
+                      className="btn-exam-action-chat"
+                      onClick={() => {
+                        if (onViewChatMessage) {
+                          onViewChatMessage(activePatient.id)
+                        } else {
+                          onNavigateTab?.('Tư vấn trực tiếp')
+                        }
+                      }}
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '16px', height: '16px' }}>
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                      </svg>
+                      NHẮN TIN TƯ VẤN NGAY (CHAT)
+                    </button>
+                  )}
+                  <button
                     className="btn-exam-action-filled"
                     onClick={() => {
                       setSymptoms('')
@@ -515,7 +528,7 @@ export function DashboardTab({
                   >
                     GHI KẾT QUẢ KHÁM & KÊ ĐƠN THUỐC
                   </button>
-                  <button 
+                  <button
                     className="btn-exam-action-outline"
                     onClick={() => {
                       setViewingPatientId(activePatient.id)
@@ -543,8 +556,8 @@ export function DashboardTab({
 
             <div className="list-container slender-list">
               {messages.map((m, idx) => (
-                <div 
-                  className={`slender-message-row ${m.unread ? 'unread' : ''}`} 
+                <div
+                  className={`slender-message-row ${m.unread ? 'unread' : ''}`}
                   key={idx}
                   onClick={() => onViewChatMessage ? onViewChatMessage(m.id) : onNavigateTab?.('Tư vấn trực tiếp')}
                 >
@@ -572,11 +585,11 @@ export function DashboardTab({
 
         {/* Right Column: Timeline controller & EMR pending completions list */}
         <div className="grid-column-right">
-          
+
           {/* 1. DÒNG THỜI GIAN HÔM NAY (The timeline patient summoner) */}
           <section className="figma-section-card today-timeline-card">
             <div className="section-header">
-              <h2>Lịch trình khám hôm nay</h2>
+              <h2>Ca khám trực tiếp hôm nay</h2>
               <span className="timeline-date-stamp">Thứ Sáu, 29/05</span>
             </div>
 
@@ -587,8 +600,8 @@ export function DashboardTab({
                 const isActiveAdmitted = item.patientId === activePatientId;
 
                 return (
-                  <div 
-                    className={`timeline-time-node ${isExamining ? 'active' : isCompleted ? 'completed' : ''} ${isActiveAdmitted ? 'admitted-node' : ''}`} 
+                  <div
+                    className={`timeline-time-node ${isExamining ? 'active' : isCompleted ? 'completed' : ''} ${isActiveAdmitted ? 'admitted-node' : ''}`}
                     key={idx}
                     onClick={() => handleAdmitPatient(item.patientId, item.name)}
                     style={{ cursor: 'pointer' }}
@@ -640,7 +653,7 @@ export function DashboardTab({
                   id="clinical-symptoms"
                   value={symptoms}
                   onChange={e => setSymptoms(e.target.value)}
-                  placeholder="Mô tả triệu chứng, tình trạng lâm sàng hiện tại..."
+                  placeholder="VD: Bệnh nhân ho khan, sốt 39 độ về đêm, đau rát họng..."
                   rows={3}
                 />
               </div>
@@ -650,7 +663,7 @@ export function DashboardTab({
                   id="clinical-diagnosis"
                   value={diagnosis}
                   onChange={e => setDiagnosis(e.target.value)}
-                  placeholder="Chẩn đoán xác định bệnh..."
+                  placeholder="VD: Viêm họng cấp do nhiễm siêu vi, theo dõi sốt cao..."
                   rows={2}
                 />
               </div>
@@ -660,7 +673,7 @@ export function DashboardTab({
                   id="clinical-prescription"
                   value={prescription}
                   onChange={e => setPrescription(e.target.value)}
-                  placeholder="Nhập tên thuốc, liều lượng, số lượng, hướng dẫn uống (Mỗi dòng một loại)..."
+                  placeholder="VD: Paracetamol 500mg - uống 1 viên khi sốt trên 38.5 độ, tối đa 3 viên/ngày..."
                   rows={4}
                 />
               </div>

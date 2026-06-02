@@ -20,10 +20,10 @@ const AppointmentList = ({ shiftTitle, timeRange, count, patients }: Appointment
                 <span>Thời gian:</span> <strong>{timeRange}</strong>
             </div>
             <div className="shift-info-row">
-                <span>Tổng số lịch hẹn:</span> <strong>{count} lịch hẹn</strong>
+                <span>Tổng số lịch khám:</span> <strong>{count} lịch khám</strong>
             </div>
 
-            <p className="list-label">Danh sách lịch hẹn</p>
+            <p className="list-label">Danh sách bệnh nhân</p>
             <div className="patient-list">
                 {patients.length > 0 ? (
                     patients.map((p, idx) => (

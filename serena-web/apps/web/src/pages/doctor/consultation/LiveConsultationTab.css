@@ -91,7 +91,7 @@
 }
 
 .card-bottom {
-  font-size: 11px;
+  font-size: 12px;
   color: #94a3b8;
   font-weight: 500;
 }
@@ -142,7 +142,7 @@
 
 .patient-profile-summary p {
   margin: 2px 0 0 0;
-  font-size: 11px;
+  font-size: 12px;
   color: #64748b;
 }
 
@@ -199,7 +199,7 @@
   color: #1d4ed8;
   padding: 8px 16px;
   border-radius: 12px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -231,9 +231,9 @@
 }
 
 .bot-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
-  color: #8b5cf6;
+  color: #2563EB;
   margin-bottom: 4px;
   margin-left: 12px;
 }
@@ -272,7 +272,7 @@
 
 .message-time {
   display: block;
-  font-size: 9px;
+  font-size: 12px;
   opacity: 0.7;
   margin-top: 4px;
   text-align: right;
@@ -425,7 +425,7 @@
 }
 
 .consultation-card-time {
-  font-size: 11px;
+  font-size: 12px;
   color: #A0AEC0;
   flex-shrink: 0;
 }
@@ -633,8 +633,8 @@
   background: #E2E8F0;
   color: #64748B;
   padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 12.5px;
+  border-radius: 6px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -645,7 +645,7 @@
 
 .chat-footer-ended p {
   margin: 0;
-  font-size: 12px;
+  font-size: 13px;
   color: #94A3B8;
 }
 
@@ -865,7 +865,7 @@
 }
 
 .section-title-wrapper.consult-theme {
-  color: #8B5CF6;
+  color: #2563EB;
 }
 
 .section-title-wrapper.notes-theme {
@@ -910,7 +910,7 @@
 }
 
 .info-item-label {
-  font-size: 11px;
+  font-size: 12px;
   color: #718096;
   font-weight: 500;
 }
@@ -990,7 +990,7 @@
 }
 
 .note-input-label {
-  font-size: 11px;
+  font-size: 12px;
   color: #1E293B;
   font-weight: 700;
 }
@@ -1000,7 +1000,7 @@
   border: 1px solid #E2E8F0;
   border-radius: 8px;
   padding: 10px 12px;
-  font-size: 12px;
+  font-size: 13px;
   font-family: inherit;
   resize: none;
   outline: none;
@@ -1107,7 +1107,7 @@
 }
 
 .modal-calendar-day-header {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   color: #A0AEC0;
   text-align: center;
@@ -1295,7 +1295,7 @@
 }
 
 .toast-sub-msg {
-  font-size: 11px;
+  font-size: 12px;
   color: #FFFFFF;
   opacity: 0.95;
 }
@@ -1320,4 +1320,55 @@
 .toast-dismiss-btn svg {
   width: 16px;
   height: 16px;
+}
+
+/* Sub-tab filter design in Live Consultation Sidebar */
+.consultation-tab-filters {
+  display: flex;
+  background: #EBF3FC;
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  gap: 2px;
+}
+
+.consultation-filter-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: #718096;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 4px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.consultation-filter-btn:hover:not(.active) {
+  color: #244A6B;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.consultation-filter-btn.active {
+  background: #ffffff;
+  color: #2563EB;
+  box-shadow: 0 2px 6px rgba(36, 74, 107, 0.08);
+}
+
+.consultation-filter-btn .filter-badge {
+  font-size: 12px;
+  font-weight: 800;
+  color: #B91C1C;
+  background: #FEF2F2;
+  border: 1px solid #FEE2E2;
+  padding: 2px 6px;
+  border-radius: 6px;
+  display: inline-block;
+  line-height: 1.2;
 }

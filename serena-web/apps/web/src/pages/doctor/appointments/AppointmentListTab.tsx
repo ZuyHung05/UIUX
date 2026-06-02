@@ -2304,7 +2304,7 @@ export function AppointmentListTab({
               setViewingPatientId(null)
               setSelectedEncounterIdx(0)
             }}
-            title="Quay lại danh sách lịch hẹn"
+            title="Quay lại danh sách ca khám"
             style={{ marginBottom: '16px' }}
           />
 
@@ -2351,7 +2351,7 @@ export function AppointmentListTab({
                   <line x1="8" y1="2" x2="8" y2="6" />
                   <line x1="3" y1="10" x2="21" y2="10" />
                 </svg>
-                Lịch hẹn khám hiện tại & Lý do khám
+                Ca khám hiện tại & Lý do khám
               </h3>
               <div className="emr-appointment-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '24px', marginTop: '16px' }}>
                 <div className="appt-info-block" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -2514,7 +2514,7 @@ export function AppointmentListTab({
                       id="clinical-symptoms"
                       value={symptoms}
                       onChange={e => setSymptoms(e.target.value)}
-                      placeholder="Mô tả triệu chứng, tình trạng lâm sàng hiện tại..."
+                      placeholder="VD: Bệnh nhân ho khan, sốt 39 độ về đêm, đau rát họng..."
                       rows={3}
                     />
                   </div>
@@ -2524,7 +2524,7 @@ export function AppointmentListTab({
                       id="clinical-diagnosis"
                       value={diagnosis}
                       onChange={e => setDiagnosis(e.target.value)}
-                      placeholder="Chẩn đoán xác định bệnh..."
+                      placeholder="VD: Viêm họng cấp do nhiễm siêu vi, theo dõi sốt cao..."
                       rows={2}
                     />
                   </div>
@@ -2534,7 +2534,7 @@ export function AppointmentListTab({
                       id="clinical-prescription"
                       value={prescription}
                       onChange={e => setPrescription(e.target.value)}
-                      placeholder="Nhập tên thuốc, liều lượng, số lượng, hướng dẫn uống (Mỗi dòng một loại)..."
+                      placeholder="VD: Paracetamol 500mg - uống 1 viên khi sốt trên 38.5 độ, tối đa 3 viên/ngày..."
                       rows={4}
                     />
                   </div>
@@ -2654,7 +2654,7 @@ export function AppointmentListTab({
     }
   ]
 
-  // 2. APPOINTMENTS LIST TABLE VIEW
+  // 2. Doctor clinical shift table view
   return (
     <div className="appointment-list-tab-content">
       {toastMessage && <div className="emr-toast">{toastMessage}</div>}
@@ -2662,8 +2662,8 @@ export function AppointmentListTab({
       {/* 1. Header — title left, time filter right */}
       <header className="patient-tab-header">
         <div className="tab-titles">
-          <h1>Lịch hẹn khám tại phòng khám</h1>
-          <p>Quản lý lịch hẹn khám trực tiếp, tiếp nhận bệnh nhân và thực hiện chẩn đoán y khoa.</p>
+          <h1>Ca khám tại phòng khám</h1>
+          <p>Theo dõi ca khám trực tiếp, tiếp nhận bệnh nhân và thực hiện chẩn đoán y khoa.</p>
         </div>
         <div className="header-right-filter">
           <FilterSelect
@@ -2681,7 +2681,7 @@ export function AppointmentListTab({
       {/* 2. Summary metric cards row */}
       <div className="metrics-grid doctor-metrics-grid" style={{ marginTop: '18px' }}>
         <MetricCard
-          label="Tổng số lịch hẹn"
+          label="Tổng số ca khám"
           value={stats.total}
           delta={getDeltaText("+2%")}
           icon={<PulseMetricIcon />}
@@ -2699,7 +2699,7 @@ export function AppointmentListTab({
           value={stats.processing}
           delta={getDeltaText("+0")}
           icon={<MessageMetricIcon />}
-          iconClassName="metric-icon-pink"
+          iconClassName="metric-icon-blue"
         />
         <MetricCard
           label="Ca hoàn thành"
@@ -2716,7 +2716,7 @@ export function AppointmentListTab({
           <SearchInput
             value={searchTerm}
             onChange={setSearchTerm}
-            placeholder="Tìm theo tên hoặc mã bệnh nhân"
+            placeholder="VD: Nhập mã BN (BN-2026-001) hoặc số điện thoại..."
           />
 
           <div className="sort-selector-container">
@@ -2760,7 +2760,7 @@ export function AppointmentListTab({
             >
               <option value={5}>5</option>
               <option value={10}>10</option>
-              <option value={25}>25</option>
+              <option value={15}>15</option>
             </select>
             <span className="page-size-suffix">dòng</span>
           </div>
@@ -2806,7 +2806,7 @@ export function AppointmentListTab({
           rows={paginatedAppointments}
           columns={columns}
           getRowKey={(a) => a.id}
-          emptyState="Không tìm thấy lịch hẹn nào phù hợp."
+          emptyState="Không tìm thấy ca khám nào phù hợp."
         />
       </div>
 
@@ -2829,7 +2829,7 @@ export function AppointmentListTab({
                   id="clinical-symptoms"
                   value={symptoms}
                   onChange={e => setSymptoms(e.target.value)}
-                  placeholder="Mô tả triệu chứng, tình trạng lâm sàng hiện tại..."
+                  placeholder="VD: Bệnh nhân ho khan, sốt 39 độ về đêm, đau rát họng..."
                   rows={3}
                 />
               </div>
@@ -2839,7 +2839,7 @@ export function AppointmentListTab({
                   id="clinical-diagnosis"
                   value={diagnosis}
                   onChange={e => setDiagnosis(e.target.value)}
-                  placeholder="Chẩn đoán xác định bệnh..."
+                  placeholder="VD: Viêm họng cấp do nhiễm siêu vi, theo dõi sốt cao..."
                   rows={2}
                 />
               </div>
@@ -2849,7 +2849,7 @@ export function AppointmentListTab({
                   id="clinical-prescription"
                   value={prescription}
                   onChange={e => setPrescription(e.target.value)}
-                  placeholder="Nhập tên thuốc, liều lượng, số lượng, hướng dẫn uống (Mỗi dòng một loại)..."
+                  placeholder="VD: Paracetamol 500mg - uống 1 viên khi sốt trên 38.5 độ, tối đa 3 viên/ngày..."
                   rows={4}
                 />
               </div>

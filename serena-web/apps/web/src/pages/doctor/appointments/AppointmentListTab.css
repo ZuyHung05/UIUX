@@ -113,7 +113,7 @@
   height: 22px;
   background: #E6EFFE;
   color: #2563EB;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   border-radius: 50%;
   flex-shrink: 0;
@@ -348,7 +348,7 @@
   color: #2563EB;
   font-weight: 700;
   padding: 6px 14px;
-  border-radius: 100px;
+  border-radius: 6px;
   font-size: 12px;
   display: inline-flex;
   align-items: center;
@@ -364,10 +364,10 @@
   justify-content: center;
   align-items: center;
   border: 1px solid transparent;
-  border-radius: 100px;
+  border-radius: 6px;
   padding: 4px 16px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -384,9 +384,9 @@
 }
 
 .status-pill.done {
-  border-color: #E9D5FF;
-  background: #F3E8FF;
-  color: #7C3AED;
+  border-color: #E2E8F0;
+  background: #F1F5F9;
+  color: #475569;
 }
 
 /* ==========================================================================
@@ -602,7 +602,7 @@
 }
 
 .doctor-rating-pill {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 8px;

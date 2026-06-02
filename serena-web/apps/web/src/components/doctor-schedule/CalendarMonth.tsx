@@ -92,7 +92,7 @@ const CalendarMonth = ({ selectedDate, onDateSelect, className }: CalendarMonthP
                             onClick={() => onDateSelect(dateStr)}
                         >
                             <span className="day-number">{day}</span>
-                            {hasWorkSchedule && <div className={`event-dot ${isSelected ? 'selected' : ''}`}></div>}
+                            {hasAppointments && <div className={`event-dot ${isSelected ? 'selected' : ''}`}></div>}
                         </div>
                     );
                 })}

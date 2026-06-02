@@ -9,7 +9,7 @@ interface ShiftCardProps {
 }
 
 const ShiftCard = ({ title, time, count, status, onViewDetail, isSelected }: ShiftCardProps) => (
-    <div className={`shift-card ${isSelected ? 'selected' : ''}`}>
+    <article className={`shift-card ${isSelected ? 'selected' : ''}`}>
         <div className="shift-main">
             <div>
                 <h4 className="shift-title">{title}</h4>
@@ -18,10 +18,10 @@ const ShiftCard = ({ title, time, count, status, onViewDetail, isSelected }: Shi
             {status && <span className="shift-badge">{status}</span>}
         </div>
         <div className="shift-footer">
-            <span>{count} lịch hẹn</span>
-            <div onClick={onViewDetail} className="view-detail-text">Xem chi tiết</div>
+            <span>{count} lịch khám</span>
+            <button type="button" onClick={onViewDetail} className="view-detail-text">Xem chi tiết</button>
         </div>
-    </div>
+    </article>
 );
 
 export default ShiftCard;

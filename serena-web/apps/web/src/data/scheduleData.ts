@@ -129,20 +129,20 @@ const baseScheduleData: Record<string, Shift[]> = {
   '2026-05-18': [{ id: 'm18_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 1, patients: [{ name: 'Lý Thị K', id: '#12351', time: '09:00' }] }],
   '2026-05-19': [{ id: 'm19_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 2, patients: [{ name: 'Nguyễn Thị B', id: '#12345', time: '09:30' }] }],
   // Thứ 4 - Ngày 20/05/2026 (Has schedule, NO patients)
-  '2026-05-20': [{ id: 'm20_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 1, patients: [] }],
+  '2026-05-20': [{ id: 'm20_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 0, patients: [] }],
   '2026-05-21': [{ id: 'm21_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 3, patients: [{ name: 'Trần Văn C', id: '#12346', time: '10:00' }] }],
   '2026-05-22': [{ id: 'm22_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 1, patients: [{ name: 'Lê Văn C', id: '#12347', time: '10:30' }] }],
   // Saturday - Ngày 23/05/2026 (Has schedule, NO patients)
-  '2026-05-23': [{ id: 'm23_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 2, patients: [] }],
+  '2026-05-23': [{ id: 'm23_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 0, patients: [] }],
 
   // Week 4 (25 - 29 May)
   '2026-05-25': [{ id: 'm25_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 2, patients: [{ name: 'Lê Thị D', id: '#12347', time: '09:00' }] }],
   '2026-05-26': [{ id: 'm26_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 4, patients: [{ name: 'Phạm Văn E', id: '#12348', time: '09:30' }] }],
   // Thứ 4 - Ngày 27/05/2026 (Has schedule, NO patients)
-  '2026-05-27': [{ id: 'm27_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 4, patients: [] }],
-  '2026-05-28': [{ id: 'm28_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 1, patients: [] }],
-  '2026-05-29': [{ id: 'm29_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 2, patients: [] }],
-  '2026-05-30': [{ id: 'm30_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 3, patients: [] }],
+  '2026-05-27': [{ id: 'm27_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 0, patients: [] }],
+  '2026-05-28': [{ id: 'm28_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 0, patients: [] }],
+  '2026-05-29': [{ id: 'm29_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 0, patients: [] }],
+  '2026-05-30': [{ id: 'm30_1', title: 'Ca sáng', time: '08:00 - 12:00', count: 0, patients: [] }],
 };
 
 export const SCHEDULE_DATA: Record<string, Shift[]> = new Proxy(baseScheduleData, {

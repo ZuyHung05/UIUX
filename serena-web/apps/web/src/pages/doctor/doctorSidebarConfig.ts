@@ -19,7 +19,6 @@ export const doctorSidebarConfig: SidebarConfig = {
       title: 'Lịch trình',
       items: [
         { label: 'Lịch làm việc', icon: 'calendar', href: '/doctor/dashboard?tab=Lịch làm việc' },
-        { label: 'Lịch làm việc V2 ✨', icon: 'calendar-check', href: '/doctor/schedule-v2' },
       ],
     },
   ],

@@ -11,9 +11,6 @@ import { DoctorsDataProvider } from './pages/manager/doctors/DoctorsDataContext'
 import { ManagerServicesPricingPage } from './pages/manager/services-pricing/ManagerServicesPricingPage'
 import { ManagerScheduleAssignmentPage } from './pages/manager/schedules/ManagerScheduleAssignmentPage'
 
-
-import { DoctorScheduleV2Page } from './pages/doctor/schedule/DoctorScheduleV2Page'
-
 function App() {
   return (
     <DoctorsDataProvider>
@@ -31,7 +28,6 @@ function App() {
 
         <Route path="/manager/chatbot-monitor" element={<ChatbotMonitorPage />} />
         <Route path="/doctor/dashboard" element={<DoctorDashboardPage />} />
-        <Route path="/doctor/schedule-v2" element={<DoctorScheduleV2Page />} />
         {/* Fallback route */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>

@@ -67,7 +67,7 @@ export const initialPatients = [
   {
     "id": "2",
     "code": "BN-2026-002",
-    "name": "Trần Thị B",
+    "name": "Trần Thu Thảo",
     "age": 28,
     "gender": "Nữ",
     "status": "Đang chờ",
@@ -1565,6 +1565,7 @@ export function PatientListTab({
   const filteredPatients = patients.filter(p => {
     const matchesSearch =
       p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.phone.includes(searchTerm)
 
     const matchesService = serviceFilter === 'Tất cả' || p.appointmentType === serviceFilter
@@ -1575,6 +1576,16 @@ export function PatientListTab({
 
   const paginatedPatients = filteredPatients.slice((currentPage - 1) * pageSize, currentPage * pageSize)
   const totalPages = Math.ceil(filteredPatients.length / pageSize) || 1
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm, serviceFilter, statusFilter])
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages)
+    }
+  }, [currentPage, totalPages])
 
   // EMR Details view render (Matches the EMR Patient Detail Wireframe exactly + Interactive Visit History)
   if (activePatientId && activePatient) {
@@ -1603,8 +1614,8 @@ export function PatientListTab({
                   ? "Quay lại màn nhắn tin"
                   : referrerTabName === 'Dashboard'
                   ? "Quay lại Dashboard"
-                  : referrerTabName === 'Lịch hẹn khám'
-                  ? "Quay lại lịch hẹn"
+                  : referrerTabName === 'Ca khám'
+                  ? "Quay lại ca khám"
                   : `Quay lại ${referrerTabName}`)
               : "Quay lại danh sách"
           }
@@ -1882,7 +1893,7 @@ export function PatientListTab({
           value={stats.urgent}
           delta={getDeltaText("+12%")}
           icon={<MessageMetricIcon />}
-          iconClassName="metric-icon-pink"
+          iconClassName="metric-icon-yellow"
         />
       </div>
 
@@ -1892,7 +1903,7 @@ export function PatientListTab({
           <SearchInput
             value={searchTerm}
             onChange={setSearchTerm}
-            placeholder="Tìm kiếm bệnh nhân..."
+            placeholder="VD: Nhập mã BN (BN-2026-001) hoặc số điện thoại..."
           />
 
           <div className="sort-selector-container">
@@ -1936,7 +1947,7 @@ export function PatientListTab({
             >
               <option value={5}>5</option>
               <option value={10}>10</option>
-              <option value={25}>25</option>
+              <option value={15}>15</option>
             </select>
             <span className="page-size-suffix">dòng</span>
           </div>

@@ -1,4 +1,25 @@
 .doctor-dashboard-main {
   min-height: 0;
+  scrollbar-gutter: stable;
+  box-shadow: inset 0 -34px 30px -34px rgba(36, 74, 107, 0.55);
+  scrollbar-color: rgba(36, 74, 107, 0.28) transparent;
+  scrollbar-width: thin;
 }
 
+.doctor-dashboard-main::-webkit-scrollbar {
+  width: 8px;
+}
+
+.doctor-dashboard-main::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.doctor-dashboard-main::-webkit-scrollbar-thumb {
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  background: rgba(36, 74, 107, 0.22);
+}
+
+.doctor-dashboard-main::-webkit-scrollbar-thumb:hover {
+  background: rgba(36, 74, 107, 0.36);
+}
