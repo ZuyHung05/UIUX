@@ -1,17 +1,18 @@
 .manager-dashboard-main {
+  background: #fff;
   overflow: hidden;
 }
 
 .manager-dashboard-content {
   display: flex;
   flex-direction: column;
-  gap: clamp(5px, 0.75vh, 10px);
-  height: 100%;
-  box-sizing: border-box;
-  padding: clamp(8px, 1vh, 14px) clamp(12px, 1.1vw, 18px);
+  gap: 10px;
+  min-height: 100%;
+  padding: clamp(10px, 1.8vh, 10px) clamp(10px, 1.6vw, 18px);
   color: #244a6b;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow: hidden;
+  padding-bottom: 2px;
 }
 
 .dashboard-heading-row {
@@ -56,6 +57,62 @@
 .manager-dashboard-page .metric-card {
   min-height: clamp(60px, 7.4vh, 78px);
   border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+  transform-origin: center;
+  animation: dashboardMetricPop 0.62s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition:
+    background-color 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
+}
+
+.manager-dashboard-page .metric-card::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 0%, rgba(255, 255, 255, 0.72) 45%, transparent 72%);
+  opacity: 0;
+  transform: translateX(-120%);
+  transition: opacity 0.2s ease;
+}
+
+.manager-dashboard-page .metric-card:hover {
+  border-color: rgba(141, 193, 255, 0.82);
+  background: #fbfdff;
+  box-shadow: 0 14px 30px rgba(36, 74, 107, 0.08);
+  transform: translateY(-2px);
+}
+
+.manager-dashboard-page .metric-card:hover::after {
+  opacity: 1;
+  animation: dashboardMetricSheen 0.82s ease;
+}
+
+.manager-dashboard-page .metric-card:hover .metric-icon {
+  transform: scale(1.06) rotate(-2deg);
+}
+
+.manager-dashboard-page .metric-card:nth-child(1) {
+  animation-delay: 0.02s;
+}
+
+.manager-dashboard-page .metric-card:nth-child(2) {
+  animation-delay: 0.09s;
+}
+
+.manager-dashboard-page .metric-card:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+.manager-dashboard-page .metric-card:nth-child(4) {
+  animation-delay: 0.23s;
+}
+
+.manager-dashboard-page .metric-icon {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .kpi-delta-inline {
@@ -108,13 +165,27 @@
   background: #ffffff;
   padding: clamp(10px, 1vh, 14px) clamp(14px, 1.05vw, 20px);
   box-shadow: none;
-  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  animation: dashboardCardReveal 0.72s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .dashboard-card:hover {
   border-color: #e1ebf7;
   background-color: #fbfdff;
+  box-shadow: 0 14px 32px rgba(36, 74, 107, 0.06);
+  transform: translateY(-1px);
+}
+
+.dashboard-row-chatbot .dashboard-card {
+  animation-delay: 0.26s;
+}
+
+.dashboard-row-branch .dashboard-card:nth-child(1) {
+  animation-delay: 0.34s;
+}
+
+.dashboard-row-branch .dashboard-card:nth-child(2) {
+  animation-delay: 0.42s;
 }
 
 .card-title-row {
@@ -176,13 +247,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
-  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
 }
 
 .card-link-button:hover {
   background: #ddeaff;
   border-color: #bcd6ff;
   color: #2f5f9e;
+  transform: translateX(1px);
 }
 
 .card-link-button svg {
@@ -201,6 +273,22 @@
   width: 100%;
   box-sizing: border-box;
   padding: 6px 8px 4px;
+}
+
+.dashboard-chart-frame .recharts-surface {
+  overflow: visible;
+}
+
+.dashboard-chart-frame .recharts-area-area {
+  animation: dashboardChartFade 0.7s ease both;
+}
+
+.dashboard-chart-frame .recharts-dot {
+  transition: r 0.16s ease, filter 0.16s ease;
+}
+
+.dashboard-chart-frame .recharts-active-dot {
+  filter: drop-shadow(0 4px 8px rgba(74, 147, 255, 0.24));
 }
 
 .chatbot-combined-card .card-title-row {
@@ -260,6 +348,7 @@
   width: clamp(128px, 12vw, 174px);
   height: clamp(128px, 100%, 174px);
   min-height: 0;
+  animation: dashboardDonutFloat 3.8s ease-in-out 1s infinite;
 }
 
 .donut-center {
@@ -277,6 +366,7 @@
   font-size: clamp(18px, 1.7vw, 24px);
   font-weight: 750;
   line-height: 1;
+  animation: dashboardNumberPulse 1.05s ease both;
 }
 
 .donut-center-label {
@@ -353,6 +443,12 @@
   color: #5a6b80;
   font-size: 11px;
   font-weight: 500;
+  transition: color 0.16s ease, transform 0.16s ease;
+}
+
+.inline-legend-item:hover {
+  color: #244a6b;
+  transform: translateY(-1px);
 }
 
 .inline-legend-item em {
@@ -366,6 +462,12 @@
   height: 11px;
   border-radius: 4px;
   flex: 0 0 auto;
+  transition: transform 0.16s ease;
+}
+
+.inline-legend-item:hover .legend-swatch,
+.donut-legend-item:hover .legend-swatch {
+  transform: scale(1.12);
 }
 
 /* ===== Phân công lịch ===== */
@@ -435,6 +537,8 @@
   display: block;
   height: 100%;
   border-radius: 999px;
+  animation: dashboardProgressFill 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: left center;
   transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -480,6 +584,97 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes dashboardMetricPop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dashboardMetricSheen {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes dashboardCardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dashboardChartFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dashboardDonutFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes dashboardNumberPulse {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes dashboardProgressFill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .manager-dashboard-page .metric-card,
+  .manager-dashboard-page .metric-card::after,
+  .dashboard-card,
+  .dashboard-chart-frame .recharts-area-area,
+  .donut-wrapper,
+  .donut-center-value,
+  .assignment-progress-fill {
+    animation: none;
+  }
+
+  .manager-dashboard-page .metric-card,
+  .dashboard-card,
+  .card-link-button,
+  .inline-legend-item,
+  .legend-swatch,
+  .metric-icon {
+    transition: none;
   }
 }
 

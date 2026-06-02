@@ -13,9 +13,10 @@ export type FilterSelectProps = {
   value?: string
   onChange?: (event: ChangeEvent<HTMLSelectElement>) => void
   className?: string
+  disabled?: boolean
 }
 
-export function FilterSelect({ options, defaultValue, value, onChange, className }: FilterSelectProps) {
+export function FilterSelect({ options, defaultValue, value, onChange, className, disabled = false }: FilterSelectProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [internalVal, setInternalVal] = useState(defaultValue || options[0]?.value)
   const [isOpen, setIsOpen] = useState(false)
@@ -34,6 +35,10 @@ export function FilterSelect({ options, defaultValue, value, onChange, className
   }, [])
 
   const handleSelectChange = (nextValue: string) => {
+    if (disabled) {
+      return
+    }
+
     if (value === undefined) {
       setInternalVal(nextValue)
     }
@@ -48,8 +53,9 @@ export function FilterSelect({ options, defaultValue, value, onChange, className
       <button
         className="date-filter-button"
         type="button"
-        aria-expanded={isOpen}
-        onClick={() => setIsOpen((open) => !open)}
+        aria-expanded={disabled ? false : isOpen}
+        disabled={disabled}
+        onClick={() => setIsOpen((open) => (disabled ? false : !open))}
       >
         <svg className="date-filter-menu-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M5 7h14M5 12h10M5 17h14" />

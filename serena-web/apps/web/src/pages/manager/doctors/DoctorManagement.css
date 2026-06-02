@@ -7,9 +7,11 @@
   flex-direction: column;
   gap: 10px;
   min-height: 100%;
-  padding: clamp(12px, 1.8vh, 18px) clamp(14px, 1.6vw, 24px);
+  padding: clamp(10px, 1.8vh, 10px) clamp(10px, 1.6vw, 18px);
   color: #244a6b;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+  padding-bottom: 2px;
 }
 
 .doctor-heading-row,

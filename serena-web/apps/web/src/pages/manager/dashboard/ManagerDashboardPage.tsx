@@ -359,7 +359,7 @@ export function ManagerDashboardPage() {
                 <button
                   type="button"
                   className="card-link-button"
-                  onClick={() => navigate('/manager/report')}
+                  onClick={() => navigate('/manager/report?tab=chatbot')}
                 >
                   Xem báo cáo Chatbot
                   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -401,6 +401,10 @@ export function ManagerDashboardPage() {
                           fill="url(#trendFill)"
                           dot={{ r: 3, fill: palette.blueInk, strokeWidth: 0 }}
                           activeDot={{ r: 5 }}
+                          isAnimationActive
+                          animationBegin={120}
+                          animationDuration={900}
+                          animationEasing="ease-out"
                         />
                       </AreaChart>
                     </ResponsiveContainer>
@@ -426,7 +430,10 @@ export function ManagerDashboardPage() {
                             paddingAngle={2}
                             cornerRadius={8}
                             stroke="none"
-                            isAnimationActive={false}
+                            isAnimationActive
+                            animationBegin={220}
+                            animationDuration={850}
+                            animationEasing="ease-out"
                           >
                             {donutData.map((entry) => (
                               <Cell key={entry.name} fill={entry.color} />
@@ -481,7 +488,7 @@ export function ManagerDashboardPage() {
                 <button
                   type="button"
                   className="card-link-button"
-                  onClick={() => navigate('/manager/report')}
+                  onClick={() => navigate('/manager/report?tab=branch')}
                 >
                   Xem báo cáo Chi nhánh
                   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -500,10 +507,10 @@ export function ManagerDashboardPage() {
                       formatter={(value, name) => branchMetricFormatter(value as number | string, name as string)}
                       contentStyle={{ borderRadius: '14px', border: '1px solid #eef3f7', boxShadow: 'none' }}
                     />
-                    <Bar dataKey="aiConsults" name="Lượt tư vấn AI" fill={palette.blue} radius={[8, 8, 4, 4]} barSize={18} isAnimationActive={false} />
-                    <Bar dataKey="doctorConsults" name="Lượt tư vấn Bác sĩ" fill={palette.green} radius={[8, 8, 4, 4]} barSize={18} isAnimationActive={false} />
-                    <Bar dataKey="appointments" name="Số lịch hẹn" fill={palette.yellow} radius={[8, 8, 4, 4]} barSize={18} isAnimationActive={false} />
-                    <Bar dataKey="revenue" name="Doanh thu" fill={palette.pink} radius={[8, 8, 4, 4]} barSize={18} isAnimationActive={false} />
+                    <Bar dataKey="aiConsults" name="Lượt tư vấn AI" fill={palette.blue} radius={[8, 8, 4, 4]} barSize={18} isAnimationActive animationBegin={80} animationDuration={720} animationEasing="ease-out" />
+                    <Bar dataKey="doctorConsults" name="Lượt tư vấn Bác sĩ" fill={palette.green} radius={[8, 8, 4, 4]} barSize={18} isAnimationActive animationBegin={180} animationDuration={720} animationEasing="ease-out" />
+                    <Bar dataKey="appointments" name="Số lịch hẹn" fill={palette.yellow} radius={[8, 8, 4, 4]} barSize={18} isAnimationActive animationBegin={280} animationDuration={720} animationEasing="ease-out" />
+                    <Bar dataKey="revenue" name="Doanh thu" fill={palette.pink} radius={[8, 8, 4, 4]} barSize={18} isAnimationActive animationBegin={380} animationDuration={720} animationEasing="ease-out" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

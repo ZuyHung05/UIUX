@@ -7,7 +7,7 @@ export const managerSidebarConfig: SidebarConfig = {
       title: 'Tổng quan',
       items: [
         { label: 'Dashboard', icon: 'home', href: '/manager/dashboard' },
-        { label: 'Báo cáo - Thống kê', icon: 'chart', href: '/manager/report' },
+        { label: 'Báo cáo', icon: 'chart', href: '/manager/report' },
       ],
     },
     {

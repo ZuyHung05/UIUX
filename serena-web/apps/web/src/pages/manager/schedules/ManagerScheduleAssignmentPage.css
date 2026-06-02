@@ -1,16 +1,18 @@
 .manager-schedule-main {
-  background:
-    radial-gradient(circle at top left, rgba(220, 235, 255, 0.48), transparent 30%),
-    linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  background: #fff;
+  overflow: hidden;
 }
 
 .schedule-assignment-content {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: clamp(12px, 1.5vh, 16px) clamp(14px, 1.6vw, 22px);
+  gap: 10px;
+  min-height: 100%;
+  padding: clamp(10px, 1.8vh, 10px) clamp(10px, 1.6vw, 18px);
   color: #244a6b;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+  padding-bottom: 2px;
 }
 
 .schedule-heading-row,
