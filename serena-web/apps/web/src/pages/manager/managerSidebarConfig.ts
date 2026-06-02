@@ -15,7 +15,6 @@ export const managerSidebarConfig: SidebarConfig = {
       items: [
         { label: 'Giám sát Chatbot', icon: 'bot', href: '/manager/chatbot-monitor' },
         { label: 'Phân công Lịch làm việc', icon: 'clock', href: '/manager/schedules' },
-        { label: 'Đánh giá & Phản hồi', icon: 'message', href: '/manager/feedback' },
       ],
     },
     {
