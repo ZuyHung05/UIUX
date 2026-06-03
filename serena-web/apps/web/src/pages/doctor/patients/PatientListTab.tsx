@@ -7,6 +7,7 @@ import { ClockMetricIcon, MessageMetricIcon, PulseMetricIcon, UsersMetricIcon, S
 import { SearchInput } from '../../../components/ui/SearchInput'
 import { ReturnButton } from '../../../components/ui/ReturnButton'
 import { Pagination } from '../../../components/ui/Pagination'
+import { PageSizeSelect } from '../../../components/ui/PageSizeSelect'
 import { StatusBadge } from '../../../components/ui/StatusBadge'
 import '../../manager/doctors/DoctorManagement.css'
 import './PatientListTab.css'
@@ -1671,8 +1672,8 @@ export function PatientListTab({
     const enc = p.pastEncounters[selectedEncounterIdx] || p.pastEncounters[0]
 
     return (
-      <div className="doctor-detail-main doctor-patient-detail-main" style={{ height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column', padding: '0px' }}>
-        <section className="doctor-page-content" style={{ height: '100%', minHeight: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '10px', overflow: 'hidden' }}>
+      <div className="doctor-detail-main doctor-patient-detail-main" style={{ minHeight: '100%', overflow: 'visible', display: 'flex', flexDirection: 'column', padding: '0px' }}>
+        <section className="doctor-page-content" style={{ minHeight: '100%', padding: 0, display: 'flex', flexDirection: 'column', gap: '10px', overflow: 'visible' }}>
           {toastMessage && <div className="emr-toast">{toastMessage}</div>}
 
           <div className="doctor-detail-actions" style={{ flex: '0 0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
@@ -1691,17 +1692,25 @@ export function PatientListTab({
               Quay lại
             </PrimaryButton>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <PrimaryButton variant="secondary" onClick={() => triggerToast(`Đang kết nối máy in để in đơn thuốc của bệnh nhân ${p.name}...`)}>
+              <PrimaryButton
+                variant="secondary"
+                style={{ background: '#F0FDF4', borderColor: '#22C55E', color: '#15803D' }}
+                onClick={() => triggerToast(`Đang kết nối máy in để in đơn thuốc của bệnh nhân ${p.name}...`)}
+              >
                 In đơn thuốc
               </PrimaryButton>
-              <PrimaryButton variant="primary" onClick={() => triggerToast(`Đang xuất file bệnh án EMR (PDF) của bệnh nhân ${p.name}...`)}>
+              <PrimaryButton
+                variant="primary"
+                style={{ background: '#22C55E', borderColor: '#22C55E', color: '#FFFFFF' }}
+                onClick={() => triggerToast(`Đang xuất file bệnh án EMR (PDF) của bệnh nhân ${p.name}...`)}
+              >
                 Xuất file bệnh án (PDF)
               </PrimaryButton>
             </div>
           </div>
 
-          <section className="doctor-detail-dashboard" style={{ flex: '1 1 auto', minHeight: 0, overflow: 'hidden', display: 'grid', gridTemplateColumns: 'minmax(282px, 0.74fr) minmax(0, 1.26fr)', gap: '12px' }}>
-            <aside className="doctor-detail-left-column" style={{ display: 'flex', flexDirection: 'column', gap: '12px', height: '100%', minHeight: 0 }}>
+          <section className="doctor-detail-dashboard" style={{ flex: '1 1 auto', minHeight: 0, overflow: 'visible', display: 'grid', gridTemplateColumns: 'minmax(282px, 0.74fr) minmax(0, 1.26fr)', gap: '12px' }}>
+            <aside className="doctor-detail-left-column" style={{ display: 'flex', flexDirection: 'column', gap: '12px', minHeight: 0 }}>
               {/* Panel 1: Profile */}
               <article className="doctor-detail-panel doctor-detail-profile-panel" style={{ flex: '0 0 auto' }}>
                 <div className="doctor-detail-profile-head">
@@ -1735,7 +1744,7 @@ export function PatientListTab({
               </article>
 
               {/* Panel 3: Medical History & Allergies */}
-              <article className="doctor-detail-panel doctor-detail-history-panel" style={{ flex: '0 0 auto', minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+              <article className="doctor-detail-panel doctor-detail-history-panel" style={{ flex: '0 0 auto', minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'visible' }}>
                 <SectionHeading icon={<PulseMetricIcon />} title="Tiền sử & Cảnh báo dị ứng" />
                 <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', paddingRight: '2px' }}>
                   <div style={{ padding: '10px 14px', borderRadius: '12px', background: p.allergies.length > 0 ? '#FEF2F2' : '#F0FDF4', border: '1px solid', borderColor: p.allergies.length > 0 ? '#FCA5A5' : '#86EFAC' }}>
@@ -1756,7 +1765,7 @@ export function PatientListTab({
               </article>
             </aside>
 
-            <section className="doctor-detail-right-column" style={{ display: 'flex', flexDirection: 'column', gap: '12px', height: '100%', minHeight: 0 }}>
+            <section className="doctor-detail-right-column" style={{ display: 'flex', flexDirection: 'column', gap: '12px', minHeight: 0 }}>
               {/* Vitals Stats Grid */}
               <div className="metrics-grid doctor-detail-stats-grid" style={{ flex: '0 0 auto' }}>
                 <MetricCard
@@ -1834,7 +1843,7 @@ export function PatientListTab({
               </article>
 
               {/* Panel 5: Selected Encounter Details */}
-              <article className="doctor-detail-panel doctor-detail-activity-panel" style={{ flex: '0 0 auto', minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+              <article className="doctor-detail-panel doctor-detail-activity-panel" style={{ flex: '0 0 auto', minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'visible' }}>
                 <div style={{ flex: '0 0 auto' }}>
                   <SectionHeading icon={<ClockMetricIcon />} title="Chi tiết lượt khám được chọn" />
                 </div>
@@ -1983,11 +1992,11 @@ export function PatientListTab({
 
   // Dashboard / Table View Render (Perfect Wireframe representation + Clinically Valued Fields)
   return (
-    <div className="patient-page-content">
+    <div className="doctor-page-content patient-page-content">
       {toastMessage && <div className="emr-toast">{toastMessage}</div>}
 
       {/* Wireframe Metric Stats Summary Bar */}
-      <header className="patient-tab-header">
+      <header className="doctor-heading-row patient-tab-header">
         <div className="tab-titles">
           <h1>Quản lý Bệnh nhân</h1>
           <p>Trang quản lý hồ sơ bệnh nhân trong chuỗi phòng khám.</p>
@@ -2034,8 +2043,8 @@ export function PatientListTab({
       </div>
 
       {/* Title & Controls Toolbar */}
-      <div className="patient-toolbar">
-        <div className="patient-toolbar-filters">
+      <div className="doctor-toolbar patient-toolbar">
+        <div className="doctor-toolbar-filters patient-toolbar-filters">
           <SearchInput
             value={searchTerm}
             onChange={setSearchTerm}
@@ -2064,22 +2073,16 @@ export function PatientListTab({
         </div>
       </div>
 
-      <div className="patient-table-controls">
-        <label className="patient-page-size">
-          <span>Hiển thị</span>
-          <select 
-            value={pageSize} 
-            onChange={e => {
-              setPageSize(Number(e.target.value));
-              setCurrentPage(1);
-            }}
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={15}>15</option>
-          </select>
-          <span>dòng</span>
-        </label>
+      <div className="doctor-table-controls patient-table-controls">
+        <PageSizeSelect
+          value={pageSize}
+          options={[5, 10, 20]}
+          suffix="dòng"
+          onChange={(value) => {
+            setPageSize(value)
+            setCurrentPage(1)
+          }}
+        />
 
         <Pagination
           currentPage={currentPage}

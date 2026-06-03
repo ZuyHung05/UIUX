@@ -6,7 +6,7 @@ export const doctorSidebarConfig: SidebarConfig = {
   groups: [
     {
       title: 'Tổng quan',
-      items: [{ label: 'Dashboard', icon: 'grid', href: '/doctor/dashboard?tab=Dashboard' }],
+      items: [{ label: 'Dashboard', icon: 'home', href: '/doctor/dashboard?tab=Dashboard' }],
     },
     {
       title: 'Khám & tư vấn',

@@ -6,13 +6,13 @@
 .patient-page-content {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: clamp(14px, 1.6vh, 18px);
   min-height: 100%;
-  padding: clamp(10px, 1.8vh, 10px) clamp(10px, 1.6vw, 18px);
+  padding: clamp(14px, 1.8vh, 18px) clamp(14px, 1.7vw, 22px) clamp(10px, 1.2vh, 14px);
   background: #ffffff;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   color: #244a6b;
-  overflow: hidden;
+  overflow: visible;
   padding-bottom: 2px;
 }
 
@@ -44,9 +44,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex: 0 0 auto;
   min-height: 34px;
   padding-top: 4px;
-  margin-bottom: 2px;
+  margin-bottom: 0;
 }
 
 .patient-tab-header .tab-titles h1 {
@@ -63,7 +64,7 @@
   margin: 4px 0 0;
   font-size: 13px;
   color: rgba(74, 85, 104, 0.7);
-  line-height: 1.5;
+  line-height: 1.25;
 }
 
 /* Bộ chọn thời gian ở góc phải tiêu đề */
@@ -117,6 +118,7 @@
    ========================================================================== */
 
 .doctor-metrics-grid {
+  flex: 0 0 auto;
   margin-top: 0;
 }
 
@@ -127,16 +129,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  flex: 0 0 auto;
+  gap: 16px;
   margin: 0;
-  margin-top: clamp(4px, 1vh, 10px);
-  margin-bottom: clamp(2px, 0.6vh, 6px);
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .patient-toolbar-filters {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
   min-width: 0;
 }
 
@@ -150,6 +153,8 @@
    4. DATA TABLE STYLES & WRAPPER
    ========================================================================== */
 .patient-page-content .data-table-wrap {
+  flex: 1 1 0;
+  min-height: 0;
   border-radius: 12px;
 }
 
@@ -208,9 +213,9 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 12px;
-  margin-top: clamp(4px, 1vh, 10px);
-  margin-bottom: clamp(2px, 0.6vh, 6px);
+  flex: 0 0 auto;
+  gap: 16px;
+  margin: 0;
 }
 
 .patient-table-controls .ui-pagination {
@@ -1555,6 +1560,46 @@
   color: #244a6b;
 }
 
+.doctor-patient-detail-main.doctor-detail-main .doctor-page-content {
+  min-height: 100%;
+  overflow-y: visible !important;
+  scrollbar-color: rgba(36, 74, 107, 0.18) transparent;
+  scrollbar-width: thin;
+}
+
+.doctor-patient-detail-main.doctor-detail-main .doctor-page-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.doctor-patient-detail-main.doctor-detail-main .doctor-page-content::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(36, 74, 107, 0.16);
+}
+
+.doctor-patient-detail-main.doctor-detail-main .doctor-detail-dashboard {
+  min-height: 0;
+}
+
+.doctor-patient-detail-main.doctor-detail-main .doctor-detail-left-column,
+.doctor-patient-detail-main.doctor-detail-main .doctor-detail-right-column {
+  min-height: 0;
+  overflow-y: visible;
+  padding-right: 2px;
+  scrollbar-color: rgba(36, 74, 107, 0.18) transparent;
+  scrollbar-width: thin;
+}
+
+.doctor-patient-detail-main.doctor-detail-main .doctor-detail-left-column::-webkit-scrollbar,
+.doctor-patient-detail-main.doctor-detail-main .doctor-detail-right-column::-webkit-scrollbar {
+  width: 5px;
+}
+
+.doctor-patient-detail-main.doctor-detail-main .doctor-detail-left-column::-webkit-scrollbar-thumb,
+.doctor-patient-detail-main.doctor-detail-main .doctor-detail-right-column::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(36, 74, 107, 0.16);
+}
+
 .doctor-patient-detail-main.doctor-detail-main .doctor-detail-section-icon,
 .doctor-patient-detail-main.doctor-detail-main .doctor-info-icon,
 .doctor-patient-detail-main.doctor-detail-main .doctor-detail-review-panel .doctor-detail-section-icon,
@@ -1590,27 +1635,30 @@
 
 .doctor-patient-detail-main.doctor-detail-main .doctor-detail-history-panel,
 .doctor-patient-detail-main.doctor-detail-main .doctor-detail-activity-panel {
-  flex: 0 0 auto !important;
+  flex: 1 1 auto !important;
   min-height: 0;
   padding: 16px 20px 18px;
   border-radius: 22px;
+  overflow: hidden;
 }
 
 .doctor-patient-detail-main.doctor-detail-main .doctor-detail-review-panel {
-  flex-grow: 0 !important;
+  flex: 1 1 auto !important;
+  min-height: 0;
   padding: 16px 20px;
+  overflow: hidden;
 }
 
 .doctor-patient-detail-main.doctor-detail-main .doctor-detail-history-panel {
-  max-height: 260px;
+  max-height: none;
 }
 
 .doctor-patient-detail-main.doctor-detail-main .doctor-detail-review-panel {
-  max-height: 226px;
+  max-height: none;
 }
 
 .doctor-patient-detail-main.doctor-detail-main .doctor-detail-activity-panel {
-  max-height: 430px;
+  max-height: none;
 }
 
 .doctor-patient-detail-main.doctor-detail-main .doctor-detail-history-panel .doctor-detail-section-heading,
@@ -1621,4 +1669,11 @@
 .doctor-patient-detail-main.doctor-detail-main .doctor-detail-history-panel > div:last-child,
 .doctor-patient-detail-main.doctor-detail-main .doctor-detail-activity-panel > div:last-child {
   padding-bottom: 0 !important;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.doctor-patient-detail-main.doctor-detail-main .doctor-detail-review-panel > div:last-child {
+  min-height: 0;
+  overflow-y: auto;
 }
