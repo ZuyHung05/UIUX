@@ -66,6 +66,7 @@ export const CLINIC_HISTORY = [
     status: "Hoàn thành",
     time: "14:00 - 18/05/2026",
     location: "Phòng khám Tâm Anh",
+    avatar: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=face",
   },
   {
     id: "3",
@@ -74,5 +75,6 @@ export const CLINIC_HISTORY = [
     status: "Đã hủy",
     time: "09:00 - 15/05/2026",
     location: "Phòng khám Tâm Anh",
+    avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face",
   },
 ];

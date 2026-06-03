@@ -1,25 +1,39 @@
+import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
     Beaker,
     Camera,
+    ChevronDown,
+    ChevronUp,
     Download,
     Edit2,
     FileText,
     Headphones, LogOut,
-    Share2,
-    Stethoscope
+    Share2
 } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, LayoutAnimation, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, UIManager, View } from 'react-native';
 
 import { ConfirmModal } from '../../components/common/ConfirmModal';
 import { MainLayout } from '../../components/layout/MainLayout';
 import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 export default function ProfileScreen() {
+    const navigation = useNavigation<any>();
     const [showLogout, setShowLogout] = useState(false);
+    const [isEMRExpanded, setIsEMRExpanded] = useState(false);
+
+    const toggleEMR = () => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setIsEMRExpanded(!isEMRExpanded);
+    };
     return (
-        <MainLayout title="Cá nhân" subtitle="Quản lý hồ sơ của bạn">
+        <MainLayout title="Cá nhân" subtitle="Quản lý hồ sơ của bạn"
+            isScrollable={true}
+            padding={16}>
 
             <View style={styles.userSection}>
                 <View style={styles.avatarPlaceholder}>
@@ -43,65 +57,61 @@ export default function ProfileScreen() {
                 </View>
             </View>
 
-            <View style={styles.sectionHeader}>
+            {/* 2. Tiêu đề Hồ sơ (Có nút Toggle) */}
+            <TouchableOpacity style={styles.sectionHeader} onPress={toggleEMR} activeOpacity={0.7}>
                 <Text style={styles.sectionTitle}>Hồ sơ bệnh án</Text>
-                <View style={styles.headerIcons}>
-                    <TouchableOpacity style={styles.iconCircle}><Share2 size={16} color={COLORS.primary} /></TouchableOpacity>
-                    <TouchableOpacity style={styles.iconCircle}><Download size={16} color={COLORS.primary} /></TouchableOpacity>
+                <View style={styles.headerRight}>
+                    <Text style={styles.toggleText}>{isEMRExpanded ? "Thu gọn" : "Xem tất cả"}</Text>
+                    {isEMRExpanded ? <ChevronUp size={20} color={COLORS.primary} /> : <ChevronDown size={20} color={COLORS.primary} />}
                 </View>
-            </View>
-
-            {/* Thẻ Tải lên (Upload Card) */}
-            <TouchableOpacity style={styles.uploadCard}>
-                <Camera size={32} color={COLORS.primary} />
-                <Text style={styles.uploadTitle}>Chụp / Tải lên đơn thuốc cũ</Text>
-                <Text style={styles.uploadSub}>Tự động nhận diện dữ liệu sức khỏe</Text>
             </TouchableOpacity>
 
-            {/* Danh sách Hồ sơ (Medical Records) */}
-            <View style={styles.recordList}>
-                <RecordCard
-                    icon={<FileText color={COLORS.primary} size={22} />}
-                    title="Đơn thuốc Viêm họng hạt"
-                    date="12/08/2023"
-                    doctor="BS. Trần Văn A"
-                />
-                <RecordCard
-                    icon={<Beaker color={COLORS.primary} size={22} />}
-                    title="Kết quả xét nghiệm máu"
-                    date="05/07/2023"
-                    doctor="Phòng lab Trung tâm"
-                />
-                <RecordCard
-                    icon={<Stethoscope color={COLORS.primary} size={22} />}
-                    title="Khám tổng quát định kỳ"
-                    date="20/01/2023"
-                    doctor="BS. Nguyễn Thị B"
-                />
-            </View>
+            {/* 3. Vùng chứa nội dung Hồ sơ (Ẩn/Hiện) */}
+            {isEMRExpanded ? (
+                <View style={{ flex: 1 }}>
+                    <View style={{ paddingBottom: 10 }}>
+                        <TouchableOpacity style={styles.uploadCard}>
+                            <Camera size={24} color={COLORS.primary} />
+                            <Text style={styles.uploadTitle}>Chụp / Tải đơn thuốc cũ</Text>
+                        </TouchableOpacity>
 
-            {/*  Băng rôn hỗ trợ (Support Banner) */}
-            <LinearGradient
-                colors={['#2B7FFF', '#155DFC']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.supportBanner}
-            >
-                <View style={styles.supportIconBox}>
+                        {/* Danh sách chỉ hiện khi nhấn Xem tất cả */}
+                        {isEMRExpanded && (
+                            <View style={styles.recordList}>
+                                <RecordCard icon={<FileText color={COLORS.primary} size={20} />} title="Đơn thuốc Viêm họng" date="12/08/2023" />
+                                <RecordCard icon={<Beaker color={COLORS.primary} size={20} />} title="Xét nghiệm máu" date="05/07/2023" />
+                            </View>
+                        )}
+                    </View>
+                </View>) : (
+                /* Khi thu gọn thì chỉ hiện mỗi nút Upload  */
+                <TouchableOpacity style={styles.uploadCard}>
+                    <Camera size={24} color={COLORS.primary} />
+                    <Text style={styles.uploadTitle}>Chụp / Tải đơn thuốc cũ</Text>
+                </TouchableOpacity>
+            )}
+
+            {/* 4. Băng rôn hỗ trợ*/}
+            <View style={styles.bottomArea}>
+                <LinearGradient
+                    colors={['#2B7FFF', '#155DFC']}
+                    start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                    style={styles.supportBanner}
+                >
                     <Headphones color="white" size={20} />
-                </View>
-                <View>
-                    <Text style={styles.supportTitle}>Hỗ trợ khách hàng</Text>
-                    <Text style={styles.supportSub}>Liên hệ với chúng tôi</Text>
-                </View>
-            </LinearGradient>
+                    <View style={{ marginLeft: 12 }}>
+                        <Text style={styles.supportTitle}>Hỗ trợ khách hàng</Text>
+                        <Text style={styles.supportSub}>Liên hệ với chúng tôi</Text>
+                    </View>
+                </LinearGradient>
 
-            {/*  Nút Đăng xuất */}
-            <TouchableOpacity style={styles.logoutBtn}
-                onPress={() => setShowLogout(true)}>
-                <LogOut size={18} color="#E7000B" />
-                <Text style={styles.logoutText}>Đăng xuất</Text>
-            </TouchableOpacity>
+                {/* 5. Nút Đăng xuất */}
+                <TouchableOpacity style={styles.logoutBtn} onPress={() => setShowLogout(true)}>
+                    <LogOut size={18} color="#E7000B" />
+                    <Text style={styles.logoutText}>Đăng xuất</Text>
+                </TouchableOpacity>
+            </View>
+
             <ConfirmModal
                 isVisible={showLogout}
                 title="Đăng xuất"
@@ -112,6 +122,10 @@ export default function ProfileScreen() {
                 onCancel={() => setShowLogout(false)}
                 onConfirm={() => {
                     setShowLogout(false);
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'Auth' }],
+                    });
                 }}
             />
 
@@ -183,6 +197,8 @@ const styles = StyleSheet.create({
     recordActions: { flexDirection: 'row', gap: 8 },
     smallIcon: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#F7F9FB', justifyContent: 'center', alignItems: 'center' },
 
+    headerRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+    toggleText: { ...TYPOGRAPHY.caption, color: COLORS.primary, marginRight: 5 },
     // Support Banner
     supportBanner: {
         flexDirection: 'row', alignItems: 'center',
@@ -192,6 +208,7 @@ const styles = StyleSheet.create({
     supportTitle: { color: 'white', fontWeight: '700', fontSize: 16 },
     supportSub: { color: '#DBEAFE', fontSize: 14 },
 
+    bottomArea: { marginTop: 'auto', paddingBottom: 20 },
     // Logout
     logoutBtn: {
         flexDirection: 'row', alignItems: 'center', justifyContent: 'center',

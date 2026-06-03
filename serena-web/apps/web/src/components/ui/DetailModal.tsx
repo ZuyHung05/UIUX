@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { ScrollArea } from './ScrollArea'
 import './DetailModal.css'
 
 export type DetailModalProps = {
@@ -34,7 +35,7 @@ export function DetailModal({ title, subtitle, open, onClose, children }: Detail
             </svg>
           </button>
         </header>
-        <div className="detail-modal-body">{children}</div>
+        <ScrollArea className="detail-modal-body">{children}</ScrollArea>
       </section>
     </div>
   )

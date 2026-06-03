@@ -45,10 +45,10 @@ export default function NotificationScreen({ navigation }: any) {
                 if (item.type === 'appointment') {
                     navigation.navigate('MainTabs', { screen: 'Appointment' });
                 } else if (item.type === 'ai') {
-                    navigation.navigate('ConsultTab');
+                    navigation.navigate('Consultation');
                 }
                 else if (item.type === 'rating') {
-                    navigation.navigate('MainTabs', { initialTab: 'tu-van' });
+                    navigation.navigate('MainTabs', { screen: 'History' });
                 }
             }}
             activeOpacity={0.7}

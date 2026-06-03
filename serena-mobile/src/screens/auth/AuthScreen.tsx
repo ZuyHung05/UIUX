@@ -1,3 +1,4 @@
+import { Eye, EyeOff, Lock, Mail, ShieldCheck, UserRound } from 'lucide-react-native';
 import React, { useState } from 'react';
 import {
     KeyboardAvoidingView,
@@ -10,10 +11,9 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { Eye, EyeOff, Lock, Mail, ShieldCheck, UserRound } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SereneHeartLogo } from '../../components/brand/SereneHeartLogo';
-import { COLORS } from '../../utils/theme';
+import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 
 type AuthMode = 'login' | 'register';
 
@@ -21,11 +21,17 @@ interface AuthScreenProps {
     onAuthenticated: () => void;
 }
 
-export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
+export default function AuthScreen({ navigation }: any) {
     const [mode, setMode] = useState<AuthMode>('login');
     const [rememberMe, setRememberMe] = useState(false);
 
     const isRegister = mode === 'register';
+    const handleAuthAction = () => {
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'MainTabs' }],
+        });
+    };
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -102,7 +108,7 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
 
                         <TouchableOpacity
                             activeOpacity={0.85}
-                            onPress={onAuthenticated}
+                            onPress={handleAuthAction}
                             style={styles.primaryButton}
                         >
                             <Text style={styles.primaryButtonText}>
@@ -157,10 +163,10 @@ function AuthField({
         icon === 'user'
             ? UserRound
             : icon === 'mail'
-            ? Mail
-            : icon === 'lock'
-            ? Lock
-            : ShieldCheck;
+                ? Mail
+                : icon === 'lock'
+                    ? Lock
+                    : ShieldCheck;
 
     return (
         <View style={styles.fieldGroup}>
@@ -196,7 +202,7 @@ function AuthField({
 function SerenaMark() {
     return (
         <View style={styles.logo}>
-            <SereneHeartLogo size={132} />
+            <SereneHeartLogo size={90} />
         </View>
     );
 }
@@ -216,10 +222,10 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
     },
     registerContent: {
-        paddingTop: 96,
+        paddingTop: 54,
     },
     loginContent: {
-        paddingTop: 100,
+        paddingTop: 72,
     },
     hero: {
         alignItems: 'center',
@@ -227,14 +233,14 @@ const styles = StyleSheet.create({
         maxWidth: 417,
     },
     logo: {
-        width: 132,
-        height: 132,
-        marginBottom: 16,
+        width: 90,
+        height: 90,
+        marginBottom: 12,
         transform: [{ translateY: 3 }],
     },
     title: {
         color: COLORS.accent,
-        fontSize: 24,
+        ...TYPOGRAPHY.h1,
         lineHeight: 28,
         fontWeight: '700',
         letterSpacing: 0.8,
@@ -245,7 +251,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 20,
         textAlign: 'center',
-        marginTop: 8,
+        marginTop: 6,
     },
     formPanel: {
         width: '100%',
@@ -253,34 +259,34 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.white,
         borderRadius: 28,
         paddingHorizontal: 32,
-        marginTop: 32,
+        marginTop: 28,
         borderWidth: 1,
         borderColor: 'rgba(36, 74, 107, 0.08)',
     },
     registerPanel: {
-        minHeight: 674,
-        paddingTop: 24,
-        paddingBottom: 32,
+        minHeight: 480,
+        paddingTop: 20,
+        paddingBottom: 24,
     },
     loginPanel: {
-        minHeight: 491,
-        paddingTop: 32,
-        paddingBottom: 32,
+        minHeight: 320,
+        paddingTop: 24,
+        paddingBottom: 24,
     },
     fieldGroup: {
         width: '100%',
-        marginBottom: 20,
+        marginBottom: 12,
     },
     label: {
         color: COLORS.accent,
         fontSize: 16,
         lineHeight: 24,
         fontWeight: '500',
-        marginBottom: 12,
+        marginBottom: 8,
     },
     inputShell: {
         width: '100%',
-        height: 69,
+        height: 54,
         borderRadius: 28,
         backgroundColor: COLORS.white,
         borderWidth: 1,
@@ -381,7 +387,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 1,
         backgroundColor: '#D9E0E8',
-        marginTop: 28,
+        marginTop: 16,
     },
     switchRow: {
         flexDirection: 'row',
@@ -390,7 +396,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         columnGap: 6,
         rowGap: 4,
-        marginTop: 28,
+        marginTop: 16,
     },
     switchMuted: {
         color: '#64748B',

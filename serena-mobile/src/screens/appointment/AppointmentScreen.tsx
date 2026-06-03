@@ -5,6 +5,7 @@ import {
   Image,
   Linking,
   Pressable,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,8 +13,10 @@ import {
   TouchableOpacity,
   View,
   Modal,
+  SafeAreaView,
 } from "react-native";
 import {
+  Bell,
   Calendar,
   ChevronLeft,
   ChevronRight,
@@ -78,7 +81,7 @@ type DateChip = {
   selected?: boolean;
 };
 
-const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const initialAppointments: Appointment[] = [
   {
@@ -187,13 +190,24 @@ const doctors: DoctorCard[] = [
   },
 ];
 
-const dateChips: DateChip[] = [
-  { dayLabel: "Th 2", date: "15", selected: true },
-  { dayLabel: "Th 3", date: "16" },
-  { dayLabel: "Th 4", date: "17" },
-  { dayLabel: "Th 5", date: "18" },
-  { dayLabel: "Th 6", date: "19" },
-];
+const monthNames = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+
+const generateDateChips = (weekOffset: number): (DateChip & { fullDate: Date })[] => {
+  const today = new Date();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay() + 1 + weekOffset * 7); // Monday
+  const chips: (DateChip & { fullDate: Date })[] = [];
+  for (let i = 0; i < 5; i++) {
+    const d = new Date(startOfWeek);
+    d.setDate(startOfWeek.getDate() + i);
+    chips.push({
+      dayLabel: dayNames[d.getDay()],
+      date: String(d.getDate()),
+      fullDate: d,
+    });
+  }
+  return chips;
+};
 
 const timeSlots: TimeSlot[] = [
   { label: "08:00" },
@@ -205,6 +219,7 @@ const timeSlots: TimeSlot[] = [
 ];
 
 export default function AppointmentScreen() {
+  const isDesktopWeb = Platform.OS === "web" && SCREEN_WIDTH > 480;
   const [bookingVisible, setBookingVisible] = React.useState(false);
   const [paymentVisible, setPaymentVisible] = React.useState(false);
   const [addressVisible, setAddressVisible] = React.useState(false);
@@ -214,6 +229,8 @@ export default function AppointmentScreen() {
   const [cancelConfirmVisible, setCancelConfirmVisible] = React.useState(false);
   const [selectedDateIndex, setSelectedDateIndex] = React.useState(0);
   const [selectedTimeIndex, setSelectedTimeIndex] = React.useState(1);
+  const [weekOffset, setWeekOffset] = React.useState(0);
+  const dateChips = React.useMemo(() => generateDateChips(weekOffset), [weekOffset]);
   const [selectedDoctor, setSelectedDoctor] = React.useState<DoctorCard | null>(null);
   const [tempSelectedDoctor, setTempSelectedDoctor] = React.useState<DoctorCard | null>(null);
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -352,12 +369,14 @@ export default function AppointmentScreen() {
     if (selectedDoctor) {
       const selectedDate = dateChips[selectedDateIndex];
       const selectedTime = timeSlots[selectedTimeIndex];
-      const dateNum = parseInt(selectedDate.date, 10);
-      const refDate = new Date(2026, 4, dateNum);
-      
+      const realDate = selectedDate.fullDate;
+
       const fullDayNames = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
-      const dayName = fullDayNames[refDate.getDay()];
-      const scheduleStr = `${dayName}, ${String(dateNum).padStart(2, "0")}/05/2026`;
+      const dayName = fullDayNames[realDate.getDay()];
+      const mm = String(realDate.getMonth() + 1).padStart(2, "0");
+      const dd = String(realDate.getDate()).padStart(2, "0");
+      const yyyy = realDate.getFullYear();
+      const scheduleStr = `${dayName}, ${dd}/${mm}/${yyyy}`;
 
       const updatedAppointment: Appointment = {
         name: selectedDoctor.name,
@@ -389,32 +408,16 @@ export default function AppointmentScreen() {
   const getConfirmText = () => {
     const doctorName = selectedDoctor?.name ?? "";
     const time = timeSlots[selectedTimeIndex]?.label ?? "";
-    const date = dateChips[selectedDateIndex]?.date ?? "";
-    return { doctorName, time, date: `${date}/05/2026` };
+    const chip = dateChips[selectedDateIndex];
+    const d = chip?.fullDate;
+    const dateStr = d ? `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}` : "";
+    return { doctorName, time, date: dateStr };
   };
 
   const currentInfo = selectedInfo ? doctorInfoMap[selectedInfo.name] : null;
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["top"]}>
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <View style={styles.logo}>
-            <SereneHeartLogo size={50} />
-          </View>
-          <View>
-            <Text style={styles.headerTitle}>Lịch hẹn</Text>
-            <Text style={styles.headerSubtitle}>Quản lý lịch khám của bạn</Text>
-          </View>
-        </View>
-        <Pressable
-          onPress={() => Alert.alert("Thông báo", "Chưa có thông báo mới.")}
-          hitSlop={10}
-          style={styles.bellButton}
-        >
-          <Bell size={26} color={COLORS.secondary} />
-        </Pressable>
-      </View>
+    <MainLayout title="Lịch hẹn" subtitle="Quản lý lịch khám của bạn" isScrollable={false} padding={20}>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -540,13 +543,13 @@ export default function AppointmentScreen() {
         animationType="fade"
         onRequestClose={() => setBookingVisible(false)}
       >
-        <View style={styles.modalOverlay}>
+        <View style={[styles.modalOverlay, isDesktopWeb && styles.webBottomSheetFrame]}>
           <Pressable
             style={StyleSheet.absoluteFill}
             onPress={() => setBookingVisible(false)}
           />
 
-          <View style={styles.sheet}>
+          <View style={[styles.sheet, isDesktopWeb && styles.webSheet]}>
             <View style={styles.sheetHandle} />
 
             <View style={styles.sheetHeader}>
@@ -596,66 +599,71 @@ export default function AppointmentScreen() {
 
             <View style={{ opacity: selectedDoctor ? 1 : 0.4 }} pointerEvents={selectedDoctor ? "auto" : "none"}>
               <View style={styles.monthRow}>
-              <TouchableOpacity style={styles.monthNav} hitSlop={8}>
-                <ChevronLeft size={18} color="#1E3A52" />
-              </TouchableOpacity>
-              <Text style={styles.monthLabel}>Tháng 5, 2026</Text>
-              <TouchableOpacity style={styles.monthNav} hitSlop={8}>
-                <ChevronRight size={18} color="#1E3A52" />
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity style={styles.monthNav} hitSlop={8} onPress={() => { setWeekOffset(w => w - 1); setSelectedDateIndex(0); }}>
+                  <ChevronLeft size={18} color="#1E3A52" />
+                </TouchableOpacity>
+                <Text style={styles.monthLabel}>
+                  {(() => {
+                    const d = dateChips[0]?.fullDate;
+                    return d ? `${monthNames[d.getMonth()]}, ${d.getFullYear()}` : "";
+                  })()}
+                </Text>
+                <TouchableOpacity style={styles.monthNav} hitSlop={8} onPress={() => { setWeekOffset(w => w + 1); setSelectedDateIndex(0); }}>
+                  <ChevronRight size={18} color="#1E3A52" />
+                </TouchableOpacity>
+              </View>
 
-            <View style={styles.dateRow}>
-              {dateChips.map((item) => (
-                <Pressable
-                  key={`${item.dayLabel}-${item.date}`}
-                  style={[
-                    styles.dateChip,
-                    selectedDateIndex === dateChips.indexOf(item) &&
-                      styles.dateChipSelected,
-                  ]}
-                  onPress={() => setSelectedDateIndex(dateChips.indexOf(item))}
-                >
-                  <Text style={styles.dateChipDay}>{item.dayLabel}</Text>
-                  <Text
+              <View style={styles.dateRow}>
+                {dateChips.map((item) => (
+                  <Pressable
+                    key={`${item.dayLabel}-${item.date}`}
                     style={[
-                      styles.dateChipDate,
+                      styles.dateChip,
                       selectedDateIndex === dateChips.indexOf(item) &&
+                      styles.dateChipSelected,
+                    ]}
+                    onPress={() => setSelectedDateIndex(dateChips.indexOf(item))}
+                  >
+                    <Text style={styles.dateChipDay}>{item.dayLabel}</Text>
+                    <Text
+                      style={[
+                        styles.dateChipDate,
+                        selectedDateIndex === dateChips.indexOf(item) &&
                         styles.dateChipDateSelected,
-                    ]}
-                  >
-                    {item.date}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
+                      ]}
+                    >
+                      {item.date}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
 
-            <Text style={styles.slotTitle}>Chọn khung giờ</Text>
+              <Text style={styles.slotTitle}>Chọn khung giờ</Text>
 
-            <View style={styles.slotGrid}>
-              {timeSlots.map((slot, index) => (
-                <Pressable
-                  key={slot.label}
-                  style={[
-                    styles.slotChip,
-                    selectedTimeIndex === index && styles.slotChipSelected,
-                    slot.disabled && styles.slotChipDisabled,
-                  ]}
-                  disabled={slot.disabled}
-                  onPress={() => setSelectedTimeIndex(index)}
-                >
-                  <Text
+              <View style={styles.slotGrid}>
+                {timeSlots.map((slot, index) => (
+                  <Pressable
+                    key={slot.label}
                     style={[
-                      styles.slotText,
-                      selectedTimeIndex === index && styles.slotTextSelected,
-                      slot.disabled && styles.slotTextDisabled,
+                      styles.slotChip,
+                      selectedTimeIndex === index && styles.slotChipSelected,
+                      slot.disabled && styles.slotChipDisabled,
                     ]}
+                    disabled={slot.disabled}
+                    onPress={() => setSelectedTimeIndex(index)}
                   >
-                    {slot.label}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
+                    <Text
+                      style={[
+                        styles.slotText,
+                        selectedTimeIndex === index && styles.slotTextSelected,
+                        slot.disabled && styles.slotTextDisabled,
+                      ]}
+                    >
+                      {slot.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
             </View>
 
             <TouchableOpacity
@@ -676,7 +684,7 @@ export default function AppointmentScreen() {
         animationType="fade"
         onRequestClose={handleCancelPayment}
       >
-        <View style={styles.confirmOverlay}>
+        <View style={[styles.confirmOverlay, isDesktopWeb && styles.webModalFrame]}>
           <Pressable
             style={StyleSheet.absoluteFill}
             onPress={handleCancelPayment}
@@ -714,7 +722,7 @@ export default function AppointmentScreen() {
         animationType="fade"
         onRequestClose={() => setCancelConfirmVisible(false)}
       >
-        <View style={styles.confirmOverlay}>
+        <View style={[styles.confirmOverlay, isDesktopWeb && styles.webModalFrame]}>
           <Pressable
             style={StyleSheet.absoluteFill}
             onPress={() => setCancelConfirmVisible(false)}
@@ -752,10 +760,12 @@ export default function AppointmentScreen() {
       <Modal
         visible={doctorListVisible}
         animationType="slide"
+        transparent={isDesktopWeb}
         onRequestClose={handleCancelDoctorList}
       >
-        <View style={styles.fullScreenModal}>
-          <View style={styles.fullScreenHeader}>
+        <View style={isDesktopWeb ? styles.webFullScreenBackdrop : styles.fullScreenModal}>
+          <View style={[styles.fullScreenModal, isDesktopWeb && styles.webFullScreenModal]}>
+          <View style={[styles.fullScreenHeader, isDesktopWeb && styles.webFullScreenHeader]}>
             <TouchableOpacity onPress={handleCancelDoctorList} hitSlop={10} style={styles.closeButton}>
               <ChevronLeft size={24} color="#1E3A52" />
             </TouchableOpacity>
@@ -775,13 +785,13 @@ export default function AppointmentScreen() {
           </View>
 
           <View style={styles.filterRow}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[styles.filterChip, sortDistance && styles.filterChipActive]}
               onPress={() => setSortDistance(!sortDistance)}
             >
               <Text style={[styles.filterChipText, sortDistance && styles.filterChipTextActive]}>Gần nhất</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[styles.filterChip, filterToday && styles.filterChipActive]}
               onPress={() => setFilterToday(!filterToday)}
             >
@@ -794,70 +804,71 @@ export default function AppointmentScreen() {
               const isSelected = tempSelectedDoctor
                 ? tempSelectedDoctor.name === doctor.name
                 : selectedDoctor?.name === doctor.name;
-                return (
-                  <Pressable
-                    key={doctor.name}
-                    style={[
-                      styles.doctorListItem,
-                      isSelected && styles.doctorListItemSelected,
-                    ]}
-                    onPress={() => setTempSelectedDoctor(doctor)}
-                  >
-                    <View style={styles.doctorListRow}>
-                      {getAvatarSource(doctor.name) ? (
-                        <Image source={getAvatarSource(doctor.name)!} style={styles.doctorListAvatar} />
-                      ) : (
-                        <View style={[styles.doctorListAvatar, { backgroundColor: "#A3B8CE" }]} />
-                      )}
-                      <View style={styles.doctorListInfo}>
-                        <Text style={styles.doctorListName}>{doctor.name}</Text>
-                        <Text style={styles.doctorListSpecialty}>{doctor.specialty}</Text>
-                      </View>
-                      {isSelected && (
-                        <View style={styles.doctorListCheck}>
-                          <Text style={styles.doctorListCheckText}>✓</Text>
-                        </View>
-                      )}
+              return (
+                <Pressable
+                  key={doctor.name}
+                  style={[
+                    styles.doctorListItem,
+                    isSelected && styles.doctorListItemSelected,
+                  ]}
+                  onPress={() => setTempSelectedDoctor(doctor)}
+                >
+                  <View style={styles.doctorListRow}>
+                    {getAvatarSource(doctor.name) ? (
+                      <Image source={getAvatarSource(doctor.name)!} style={styles.doctorListAvatar} />
+                    ) : (
+                      <View style={[styles.doctorListAvatar, { backgroundColor: "#A3B8CE" }]} />
+                    )}
+                    <View style={styles.doctorListInfo}>
+                      <Text style={styles.doctorListName}>{doctor.name}</Text>
+                      <Text style={styles.doctorListSpecialty}>{doctor.specialty}</Text>
                     </View>
-                    <View style={styles.doctorListMeta}>
-                      <View style={styles.doctorListMetaRow}>
-                        <MapPin size={14} color="#94A3B8" />
-                        <Text style={styles.doctorListMetaText}>{doctor.branch}</Text>
+                    {isSelected && (
+                      <View style={styles.doctorListCheck}>
+                        <Text style={styles.doctorListCheckText}>✓</Text>
                       </View>
-                      <View style={styles.doctorListMetaRow}>
-                        <Navigation size={14} color="#94A3B8" />
-                        <Text style={styles.doctorListMetaText} numberOfLines={1}>{doctor.address}</Text>
-                      </View>
-                      <View style={styles.doctorListDistanceRow}>
-                        <View style={styles.distanceBadge}>
-                          <Text style={styles.distanceBadgeText}>{doctor.distance}</Text>
-                        </View>
+                    )}
+                  </View>
+                  <View style={styles.doctorListMeta}>
+                    <View style={styles.doctorListMetaRow}>
+                      <MapPin size={14} color="#94A3B8" />
+                      <Text style={styles.doctorListMetaText}>{doctor.branch}</Text>
+                    </View>
+                    <View style={styles.doctorListMetaRow}>
+                      <Navigation size={14} color="#94A3B8" />
+                      <Text style={styles.doctorListMetaText} numberOfLines={1}>{doctor.address}</Text>
+                    </View>
+                    <View style={styles.doctorListDistanceRow}>
+                      <View style={styles.distanceBadge}>
+                        <Text style={styles.distanceBadgeText}>{doctor.distance}</Text>
                       </View>
                     </View>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
 
-            <View style={styles.doctorListActionsFixed}>
-              <TouchableOpacity
-                style={styles.doctorListCancelBtn}
-                onPress={handleCancelDoctorList}
-              >
-                <Text style={styles.doctorListCancelText}>Hủy</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.doctorListConfirmBtn,
-                  !tempSelectedDoctor && styles.doctorListConfirmBtnDisabled,
-                ]}
-                onPress={handleConfirmDoctorSelection}
-                disabled={!tempSelectedDoctor}
-              >
-                <Text style={styles.doctorListConfirmText}>Xác nhận</Text>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.doctorListActionsFixed}>
+            <TouchableOpacity
+              style={styles.doctorListCancelBtn}
+              onPress={handleCancelDoctorList}
+            >
+              <Text style={styles.doctorListCancelText}>Hủy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.doctorListConfirmBtn,
+                !tempSelectedDoctor && styles.doctorListConfirmBtnDisabled,
+              ]}
+              onPress={handleConfirmDoctorSelection}
+              disabled={!tempSelectedDoctor}
+            >
+              <Text style={styles.doctorListConfirmText}>Xác nhận</Text>
+            </TouchableOpacity>
           </View>
+          </View>
+        </View>
       </Modal>
 
       {/* ===== ADDRESS MODAL ===== */}
@@ -867,12 +878,12 @@ export default function AppointmentScreen() {
         animationType="slide"
         onRequestClose={() => setAddressVisible(false)}
       >
-        <View style={styles.modalOverlay}>
+        <View style={[styles.modalOverlay, isDesktopWeb && styles.webBottomSheetFrame]}>
           <Pressable
             style={StyleSheet.absoluteFill}
             onPress={() => setAddressVisible(false)}
           />
-          <View style={styles.sheet}>
+          <View style={[styles.sheet, isDesktopWeb && styles.webSheet]}>
             <View style={styles.sheetHandle} />
             <View style={styles.sheetHeader}>
               <Text style={styles.sheetTitle}>Địa chỉ phòng khám</Text>
@@ -943,12 +954,12 @@ export default function AppointmentScreen() {
         animationType="slide"
         onRequestClose={() => setContactVisible(false)}
       >
-        <View style={styles.modalOverlay}>
+        <View style={[styles.modalOverlay, isDesktopWeb && styles.webBottomSheetFrame]}>
           <Pressable
             style={StyleSheet.absoluteFill}
             onPress={() => setContactVisible(false)}
           />
-          <View style={styles.sheet}>
+          <View style={[styles.sheet, isDesktopWeb && styles.webSheet]}>
             <View style={styles.sheetHandle} />
             <View style={styles.sheetHeader}>
               <Text style={styles.sheetTitle}>Liên hệ</Text>
@@ -1015,7 +1026,7 @@ export default function AppointmentScreen() {
         animationType="fade"
         onRequestClose={() => setQrVisible(false)}
       >
-        <View style={styles.confirmOverlay}>
+        <View style={[styles.confirmOverlay, isDesktopWeb && styles.webModalFrame]}>
           <Pressable
             style={StyleSheet.absoluteFill}
             onPress={() => setQrVisible(false)}
@@ -1391,6 +1402,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "flex-end",
   },
+  webBottomSheetFrame: {
+    width: 390,
+    maxWidth: "100%",
+    height: 844,
+    maxHeight: "100%",
+    alignSelf: "center",
+    overflow: "hidden",
+  },
   sheet: {
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 20,
@@ -1398,6 +1417,12 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 0,
     width: "100%",
+  },
+  webSheet: {
+    width: 390,
+    maxWidth: "100%",
+    alignSelf: "center",
+    padding: 16,
   },
   sheetHandle: {
     alignSelf: "center",
@@ -1655,6 +1680,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 32,
   },
+  webModalFrame: {
+    width: 390,
+    maxWidth: "100%",
+    height: 844,
+    maxHeight: "100%",
+    alignSelf: "center",
+    overflow: "hidden",
+  },
   confirmCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 24,
@@ -1772,9 +1805,27 @@ const styles = StyleSheet.create({
   },
 
   /* ===== FULL SCREEN MODAL ===== */
+  webFullScreenBackdrop: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.45)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   fullScreenModal: {
     flex: 1,
     backgroundColor: COLORS.white,
+  },
+  webFullScreenModal: {
+    width: 390,
+    maxWidth: "100%",
+    height: 844,
+    maxHeight: "100%",
+    alignSelf: "center",
+    overflow: "hidden",
+  },
+  webFullScreenHeader: {
+    paddingTop: 18,
   },
   fullScreenHeader: {
     flexDirection: "row" as const,

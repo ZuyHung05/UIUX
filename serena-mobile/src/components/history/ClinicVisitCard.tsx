@@ -1,6 +1,7 @@
 
+import { useNavigation } from '@react-navigation/native';
 import { Clock, MapPin } from 'lucide-react-native';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 import { AppButton } from '../common/AppButton';
 
@@ -10,11 +11,16 @@ const ClinicVisitCard = ({ item }: { item: any }) => {
         if (status === 'Hoàn thành') return COLORS.green;
         return COLORS.warning; // Đã hủy
     };
+    const navigation = useNavigation<any>();
 
     return (
         <View style={[styles.clinicCard, { borderLeftColor: getStatusColor(item.status), borderLeftWidth: 4 }]}>
             <View style={styles.cardHeader}>
+            {item.avatar ? (
+                <Image source={{ uri: item.avatar }} style={styles.doctorAvatar} />
+            ) : (
                 <View style={styles.doctorAvatar} />
+            )}
                 <View style={{ flex: 1, marginLeft: 12 }}>
                     <Text style={styles.cardDoctor}>{item.doctor}</Text>
                     <Text style={styles.cardSpecialty}>{item.specialty}</Text>
@@ -39,7 +45,7 @@ const ClinicVisitCard = ({ item }: { item: any }) => {
                 title={item.status === 'Sắp diễn ra' ? 'Hủy lịch' : 'Đặt lại'}
                 variant={item.status === 'Sắp diễn ra' ? 'danger' : 'outline'}
                 size="small"
-                onPress={() => console.log('Action pressed')}
+                onPress={() => navigation.navigate('Appointment')}
                 style={{ alignSelf: 'flex-end', marginTop: 10 }}
             />
         </View>
@@ -59,9 +65,9 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
     },
     cardHeader: { flexDirection: 'row', alignItems: 'center' },
-    doctorAvatar: { width: 40, height: 40, borderRadius: 20, backgroundColor: COLORS.lightBlue },
+    doctorAvatar: { width: 44, height: 44, borderRadius: 14, backgroundColor: COLORS.lightBlue },
     cardDoctor: { ...TYPOGRAPHY.title, color: COLORS.secondary },
-    cardSpecialty: { ...TYPOGRAPHY.caption, color: COLORS.gray, marginTop: 2 },
+    cardSpecialty: { ...TYPOGRAPHY.caption, color: COLORS.placeholder, marginTop: 2 },
     statusBadge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
 
     cardInfoBox: {

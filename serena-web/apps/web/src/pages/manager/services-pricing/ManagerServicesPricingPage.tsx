@@ -1,21 +1,27 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type ChangeEvent, type FormEvent } from 'react'
 import { Header } from '../../../components/layout/header/Header'
 import { Sidebar } from '../../../components/layout/sidebar/Sidebar'
 import '../../../components/layout/DesktopShell.css'
 import { IconButton, PrimaryButton } from '../../../components/ui/ActionButton'
+import { DetailModal } from '../../../components/ui/DetailModal'
 import { FilterSelect } from '../../../components/ui/FilterSelect'
 import { SearchInput } from '../../../components/ui/SearchInput'
 import { SegmentedTabs } from '../../../components/ui/SegmentedTabs'
 import { StatusBadge } from '../../../components/ui/StatusBadge'
 import { useToast } from '../../../components/ui/Toast'
+import { branchDashboardMetrics, branchMockData } from '../../../data/branchMockData'
 import { managerSidebarConfig } from '../managerSidebarConfig'
 import './ManagerServicesPricingPage.css'
 
 type ClinicTab = 'branches' | 'specialties' | 'services'
 type Status = 'active' | 'inactive'
+type BranchFormField = keyof BranchFormState
+type SpecialtyFormField = keyof SpecialtyFormState
+type ServiceFormField = keyof ServiceFormState
 
 type Branch = {
   id: string
+  sourceId: string
   name: string
   address: string
   phone: string
@@ -25,6 +31,7 @@ type Branch = {
   roomCount: number
   monthlyRevenue: number
   satisfaction: string
+  timezone: string
   status: Status
 }
 
@@ -49,49 +56,65 @@ type ClinicService = {
   status: Status
 }
 
-const branches: Branch[] = [
-  {
-    id: 'CN-01',
-    name: 'Chi nhánh Quận 1',
-    address: '18 Nguyễn Du, Phường Bến Nghé, Quận 1',
-    phone: '028 3822 1901',
-    manager: 'Nguyễn Hoài An',
+type BranchFormState = Omit<Branch, 'id' | 'sourceId' | 'doctorCount' | 'roomCount' | 'monthlyRevenue'>
+type SpecialtyFormState = Omit<Specialty, 'id' | 'branchCount' | 'serviceCount'>
+type ServiceFormState = Omit<ClinicService, 'id' | 'accent'>
+
+type ModalState =
+  | { mode: 'closed' }
+  | { mode: 'view-branch'; branch: Branch }
+  | { mode: 'add-branch'; values: BranchFormState }
+  | { mode: 'edit-branch'; branchId: string; values: BranchFormState }
+  | { mode: 'add-specialty'; values: SpecialtyFormState }
+  | { mode: 'edit-specialty'; specialtyId: string; values: SpecialtyFormState }
+  | { mode: 'add-service'; values: ServiceFormState }
+  | { mode: 'edit-service'; serviceId: string; values: ServiceFormState }
+
+const operationalByBranchId: Record<string, Pick<Branch, 'hours' | 'doctorCount' | 'roomCount' | 'satisfaction' | 'status'>> = {
+  hanoi: {
     hours: '07:30 - 20:00',
     doctorCount: 18,
     roomCount: 12,
-    monthlyRevenue: 520000000,
     satisfaction: '4.8/5',
     status: 'active',
   },
-  {
-    id: 'CN-02',
-    name: 'Chi nhánh Thủ Đức',
-    address: '42 Võ Văn Ngân, Phường Linh Chiểu, TP. Thủ Đức',
-    phone: '028 3722 4508',
-    manager: 'Trần Minh Khoa',
+  danang: {
     hours: '08:00 - 19:30',
     doctorCount: 14,
     roomCount: 9,
-    monthlyRevenue: 385000000,
     satisfaction: '4.7/5',
     status: 'active',
   },
-  {
-    id: 'CN-03',
-    name: 'Chi nhánh Bình Thạnh',
-    address: '96 Nguyễn Gia Trí, Phường 25, Bình Thạnh',
-    phone: '028 3512 7780',
-    manager: 'Lê Thu Hà',
+  hochiminh: {
     hours: '08:00 - 18:00',
-    doctorCount: 9,
-    roomCount: 6,
-    monthlyRevenue: 248000000,
-    satisfaction: '4.5/5',
-    status: 'inactive',
+    doctorCount: 16,
+    roomCount: 11,
+    satisfaction: '4.6/5',
+    status: 'active',
   },
-]
+}
 
-const specialties: Specialty[] = [
+const initialBranches: Branch[] = branchMockData.map((branch, index) => {
+  const operations = operationalByBranchId[branch.id]
+
+  return {
+    id: `CN-${String(index + 1).padStart(2, '0')}`,
+    sourceId: branch.id,
+    name: branch.name,
+    address: branch.address,
+    phone: branch.phone,
+    manager: branch.manager,
+    timezone: branch.timezone,
+    hours: operations.hours,
+    doctorCount: operations.doctorCount,
+    roomCount: operations.roomCount,
+    monthlyRevenue: branchDashboardMetrics.month[branch.id].revenue * 1000000,
+    satisfaction: operations.satisfaction,
+    status: operations.status,
+  }
+})
+
+const initialSpecialties: Specialty[] = [
   {
     id: 'CK-01',
     name: 'Tim mạch',
@@ -130,7 +153,7 @@ const specialties: Specialty[] = [
   },
 ]
 
-const services: ClinicService[] = [
+const initialServices: ClinicService[] = [
   {
     id: 'DV-01',
     name: 'Tư vấn Chatbot',
@@ -175,8 +198,72 @@ const branchFilters = [
   { value: 'inactive', label: 'Tạm ngưng' },
 ]
 
+const emptyBranchForm: BranchFormState = {
+  name: '',
+  address: '',
+  phone: '',
+  manager: '',
+  hours: '08:00 - 18:00',
+  satisfaction: '4.5/5',
+  timezone: 'Asia/Bangkok',
+  status: 'active',
+}
+
+const emptySpecialtyForm: SpecialtyFormState = {
+  name: '',
+  description: '',
+  leadDoctor: '',
+  status: 'active',
+}
+
+const emptyServiceForm: ServiceFormState = {
+  name: '',
+  description: '',
+  billing: 'paid',
+  feeLabel: '',
+  unit: 'VNĐ/lượt',
+  status: 'active',
+}
+
 function formatCurrency(value: number) {
   return new Intl.NumberFormat('vi-VN').format(value)
+}
+
+function getNextId(prefix: string, count: number) {
+  return `${prefix}-${String(count + 1).padStart(2, '0')}`
+}
+
+function toBranchForm(branch: Branch): BranchFormState {
+  return {
+    name: branch.name,
+    address: branch.address,
+    phone: branch.phone,
+    manager: branch.manager,
+    hours: branch.hours,
+    satisfaction: branch.satisfaction,
+    timezone: branch.timezone,
+    status: branch.status,
+  }
+}
+
+function toSpecialtyForm(specialty: Specialty): SpecialtyFormState {
+  return {
+    name: specialty.name,
+    description: specialty.description,
+    leadDoctor: specialty.leadDoctor,
+    status: specialty.status,
+  }
+}
+
+function toServiceForm(service: ClinicService): ServiceFormState {
+  return {
+    name: service.name,
+    description: service.description,
+    billing: service.billing,
+    feeLabel: service.feeLabel,
+    unit: service.unit,
+    status: service.status,
+  }
 }
 
 function EditIcon() {
@@ -188,18 +275,19 @@ function EditIcon() {
   )
 }
 
-function PlusIcon() {
+function EyeIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M12 5v14M5 12h14" />
+      <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+      <circle cx="12" cy="12" r="3" />
     </svg>
   )
 }
 
-function ChevronIcon({ open }: { open: boolean }) {
+function PlusIcon() {
   return (
-    <svg className={open ? 'is-open' : undefined} viewBox="0 0 24 24" aria-hidden="true">
-      <path d="m6 9 6 6 6-6" />
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 5v14M5 12h14" />
     </svg>
   )
 }
@@ -242,12 +330,24 @@ function ServiceIcon({ serviceId }: { serviceId: string }) {
   )
 }
 
+function DetailItem({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="clinic-detail-item">
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  )
+}
+
 export function ManagerServicesPricingPage() {
   const { showToast } = useToast()
   const [activeTab, setActiveTab] = useState<ClinicTab>('branches')
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState('all')
-  const [expandedBranchId, setExpandedBranchId] = useState<string | null>(null)
+  const [branches, setBranches] = useState<Branch[]>(initialBranches)
+  const [specialties, setSpecialties] = useState<Specialty[]>(initialSpecialties)
+  const [services, setServices] = useState<ClinicService[]>(initialServices)
+  const [modal, setModal] = useState<ModalState>({ mode: 'closed' })
 
   const normalizedQuery = query.trim().toLowerCase()
 
@@ -257,13 +357,14 @@ export function ManagerServicesPricingPage() {
         const matchesStatus = status === 'all' || branch.status === status
         const matchesQuery =
           !normalizedQuery ||
+          branch.id.toLowerCase().includes(normalizedQuery) ||
           branch.name.toLowerCase().includes(normalizedQuery) ||
           branch.address.toLowerCase().includes(normalizedQuery) ||
           branch.manager.toLowerCase().includes(normalizedQuery)
 
         return matchesStatus && matchesQuery
       }),
-    [normalizedQuery, status],
+    [branches, normalizedQuery, status],
   )
 
   const filteredSpecialties = useMemo(
@@ -272,12 +373,13 @@ export function ManagerServicesPricingPage() {
         const matchesStatus = status === 'all' || specialty.status === status
         const matchesQuery =
           !normalizedQuery ||
+          specialty.id.toLowerCase().includes(normalizedQuery) ||
           specialty.name.toLowerCase().includes(normalizedQuery) ||
           specialty.leadDoctor.toLowerCase().includes(normalizedQuery)
 
         return matchesStatus && matchesQuery
       }),
-    [normalizedQuery, status],
+    [normalizedQuery, specialties, status],
   )
 
   const filteredServices = useMemo(
@@ -292,7 +394,7 @@ export function ManagerServicesPricingPage() {
 
         return matchesStatus && matchesQuery
       }),
-    [normalizedQuery, status],
+    [normalizedQuery, services, status],
   )
 
   const tabCount =
@@ -302,15 +404,145 @@ export function ManagerServicesPricingPage() {
         ? filteredSpecialties.length
         : filteredServices.length
 
+  const modalTitle = getModalTitle(modal)
+  const modalSubtitle = getModalSubtitle(modal)
+
+  const closeModal = () => setModal({ mode: 'closed' })
+
+  const openAddModal = () => {
+    if (activeTab === 'branches') {
+      setModal({ mode: 'add-branch', values: emptyBranchForm })
+      return
+    }
+
+    if (activeTab === 'specialties') {
+      setModal({ mode: 'add-specialty', values: emptySpecialtyForm })
+      return
+    }
+
+    setModal({ mode: 'add-service', values: emptyServiceForm })
+  }
+
+  const updateBranchForm = (field: BranchFormField, value: string) => {
+    setModal((current) => {
+      if (current.mode !== 'add-branch' && current.mode !== 'edit-branch') {
+        return current
+      }
+
+      return { ...current, values: { ...current.values, [field]: value } }
+    })
+  }
+
+  const updateSpecialtyForm = (field: SpecialtyFormField, value: string) => {
+    setModal((current) => {
+      if (current.mode !== 'add-specialty' && current.mode !== 'edit-specialty') {
+        return current
+      }
+
+      return { ...current, values: { ...current.values, [field]: value } }
+    })
+  }
+
+  const updateServiceForm = (field: ServiceFormField, value: string) => {
+    setModal((current) => {
+      if (current.mode !== 'add-service' && current.mode !== 'edit-service') {
+        return current
+      }
+
+      return { ...current, values: { ...current.values, [field]: value } }
+    })
+  }
+
+  const submitBranchForm = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    if (modal.mode === 'add-branch') {
+      const newBranch: Branch = {
+        ...modal.values,
+        id: getNextId('CN', branches.length),
+        sourceId: `custom-${branches.length + 1}`,
+        doctorCount: 0,
+        roomCount: 0,
+        monthlyRevenue: 0,
+      }
+
+      setBranches((current) => [...current, newBranch])
+      closeModal()
+      showToast('Đã thêm chi nhánh mới.', 'success')
+      return
+    }
+
+    if (modal.mode === 'edit-branch') {
+      setBranches((current) =>
+        current.map((branch) => (branch.id === modal.branchId ? { ...branch, ...modal.values } : branch)),
+      )
+      closeModal()
+      showToast('Đã cập nhật thông tin chi nhánh.', 'success')
+    }
+  }
+
+  const submitSpecialtyForm = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    if (modal.mode === 'add-specialty') {
+      setSpecialties((current) => [
+        ...current,
+        {
+          ...modal.values,
+          id: getNextId('CK', current.length),
+          branchCount: 0,
+          serviceCount: 0,
+        },
+      ])
+      closeModal()
+      showToast('Đã thêm chuyên khoa mới.', 'success')
+      return
+    }
+
+    if (modal.mode === 'edit-specialty') {
+      setSpecialties((current) =>
+        current.map((specialty) => (specialty.id === modal.specialtyId ? { ...specialty, ...modal.values } : specialty)),
+      )
+      closeModal()
+      showToast('Đã cập nhật chuyên khoa.', 'success')
+    }
+  }
+
+  const submitServiceForm = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    if (modal.mode === 'add-service') {
+      setServices((current) => [
+        ...current,
+        {
+          ...modal.values,
+          id: getNextId('DV', current.length),
+          accent: current.length % 3 === 0 ? 'mint' : current.length % 3 === 1 ? 'blue' : 'rose',
+        },
+      ])
+      closeModal()
+      showToast('Đã thêm dịch vụ mới.', 'success')
+      return
+    }
+
+    if (modal.mode === 'edit-service') {
+      setServices((current) =>
+        current.map((service) => (service.id === modal.serviceId ? { ...service, ...modal.values } : service)),
+      )
+      closeModal()
+      showToast('Đã cập nhật dịch vụ.', 'success')
+    }
+  }
+
   return (
     <div className="desktop-shell-page services-pricing-page">
       <Sidebar config={managerSidebarConfig} />
       <Header profileRole={managerSidebarConfig.profileRole} />
-      <main className="desktop-shell-main services-pricing-main" aria-label="Cấu hình phòng khám">
+      <main className="desktop-shell-main services-pricing-main" aria-label="Thiết lập phòng khám">
         <section className="clinic-settings-content">
           <div className="clinic-settings-heading">
             <div>
-              <h1>Cấu hình Phòng khám</h1>
+              <h1>Thiết lập phòng khám</h1>
               <p>Quản lý thông tin nền tảng của hệ thống: chi nhánh, chuyên khoa và dịch vụ.</p>
             </div>
           </div>
@@ -324,7 +556,7 @@ export function ManagerServicesPricingPage() {
               setActiveTab(nextTab)
               setQuery('')
               setStatus('all')
-              setExpandedBranchId(null)
+              closeModal()
             }}
           />
 
@@ -338,26 +570,15 @@ export function ManagerServicesPricingPage() {
 
             <div className="clinic-toolbar">
               <div className="clinic-panel-filters">
-                <SearchInput value={query} onChange={setQuery} placeholder="Tìm nhanh..." />
+                <SearchInput value={query} onChange={setQuery} placeholder="Tìm theo tên, mã hoặc người phụ trách" />
                 <FilterSelect
                   value={status}
-                  onChange={(event) => setStatus(event.target.value)}
+                  onChange={(event: ChangeEvent<HTMLSelectElement>) => setStatus(event.target.value)}
                   options={branchFilters}
                 />
               </div>
               <div className="clinic-toolbar-actions">
-                <PrimaryButton
-                  onClick={() =>
-                    showToast(
-                      activeTab === 'branches'
-                        ? 'Mở form thêm chi nhánh mới.'
-                        : activeTab === 'specialties'
-                          ? 'Mở form thêm chuyên khoa mới.'
-                          : 'Mở form thêm dịch vụ mới.',
-                      'success',
-                    )
-                  }
-                >
+                <PrimaryButton onClick={openAddModal}>
                   <PlusIcon />
                   {activeTab === 'branches'
                     ? 'Thêm chi nhánh'
@@ -399,39 +620,19 @@ export function ManagerServicesPricingPage() {
                       </div>
                     </dl>
                     <div className="clinic-card-actions">
-                      <button
-                        className="clinic-detail-toggle"
-                        type="button"
-                        aria-expanded={expandedBranchId === branch.id}
-                        onClick={() => setExpandedBranchId((current) => (current === branch.id ? null : branch.id))}
-                      >
-                        {expandedBranchId === branch.id ? 'Thu gọn' : 'Xem chi tiết'}
-                        <ChevronIcon open={expandedBranchId === branch.id} />
-                      </button>
-                      <IconButton label={`Chỉnh sửa ${branch.name}`} onClick={() => showToast(`Mở chỉnh sửa ${branch.name}.`, 'info')}>
-                        <EditIcon />
-                      </IconButton>
-                    </div>
-                    {expandedBranchId === branch.id ? (
-                      <div className="clinic-branch-details">
-                        <div>
-                          <span>Bác sĩ</span>
-                          <strong>{branch.doctorCount}</strong>
-                        </div>
-                        <div>
-                          <span>Phòng chức năng</span>
-                          <strong>{branch.roomCount}</strong>
-                        </div>
-                        <div>
-                          <span>Doanh thu tháng</span>
-                          <strong>{formatCurrency(branch.monthlyRevenue)} đ</strong>
-                        </div>
-                        <div>
-                          <span>Hài lòng</span>
-                          <strong>{branch.satisfaction}</strong>
-                        </div>
+                      <span className="clinic-action-hint">Thao tác</span>
+                      <div className="clinic-icon-actions">
+                        <IconButton label={`Xem chi tiết ${branch.name}`} onClick={() => setModal({ mode: 'view-branch', branch })}>
+                          <EyeIcon />
+                        </IconButton>
+                        <IconButton
+                          label={`Chỉnh sửa ${branch.name}`}
+                          onClick={() => setModal({ mode: 'edit-branch', branchId: branch.id, values: toBranchForm(branch) })}
+                        >
+                          <EditIcon />
+                        </IconButton>
                       </div>
-                    ) : null}
+                    </div>
                   </article>
                 ))}
               </div>
@@ -456,7 +657,12 @@ export function ManagerServicesPricingPage() {
                       <span>{specialty.serviceCount} dịch vụ</span>
                     </div>
                     <StatusBadge status={specialty.status} />
-                    <IconButton label={`Chỉnh sửa ${specialty.name}`} onClick={() => showToast(`Mở chỉnh sửa chuyên khoa ${specialty.name}.`, 'info')}>
+                    <IconButton
+                      label={`Chỉnh sửa ${specialty.name}`}
+                      onClick={() =>
+                        setModal({ mode: 'edit-specialty', specialtyId: specialty.id, values: toSpecialtyForm(specialty) })
+                      }
+                    >
                       <EditIcon />
                     </IconButton>
                   </article>
@@ -490,7 +696,10 @@ export function ManagerServicesPricingPage() {
                       <span className={`clinic-billing-pill clinic-billing-${service.billing}`}>
                         {service.billing === 'free' ? 'Dịch vụ miễn phí' : 'Có thu phí'}
                       </span>
-                      <IconButton label={`Chỉnh sửa ${service.name}`} onClick={() => showToast(`Mở chỉnh sửa dịch vụ ${service.name}.`, 'info')}>
+                      <IconButton
+                        label={`Chỉnh sửa ${service.name}`}
+                        onClick={() => setModal({ mode: 'edit-service', serviceId: service.id, values: toServiceForm(service) })}
+                      >
                         <EditIcon />
                       </IconButton>
                     </div>
@@ -501,6 +710,244 @@ export function ManagerServicesPricingPage() {
           </section>
         </section>
       </main>
+
+      <DetailModal title={modalTitle} subtitle={modalSubtitle} open={modal.mode !== 'closed'} onClose={closeModal}>
+        {modal.mode === 'view-branch' ? <BranchDetailView branch={modal.branch} /> : null}
+        {(modal.mode === 'add-branch' || modal.mode === 'edit-branch') ? (
+          <BranchForm values={modal.values} onChange={updateBranchForm} onSubmit={submitBranchForm} onCancel={closeModal} />
+        ) : null}
+        {(modal.mode === 'add-specialty' || modal.mode === 'edit-specialty') ? (
+          <SpecialtyForm
+            values={modal.values}
+            onChange={updateSpecialtyForm}
+            onSubmit={submitSpecialtyForm}
+            onCancel={closeModal}
+          />
+        ) : null}
+        {(modal.mode === 'add-service' || modal.mode === 'edit-service') ? (
+          <ServiceForm values={modal.values} onChange={updateServiceForm} onSubmit={submitServiceForm} onCancel={closeModal} />
+        ) : null}
+      </DetailModal>
+    </div>
+  )
+}
+
+function getModalTitle(modal: ModalState) {
+  switch (modal.mode) {
+    case 'view-branch':
+      return 'Chi tiết chi nhánh'
+    case 'add-branch':
+      return 'Thêm chi nhánh'
+    case 'edit-branch':
+      return 'Chỉnh sửa chi nhánh'
+    case 'add-specialty':
+      return 'Thêm chuyên khoa'
+    case 'edit-specialty':
+      return 'Chỉnh sửa chuyên khoa'
+    case 'add-service':
+      return 'Thêm dịch vụ'
+    case 'edit-service':
+      return 'Chỉnh sửa dịch vụ'
+    default:
+      return ''
+  }
+}
+
+function getModalSubtitle(modal: ModalState) {
+  switch (modal.mode) {
+    case 'view-branch':
+      return modal.branch.name
+    case 'edit-branch':
+      return modal.branchId
+    case 'edit-specialty':
+      return modal.specialtyId
+    case 'edit-service':
+      return modal.serviceId
+    case 'add-branch':
+      return 'Tạo chi nhánh mới trong hệ thống mock'
+    case 'add-specialty':
+      return 'Tạo chuyên khoa mới trong hệ thống mock'
+    case 'add-service':
+      return 'Tạo dịch vụ mới trong hệ thống mock'
+    default:
+      return undefined
+  }
+}
+
+function BranchDetailView({ branch }: { branch: Branch }) {
+  return (
+    <div className="clinic-modal-section">
+      <div className="clinic-detail-grid">
+        <DetailItem label="Mã chi nhánh" value={branch.id} />
+        <DetailItem label="Tên chi nhánh" value={branch.name} />
+        <DetailItem label="Địa chỉ" value={branch.address} />
+        <DetailItem label="Điện thoại" value={branch.phone} />
+        <DetailItem label="Quản lý" value={branch.manager} />
+        <DetailItem label="Giờ mở cửa" value={branch.hours} />
+        <DetailItem label="Bác sĩ" value={branch.doctorCount} />
+        <DetailItem label="Phòng chức năng" value={branch.roomCount} />
+        <DetailItem label="Doanh thu tháng" value={`${formatCurrency(branch.monthlyRevenue)} đ`} />
+        <DetailItem label="Hài lòng" value={branch.satisfaction} />
+        <DetailItem label="Múi giờ" value={branch.timezone} />
+        <DetailItem label="Trạng thái" value={branch.status === 'active' ? 'Đang hoạt động' : 'Tạm ngưng'} />
+      </div>
+    </div>
+  )
+}
+
+function BranchForm({
+  values,
+  onChange,
+  onSubmit,
+  onCancel,
+}: {
+  values: BranchFormState
+  onChange: (field: BranchFormField, value: string) => void
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void
+  onCancel: () => void
+}) {
+  return (
+    <form className="clinic-modal-form" onSubmit={onSubmit}>
+      <TextField label="Tên chi nhánh" value={values.name} required onChange={(value) => onChange('name', value)} />
+      <TextAreaField label="Địa chỉ" value={values.address} required onChange={(value) => onChange('address', value)} />
+      <TextField label="Điện thoại" value={values.phone} required onChange={(value) => onChange('phone', value)} />
+      <TextField label="Quản lý" value={values.manager} required onChange={(value) => onChange('manager', value)} />
+      <TextField label="Giờ mở cửa" value={values.hours} required onChange={(value) => onChange('hours', value)} />
+      <TextField label="Mức hài lòng" value={values.satisfaction} required onChange={(value) => onChange('satisfaction', value)} />
+      <TextField label="Múi giờ" value={values.timezone} required onChange={(value) => onChange('timezone', value)} />
+      <SelectField label="Trạng thái" value={values.status} onChange={(value) => onChange('status', value)} />
+      <ModalActions onCancel={onCancel} />
+    </form>
+  )
+}
+
+function SpecialtyForm({
+  values,
+  onChange,
+  onSubmit,
+  onCancel,
+}: {
+  values: SpecialtyFormState
+  onChange: (field: SpecialtyFormField, value: string) => void
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void
+  onCancel: () => void
+}) {
+  return (
+    <form className="clinic-modal-form" onSubmit={onSubmit}>
+      <TextField label="Tên chuyên khoa" value={values.name} required onChange={(value) => onChange('name', value)} />
+      <TextAreaField label="Mô tả" value={values.description} required onChange={(value) => onChange('description', value)} />
+      <TextField label="Bác sĩ phụ trách" value={values.leadDoctor} required onChange={(value) => onChange('leadDoctor', value)} />
+      <SelectField label="Trạng thái" value={values.status} onChange={(value) => onChange('status', value)} />
+      <ModalActions onCancel={onCancel} />
+    </form>
+  )
+}
+
+function ServiceForm({
+  values,
+  onChange,
+  onSubmit,
+  onCancel,
+}: {
+  values: ServiceFormState
+  onChange: (field: ServiceFormField, value: string) => void
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void
+  onCancel: () => void
+}) {
+  return (
+    <form className="clinic-modal-form" onSubmit={onSubmit}>
+      <TextField label="Tên dịch vụ" value={values.name} required onChange={(value) => onChange('name', value)} />
+      <TextAreaField label="Mô tả" value={values.description} required onChange={(value) => onChange('description', value)} />
+      <SelectField
+        label="Loại tính phí"
+        value={values.billing}
+        options={[
+          { value: 'paid', label: 'Trả phí' },
+          { value: 'free', label: 'Miễn phí' },
+        ]}
+        onChange={(value) => onChange('billing', value)}
+      />
+      <TextField label="Mức phí" value={values.feeLabel} required onChange={(value) => onChange('feeLabel', value)} />
+      <TextField label="Đơn vị" value={values.unit} onChange={(value) => onChange('unit', value)} />
+      <SelectField label="Trạng thái" value={values.status} onChange={(value) => onChange('status', value)} />
+      <ModalActions onCancel={onCancel} />
+    </form>
+  )
+}
+
+function TextField({
+  label,
+  value,
+  required,
+  onChange,
+}: {
+  label: string
+  value: string
+  required?: boolean
+  onChange: (value: string) => void
+}) {
+  return (
+    <label className="clinic-form-field">
+      <span>{label}</span>
+      <input value={value} required={required} onChange={(event) => onChange(event.target.value)} />
+    </label>
+  )
+}
+
+function TextAreaField({
+  label,
+  value,
+  required,
+  onChange,
+}: {
+  label: string
+  value: string
+  required?: boolean
+  onChange: (value: string) => void
+}) {
+  return (
+    <label className="clinic-form-field clinic-form-field-wide">
+      <span>{label}</span>
+      <textarea value={value} required={required} rows={4} onChange={(event) => onChange(event.target.value)} />
+    </label>
+  )
+}
+
+function SelectField({
+  label,
+  value,
+  options = [
+    { value: 'active', label: 'Đang hoạt động' },
+    { value: 'inactive', label: 'Tạm ngưng' },
+  ],
+  onChange,
+}: {
+  label: string
+  value: string
+  options?: Array<{ value: string; label: string }>
+  onChange: (value: string) => void
+}) {
+  return (
+    <label className="clinic-form-field">
+      <span>{label}</span>
+      <select value={value} onChange={(event) => onChange(event.target.value)}>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+}
+
+function ModalActions({ onCancel }: { onCancel: () => void }) {
+  return (
+    <div className="clinic-modal-actions">
+      <PrimaryButton variant="ghost" onClick={onCancel}>
+        Hủy
+      </PrimaryButton>
+      <PrimaryButton type="submit">Lưu thông tin</PrimaryButton>
     </div>
   )
 }

@@ -22,8 +22,10 @@ import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 export default function HomeScreen() {
     const navigation = useNavigation<any>();
     return (
-        <MainLayout title="Serena Health" subtitle="Serena - Trợ lý y tế thông minh" isScrollable={false}>
-            <TouchableOpacity style={styles.appointmentCard}>
+        <MainLayout title="Serena Health" subtitle="Serena - Trợ lý y tế thông minh" isScrollable={true}>
+            <TouchableOpacity style={styles.appointmentCard}
+                onPress={() => navigation.navigate('Appointment')}
+            >
                 <View style={styles.cardHeader}>
                     <View>
                         <Text style={styles.appointmentTitle}>Bạn có lịch khám lúc 10:00 hôm nay</Text>
@@ -110,15 +112,15 @@ const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: COLORS.white },
     scrollContent: {
         padding: 20,
-        paddingBottom: 90,
+        paddingBottom: 95,
     },
 
     // Appointment Card
     appointmentCard: {
         backgroundColor: COLORS.primary, // #3F6DC9
         borderRadius: 24,
-        padding: 16,
-        marginBottom: 20,
+        padding: 14,
+        marginBottom: 18,
     },
     cardHeader: {
         flexDirection: 'row',

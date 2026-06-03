@@ -1258,7 +1258,7 @@ export function LiveConsultationTab({
               </div>
 
               <div className="chatbot-modal-grid triage-summary-grid">
-                <div className="chatbot-modal-panel">
+                <div className="chatbot-modal-panel symptoms-panel">
                   <div className="panel-header">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
@@ -1273,7 +1273,7 @@ export function LiveConsultationTab({
                   </div>
                 </div>
 
-                <div className="chatbot-modal-panel">
+                <div className="chatbot-modal-panel declared-info-panel">
                   <div className="panel-header">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
@@ -1302,7 +1302,7 @@ export function LiveConsultationTab({
                   </div>
                 </div>
 
-                <div className="chatbot-modal-panel">
+                <div className="chatbot-modal-panel questions-panel">
                   <div className="panel-header">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <circle cx="12" cy="12" r="10" />
@@ -1313,7 +1313,7 @@ export function LiveConsultationTab({
                   </div>
                   <div className="panel-content">
                     <ul className="followup-question-list">
-                      {getFollowUpQuestions(activeChat.aiExtract).map(question => (
+                      {getFollowUpQuestions(activeChat.aiExtract).slice(0, 2).map(question => (
                         <li key={question}>{question}</li>
                       ))}
                     </ul>
