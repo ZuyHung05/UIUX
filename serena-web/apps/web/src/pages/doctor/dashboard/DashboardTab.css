@@ -506,6 +506,89 @@
   line-height: 1.25;
 }
 
+.slender-message-row.expanded {
+  background: #FFFFFF;
+  border-color: #3B82F6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
+}
+
+.ai-clinical-extract-box {
+  margin-top: 10px;
+  background: #e7f7ee;
+  border: 1px solid #adecbb;
+  border-radius: 12px;
+  padding: 10px 12px;
+  text-align: left;
+  box-shadow: 0 2px 6px rgba(16, 163, 74, 0.02);
+}
+
+.ai-extract-header {
+  font-size: 11px;
+  font-weight: 800;
+  color: #15803D;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ai-extract-header::before {
+  content: '✦';
+  color: #48C072;
+  font-size: 12px;
+}
+
+.ai-extract-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ai-extract-list li {
+  font-size: 12px;
+  color: #244A6B;
+  line-height: 1.4;
+}
+
+.ai-extract-list li .bullet-label {
+  font-weight: 700;
+  color: #1E293B;
+  margin-right: 4px;
+}
+
+.waiting-time-label {
+  font-size: 11px;
+  color: #EF4444;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.reply-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #3B82F6;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 5px rgba(59, 130, 246, 0.15);
+  line-height: 1;
+}
+
+.reply-action-btn:hover {
+  background: #2563EB;
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.25);
+}
+
 /* ==========================================================================
    3. Today's Timeline summoning interactions (Right Column)
    ========================================================================== */

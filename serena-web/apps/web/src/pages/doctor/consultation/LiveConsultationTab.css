@@ -982,6 +982,29 @@
   gap: 16px;
 }
 
+.note-intro-card {
+  background: #FFF9EC;
+  border: 1px solid #FDE68A;
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.note-intro-card strong {
+  color: #B45309;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.note-intro-card p {
+  margin: 0;
+  color: #7C2D12;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .note-input-group {
   display: flex;
   flex-direction: column;
@@ -1016,6 +1039,44 @@
   border-color: #D97706;
   /* match orange notes accent */
   box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.08);
+}
+
+.note-footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+.note-save-status {
+  color: #92400E;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.save-note-btn {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid #F59E0B;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #FFF7ED 0%, #FEF3C7 100%);
+  color: #B45309;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.save-note-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(245, 158, 11, 0.12);
+}
+
+.save-note-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 /* Modal Popup styling */

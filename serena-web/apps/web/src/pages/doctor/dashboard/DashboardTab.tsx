@@ -127,8 +127,48 @@ const todayTimeline = [
 
 // Slim-down unread messages list (Tin nhắn đang chờ)
 const messages = [
-  { id: '1', name: 'Nguyễn Văn A', text: 'Bác sĩ ơi, dạo này tôi hay thấy chóng mặt và suy nhược...', sentAt: '09:36', unread: true },
-  { id: '4', name: 'Nguyễn Thị N', text: 'Xin chào bác sĩ, tôi đang gặp tình trạng đau đầu kéo dài...', sentAt: '08:15', unread: false },
+  {
+    id: '1',
+    name: 'Nguyễn Văn A',
+    text: 'Bác sĩ ơi, tôi bị sốt cao 39.5°C kèm khó thở và tức ngực nhiều, nằm ngửa là không thở được...',
+    sentAt: '09:36',
+    unread: true,
+    severity: 'high',
+    waitingTime: '3 phút',
+    aiExtract: {
+      symptoms: 'Sốt 39.5°C, khó thở, tức ngực khi nằm ngửa.',
+      history: 'Hen phế quản mạn tính',
+      diagnosis: 'Cơn hen phế quản cấp kịch phát / Theo dõi hội chứng vành cấp'
+    }
+  },
+  {
+    id: '4',
+    name: 'Nguyễn Thị N',
+    text: 'Xin chào bác sĩ, tôi đang gặp tình trạng đau đầu kéo dài và mất ngủ khoảng 3 ngày nay...',
+    sentAt: '08:15',
+    unread: true,
+    severity: 'medium',
+    waitingTime: '15 phút',
+    aiExtract: {
+      symptoms: 'Đau đầu âm ỉ kéo dài 3 ngày, mất ngủ, chóng mặt nhẹ.',
+      history: 'Tăng huyết áp vô căn',
+      diagnosis: 'Cơn tăng huyết áp kịch phát / Đau đầu vận mạch'
+    }
+  },
+  {
+    id: '5',
+    name: 'Lê Văn Khang',
+    text: 'Bác sĩ cho tôi hỏi lịch khám sức khỏe tổng quát tuần này với ạ, tôi muốn đăng ký...',
+    sentAt: '07:30',
+    unread: false,
+    severity: 'low',
+    waitingTime: '45 phút',
+    aiExtract: {
+      symptoms: 'Có nhu cầu đăng ký và tư vấn gói khám sức khỏe tổng quát định kỳ.',
+      history: 'Chưa ghi nhận bệnh lý mãn tính',
+      diagnosis: 'Tư vấn y khoa / Khám sức khỏe định kỳ'
+    }
+  }
 ]
 
 export function DashboardTab({
@@ -142,7 +182,8 @@ export function DashboardTab({
 }) {
   const [selectedFilter, setSelectedFilter] = useState<string>('Hôm nay')
   const filterOptions = ['Hôm nay', 'Tuần này', 'Tháng này']
-
+  const [expandedMessageId, setExpandedMessageId] = useState<string | null>('1')
+ 
   // Core state: Admitted Patient in clinic room, dynamically changing
   const [activePatientId, setActivePatientId] = useState<string>('15') // Default is 'Phan Văn R'
   const [toastMessage, setToastMessage] = useState<string | null>(null)
@@ -555,8 +596,11 @@ export function DashboardTab({
         <div className="grid-column-right">
           <section className="figma-section-card waiting-messages-card">
             <div className="section-header">
-              <div className="title-area">
-                <h2>Tin nhắn đang chờ</h2>
+              <div className="title-area" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
+                <h2>Tin nhắn đang chờ phản hồi</h2>
+                <span className="waiting-messages-count" style={{ fontSize: '12px', color: '#718096', fontWeight: 500 }}>
+                  Có {messages.length} tin nhắn đang chờ xử lý
+                </span>
               </div>
               <button className="view-all-btn" onClick={() => onNavigateTab?.('Tư vấn trực tiếp')}>
                 Mở khung chat {ChevronIcon()}
@@ -564,28 +608,66 @@ export function DashboardTab({
             </div>
 
             <div className="list-container slender-list">
-              {messages.map((m, idx) => (
-                <div
-                  className={`slender-message-row ${m.unread ? 'unread' : ''}`}
-                  key={idx}
-                  onClick={() => onViewChatMessage ? onViewChatMessage(m.id) : onNavigateTab?.('Tư vấn trực tiếp')}
-                >
-                  <div className="avatar-placeholder-slender">
-                    {m.name.split(' ').pop()?.[0]}
-                  </div>
-                  <div className="slender-meta">
-                    <div className="message-summary-row">
-                      <div className="slender-name-row">
-                        <strong className={m.unread ? 'unread-bold' : ''}>{m.name}</strong>
-                        {m.unread && <span className="unread-dot-indicator"></span>}
-                      </div>
-                      <span className="message-sent-time">Nhắn lúc {m.sentAt}</span>
+              {messages.slice(0, 3).map((m, idx) => {
+                const isExpanded = expandedMessageId === m.id;
+                return (
+                  <div
+                    className={`slender-message-row ${m.unread ? 'unread' : ''} ${isExpanded ? 'expanded' : ''}`}
+                    key={idx}
+                    onClick={() => setExpandedMessageId(isExpanded ? null : m.id)}
+                  >
+                    <div className="avatar-placeholder-slender">
+                      {m.name.split(' ').pop()?.[0]}
                     </div>
-                    <p className={`slender-preview ${m.unread ? 'unread-bold' : ''}`}>{m.text}</p>
-                    <span className="message-source-note">Chatbot sàng lọc</span>
+                    <div className="slender-meta">
+                      <div className="message-summary-row">
+                        <div className="slender-name-row-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '2px', alignItems: 'flex-start' }}>
+                          <div className="slender-name-row">
+                            <strong className={m.unread ? 'unread-bold' : ''}>{m.name}</strong>
+                            {m.unread && <span className="unread-dot-indicator"></span>}
+                          </div>
+                          {m.waitingTime && (
+                            <span className="waiting-time-label" style={{ fontSize: '11px', color: '#EF4444', fontWeight: 600 }}>
+                              | Thời gian chờ phản hồi: {m.waitingTime}
+                            </span>
+                          )}
+                        </div>
+                        <span className="message-sent-time">{m.sentAt}</span>
+                      </div>
+                      <p className={`slender-preview ${m.unread ? 'unread-bold' : ''}`} style={isExpanded ? { whiteSpace: 'normal', overflow: 'visible', textOverflow: 'clip', marginBottom: '8px' } : undefined}>
+                        {m.text}
+                      </p>
+                      
+                      <div className="slender-actions-row" style={{ display: 'flex', alignItems: 'center', marginTop: '6px' }}>
+                        <button
+                          className="reply-action-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (onViewChatMessage) onViewChatMessage(m.id);
+                            else onNavigateTab?.('Tư vấn trực tiếp');
+                          }}
+                        >
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ marginRight: '3px' }}>
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                          </svg>
+                          Phản hồi
+                        </button>
+                      </div>
+
+                      {isExpanded && m.aiExtract && (
+                        <div className="ai-clinical-extract-box" onClick={(e) => e.stopPropagation()}>
+                          <div className="ai-extract-header">CHATBOT AI TRÍCH XUẤT LÂM SÀNG:</div>
+                          <ul className="ai-extract-list">
+                            <li><span className="bullet-label">• Triệu chứng:</span> {m.aiExtract.symptoms}</li>
+                            <li><span className="bullet-label">• Tiền sử:</span> {m.aiExtract.history}</li>
+                            <li><span className="bullet-label">• Chẩn đoán sơ bộ:</span> {m.aiExtract.diagnosis}</li>
+                          </ul>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
         </div>

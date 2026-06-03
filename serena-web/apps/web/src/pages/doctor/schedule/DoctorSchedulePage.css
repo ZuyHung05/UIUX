@@ -1,17 +1,17 @@
 .schedule-page {
   background: #FFFFFF;
-  border-radius: 28px;
-  margin: 20px;
-  min-height: calc(100% - 40px);
-  padding-bottom: 24px;
+  border-radius: 24px;
+  margin: 12px;
+  min-height: calc(100% - 24px);
+  padding-bottom: 16px;
 }
 
 .schedule-header {
   position: sticky;
   top: 0;
   z-index: 5;
-  padding: 24px 26px 16px;
-  margin-bottom: 18px;
+  padding: 18px 20px 12px;
+  margin-bottom: 12px;
   background: rgba(255, 255, 255, 0.96);
   border-bottom: 1px solid #EBF3FC;
   backdrop-filter: blur(8px);
@@ -41,26 +41,26 @@
 }
 
 .schedule-content {
-  padding: 0 26px;
+  padding: 0 18px;
 }
 
 .calendar-style-layout {
   display: grid;
-  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
-  gap: 22px;
+  grid-template-columns: minmax(250px, 286px) minmax(0, 1fr);
+  gap: 16px;
   align-items: start;
 }
 
 .schedule-sidebar {
   display: grid;
-  gap: 16px;
+  gap: 12px;
 }
 
 .schedule-mini-calendar.calendar-container {
-  padding: 18px;
-  border-radius: 18px;
+  padding: 14px;
+  border-radius: 16px;
   border: 1px solid #DCEBFF;
-  box-shadow: 0 4px 18px rgba(59, 130, 246, 0.04);
+  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.04);
 }
 
 .schedule-mini-calendar .calendar-header {
@@ -89,8 +89,8 @@
 
 .section-card {
   border: 1px solid #DCEBFF;
-  padding: 16px;
-  border-radius: 18px;
+  padding: 14px;
+  border-radius: 16px;
   background: #FFFFFF;
   display: flex;
   flex-direction: column;
@@ -131,11 +131,11 @@
 
 .shift-summary-card {
   width: 100%;
-  border: 1px solid #E6EFFE;
-  border-left: 4px solid #3B82F6;
+  border: 1px solid #E2E8F0;
+  border-left: 4px solid #94A3B8;
   border-radius: 14px;
-  background: #F8FAFF;
-  padding: 14px;
+  background: #F8FAFC;
+  padding: 12px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
@@ -146,22 +146,38 @@
   transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
 }
 
-.shift-summary-card:hover,
-.shift-summary-card.selected {
-  background: #EFF6FF;
-  border-color: #BFDBFE;
+.shift-summary-card.morning {
+  border-color: #adecbb;
+  border-left-color: #48C072;
+  background: #e7f7ee;
+}
+
+.shift-summary-card.morning:hover,
+.shift-summary-card.morning.selected {
+  background: #d6f2e1;
+  border-color: #8be0a3;
   transform: translateY(-1px);
 }
 
 .shift-summary-card.afternoon {
-  border-left-color: #F59E0B;
+  border-color: #f7b6c4;
+  border-left-color: #EF4444;
+  background: #ffe7ec;
 }
 
-.shift-summary-card strong {
-  display: block;
-  color: #244A6B;
-  font-size: 14px;
-  font-weight: 900;
+.shift-summary-card.afternoon:hover,
+.shift-summary-card.afternoon.selected {
+  background: #ffd3dc;
+  border-color: #fca5a5;
+  transform: translateY(-1px);
+}
+
+.shift-summary-card.morning strong {
+  color: #244a6b;
+}
+
+.shift-summary-card.afternoon strong {
+  color: #9b1c31;
 }
 
 .shift-summary-card span {
@@ -187,6 +203,14 @@
   line-height: 1;
 }
 
+.shift-summary-card.morning .shift-summary-count strong {
+  color: #244a6b;
+}
+
+.shift-summary-card.afternoon .shift-summary-count strong {
+  color: #9b1c31;
+}
+
 .shift-summary-count span {
   margin-top: 2px;
   color: #718096;
@@ -209,9 +233,9 @@
 
 .week-calendar-board {
   border: 1px solid #DCEBFF;
-  border-radius: 22px;
+  border-radius: 20px;
   background: #FFFFFF;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.03);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.035);
   overflow: hidden;
 }
 
@@ -220,7 +244,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 16px 20px;
+  padding: 12px 16px;
   border-bottom: 1px solid #EBF3FC;
   background: #FAFDFF;
 }
@@ -228,7 +252,7 @@
 .week-calendar-header h2 {
   margin: 0;
   color: #244A6B;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 900;
 }
 
@@ -253,10 +277,17 @@
 
 .week-calendar-grid {
   display: grid;
-  grid-template-columns: 62px repeat(7, minmax(104px, 1fr));
-  max-height: calc(100vh - 280px);
-  min-height: 560px;
-  overflow-y: auto;
+  grid-template-columns: 56px repeat(7, minmax(112px, 1fr));
+  grid-template-rows: 66px repeat(4, 1fr) repeat(3, 18px) repeat(4, 1fr);
+  overflow-y: hidden;
+}
+
+@media (min-width: 1101px) {
+  .week-calendar-grid {
+    height: calc(100vh - 240px);
+    max-height: 700px;
+    min-height: 520px;
+  }
 }
 
 .week-calendar-grid::-webkit-scrollbar {
@@ -273,22 +304,27 @@
   position: sticky;
   top: 0;
   z-index: 4;
-  min-height: 78px;
-  padding: 48px 10px 0 0;
+  height: 100%;
+  min-height: 0;
   border-right: 1px solid #E5EEF9;
   border-bottom: 1px solid #E5EEF9;
   background: #FFFFFF;
-  color: #94A3B8;
-  font-size: 11px;
-  font-weight: 800;
-  text-align: right;
+  color: #718096;
+  font-size: 12px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  box-sizing: border-box;
 }
 
 .week-day-header {
   position: sticky;
   top: 0;
   z-index: 3;
-  min-height: 78px;
+  height: 100%;
+  min-height: 0;
   border: 0;
   border-right: 1px solid #E5EEF9;
   border-bottom: 1px solid #E5EEF9;
@@ -297,9 +333,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 5px;
   cursor: pointer;
   font-family: inherit;
+  box-sizing: border-box;
 }
 
 .week-day-header span {
@@ -310,8 +347,8 @@
 }
 
 .week-day-header strong {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 999px;
   display: grid;
   place-items: center;
@@ -322,10 +359,7 @@
 }
 
 .week-day-header em {
-  color: #718096;
-  font-size: 10.5px;
-  font-style: normal;
-  font-weight: 800;
+  display: none;
 }
 
 .week-day-header.selected {
@@ -337,8 +371,9 @@
 }
 
 .week-day-header.selected strong {
-  background: #2563EB;
+  background: #3B82F6;
   color: #FFFFFF;
+  box-shadow: 0 8px 18px rgba(59, 130, 246, 0.24);
 }
 
 .week-row-fragment {
@@ -346,8 +381,9 @@
 }
 
 .week-time-label {
-  min-height: 72px;
-  padding: 10px 10px 0 0;
+  height: 100%;
+  min-height: 0;
+  padding: 8px 8px 0 0;
   border-right: 1px solid #E5EEF9;
   border-bottom: 1px solid #EFF6FF;
   color: #718096;
@@ -355,64 +391,126 @@
   font-weight: 900;
   text-align: right;
   background: #FFFFFF;
+  box-sizing: border-box;
 }
 
 .week-day-cell {
-  min-height: 72px;
-  padding: 5px;
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  padding: 4px;
   border-right: 1px solid #E5EEF9;
   border-bottom: 1px solid #EFF6FF;
   background: #FFFFFF;
+  box-sizing: border-box;
 }
 
 .week-day-cell.selected {
   background: #F8FBFF;
 }
 
+.week-time-label.collapsed {
+  background: #F3F6F9;
+  color: #4A5568;
+  font-size: 12px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 0;
+  padding-right: 8px;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.week-day-cell.collapsed-span-cell {
+  background: #F3F6F9;
+  color: #4A5568;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: none;
+  border-bottom: 1px solid #E2E8F0;
+  box-sizing: border-box;
+}
+
 .week-appointment {
-  width: 100%;
-  min-height: 50px;
-  border: 1px solid #BFDBFE;
-  border-left: 4px solid #3B82F6;
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  min-height: 28px;
   border-radius: 8px;
-  background: #EFF6FF;
-  padding: 7px 8px;
-  color: #244A6B;
+  padding: 4px 6px;
   text-align: left;
   font-family: inherit;
   cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.week-appointment:hover {
+  transform: translateY(-0.5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
 }
 
 .week-appointment + .week-appointment {
   margin-top: 4px;
 }
 
+.week-appointment.morning {
+  background: #e7f7ee;
+  border: 1px solid #adecbb;
+  border-left: 3px solid #48C072;
+}
+
 .week-appointment.afternoon {
-  background: #FFF7ED;
-  border-color: #FED7AA;
-  border-left-color: #F59E0B;
+  background: #ffe7ec;
+  border: 1px solid #f7b6c4;
+  border-left: 3px solid #EF4444;
 }
 
 .week-appointment strong {
   display: block;
   overflow: hidden;
   color: #244A6B;
-  font-size: 12px;
-  font-weight: 900;
-  line-height: 1.25;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.week-appointment.morning strong {
+  color: #244a6b;
+}
+
+.week-appointment.afternoon strong {
+  color: #9b1c31;
+}
+
 .week-appointment span {
   display: block;
-  margin-top: 3px;
+  margin-top: 1px;
   overflow: hidden;
   color: #64748B;
-  font-size: 10.5px;
-  font-weight: 800;
+  font-size: 9.5px;
+  font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.week-appointment.morning span {
+  color: #4a5d70;
+}
+
+.week-appointment.afternoon span {
+  color: #a82e42;
 }
 
 @media (max-width: 1100px) {
@@ -423,5 +521,7 @@
   .week-calendar-grid {
     max-height: none;
     overflow-x: auto;
+    overflow-y: auto;
+    grid-template-rows: 66px repeat(4, 72px) repeat(3, 18px) repeat(4, 72px);
   }
 }

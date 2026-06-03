@@ -166,8 +166,8 @@ export const SCHEDULE_DATA: Record<string, Shift[]> = new Proxy(baseScheduleData
           count: 2,
           status: 'Đang diễn ra',
           patients: [
-            { name: 'Nguyễn Thị B', id: '#12345', time: '08:00' },
-            { name: 'Trần Văn C', id: '#12346', time: '10:00' },
+            { name: 'Phan Văn R', id: 'BN-2026-015', time: '08:00' },
+            { name: 'Trần Văn C', id: 'BN-2026-003', time: '10:00' },
           ],
         },
         {
@@ -176,7 +176,7 @@ export const SCHEDULE_DATA: Record<string, Shift[]> = new Proxy(baseScheduleData
           time: '14:00 - 18:00',
           count: 1,
           patients: [
-            { name: 'Hoàng Văn A', id: '#12350', time: '14:00' },
+            { name: 'Dương Thị Hoa', id: 'BN-2026-025', time: '14:00' },
           ],
         },
       ];
@@ -254,9 +254,9 @@ export const SCHEDULE_DATA: Record<string, Shift[]> = new Proxy(baseScheduleData
     const hasAfternoon = !hasMorning || (day + month) % 3 === 0;
 
     const namesPool = [
-      'Nguyễn Văn A', 'Trần Thị B', 'Lê Văn C', 'Phạm Thị D', 'Đỗ Thị F',
-      'Nguyễn Thị Hoa', 'Đỗ Hoàng Quân', 'Trần Văn Tú', 'Lê Văn Khang',
-      'Hoàng Văn An', 'Lý Thị Kim', 'Vũ Văn Xuân', 'Đặng Thị Yến', 'Trần Diệu Ngân'
+      'Nguyễn Văn A', 'Trần Thu Thảo', 'Lê Văn C', 'Phạm Thị D', 'Đỗ Thị F',
+      'Nguyễn Hoàng G', 'Vũ Thị H', 'Hoàng Văn I', 'Phạm Minh K',
+      'Đặng Thị L', 'Bùi Văn M', 'Ngô Thị N', 'Phan Văn R', 'Dương Thị Hoa'
     ];
 
     const reasonsPool = [
