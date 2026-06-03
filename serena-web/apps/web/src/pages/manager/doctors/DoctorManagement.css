@@ -1028,3 +1028,1258 @@
 
 }
 
+.doctor-detail-main {
+  overflow: hidden;
+}
+
+.doctor-detail-main .doctor-page-content {
+  height: 100%;
+  min-height: 0;
+  gap: clamp(8px, 1vh, 10px);
+  padding: clamp(8px, 1.3vh, 12px) clamp(10px, 1.4vw, 16px);
+}
+
+.doctor-detail-main .doctor-detail-actions {
+  flex: 0 0 auto;
+  min-height: 36px;
+}
+
+.doctor-detail-dashboard {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(282px, 0.74fr) minmax(0, 1.26fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(8px, 1vw, 12px);
+  color: #244a6b;
+  animation: fade-slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.doctor-detail-profile-card,
+.doctor-detail-panel {
+  min-width: 0;
+  border: 1px solid rgba(220, 235, 255, 0.84);
+  border-radius: 24px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  box-shadow: 0 14px 36px rgba(74, 147, 255, 0.08);
+}
+
+.doctor-detail-profile-card {
+  grid-row: 1 / -1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.2vh, 14px);
+  overflow: auto;
+  padding: clamp(14px, 1.5vw, 20px);
+  background:
+    radial-gradient(circle at top right, rgba(216, 248, 223, 0.68), transparent 34%),
+    linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+}
+
+.doctor-detail-profile-top {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.4vw, 16px);
+}
+
+.doctor-detail-profile-card .doctor-detail-avatar {
+  width: clamp(70px, 6.4vw, 88px);
+  height: clamp(70px, 6.4vw, 88px);
+  border-radius: 24px;
+  box-shadow: inset 0 0 0 8px rgba(255, 255, 255, 0.45);
+}
+
+.doctor-detail-profile-copy {
+  min-width: 0;
+}
+
+.doctor-detail-kicker {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border-radius: 999px;
+  background: #edf7ff;
+  color: #4a93ff;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.doctor-detail-profile-copy h1 {
+  margin: 8px 0 0;
+  color: #1a365d;
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  font-size: clamp(21px, 2vw, 28px);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.doctor-detail-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.doctor-detail-badges > span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  border-radius: 999px;
+  background: #f0eaff;
+  color: #6f5bb8;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.doctor-detail-bio {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: #5f7286;
+  font-size: clamp(12px, 0.9vw, 13px);
+  font-weight: 600;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.doctor-detail-contact-grid,
+.doctor-detail-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.doctor-detail-dashboard .doctor-info-item {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-color: rgba(220, 236, 255, 0.9);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  padding: clamp(10px, 1vw, 12px);
+}
+
+.doctor-detail-dashboard .doctor-info-item:hover {
+  transform: translateY(-1px);
+}
+
+.doctor-detail-dashboard .doctor-info-item span:not(.doctor-info-icon) {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.doctor-detail-dashboard .doctor-info-item strong {
+  margin-top: 3px;
+  font-size: clamp(12px, 0.95vw, 14px);
+  line-height: 1.25;
+}
+
+.doctor-info-icon,
+.doctor-detail-section-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 14px;
+  background: #dcebff;
+  color: #4a93ff;
+}
+
+.doctor-info-icon {
+  width: 34px;
+  height: 34px;
+}
+
+.doctor-info-icon svg,
+.doctor-detail-section-icon svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.doctor-detail-mini-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  border-radius: 18px;
+  background: #fff8dc;
+  color: #8a5a00;
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.doctor-detail-stats-grid {
+  grid-column: 2;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  min-height: 0;
+}
+
+.doctor-detail-stats-grid .metric-card {
+  min-height: 68px;
+  border-radius: 18px;
+  padding: 8px;
+}
+
+.doctor-detail-stats-grid .metric-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 13px;
+}
+
+.doctor-detail-stats-grid .metric-card strong {
+  font-size: clamp(17px, 1.45vw, 21px);
+}
+
+.doctor-detail-stats-grid .metric-card .metric-delta {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doctor-detail-content-grid {
+  grid-column: 2;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: clamp(8px, 1vw, 12px);
+}
+
+.doctor-detail-panel {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: clamp(12px, 1.25vw, 16px);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.doctor-detail-panel:hover {
+  border-color: #b8dcff;
+  transform: translateY(-1px);
+}
+
+.doctor-detail-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 10px;
+  color: #1a365d;
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  font-size: clamp(15px, 1.1vw, 17px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+.doctor-detail-section-icon {
+  width: 32px;
+  height: 32px;
+  background: #ffe7ec;
+  color: #d84b69;
+}
+
+.doctor-detail-fee-grid {
+  grid-template-columns: 1fr;
+}
+
+.doctor-detail-panel-scroll {
+  overflow: hidden;
+}
+
+.doctor-detail-schedule-list,
+.doctor-detail-review-list {
+  min-height: 0;
+  display: grid;
+  gap: 8px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.doctor-detail-schedule-item,
+.doctor-detail-review-item,
+.doctor-detail-appointment-item {
+  min-width: 0;
+  border: 1px solid #e4f0ff;
+  border-radius: 16px;
+  background: #ffffff;
+  padding: 10px 12px;
+}
+
+.doctor-detail-schedule-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.doctor-detail-schedule-item.active {
+  border-color: #91c3ff;
+  background: #f2f8ff;
+}
+
+.doctor-detail-schedule-item span,
+.doctor-detail-appointment-item span {
+  display: block;
+  color: #718096;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.doctor-detail-schedule-item strong,
+.doctor-detail-appointment-item strong {
+  display: block;
+  margin-top: 3px;
+  color: #244a6b;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.doctor-detail-schedule-item em {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #d8f8df;
+  color: #25785f;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.doctor-detail-review-item > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.doctor-detail-review-item strong {
+  color: #1a365d;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.doctor-detail-review-item span {
+  flex: 0 0 auto;
+  color: #ffb800;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.doctor-detail-review-item p {
+  display: -webkit-box;
+  margin: 6px 0 0;
+  overflow: hidden;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.doctor-detail-today-panel {
+  grid-column: 2;
+  min-height: 0;
+  padding-block: 12px;
+}
+
+.doctor-detail-appointment-grid {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+@media (max-width: 1180px) {
+  .doctor-detail-main .doctor-page-content {
+    padding: 10px;
+  }
+
+  .doctor-detail-dashboard {
+    grid-template-columns: minmax(270px, 0.78fr) minmax(0, 1.22fr);
+  }
+
+  .doctor-detail-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .doctor-detail-content-grid,
+  .doctor-detail-contact-grid,
+  .doctor-detail-appointment-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .doctor-detail-content-grid {
+    grid-template-rows: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-height: 720px) {
+  .doctor-detail-main .doctor-detail-actions {
+    min-height: 32px;
+  }
+
+  .doctor-detail-dashboard {
+    gap: 8px;
+  }
+
+  .doctor-detail-profile-card,
+  .doctor-detail-panel {
+    border-radius: 20px;
+    padding: 10px;
+  }
+
+  .doctor-detail-profile-card {
+    gap: 8px;
+  }
+
+  .doctor-detail-profile-card .doctor-detail-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+  }
+
+  .doctor-detail-bio {
+    -webkit-line-clamp: 2;
+  }
+
+  .doctor-detail-stats-grid .metric-card {
+    min-height: 60px;
+  }
+
+  .doctor-detail-mini-note {
+    padding: 8px 10px;
+  }
+}
+
+.doctor-detail-main {
+  overflow: hidden;
+}
+
+.doctor-detail-main .doctor-page-content {
+  height: 100%;
+  min-height: 0;
+  gap: 10px;
+  padding: 10px 14px;
+}
+
+.doctor-detail-main .doctor-detail-actions {
+  flex: 0 0 auto;
+}
+
+.doctor-detail-dashboard {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(300px, 0.4fr) minmax(0, 0.6fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: 12px;
+  color: #244a6b;
+  animation: none;
+}
+
+.doctor-detail-left-column,
+.doctor-detail-right-column {
+  min-height: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.doctor-detail-left-column {
+  grid-template-rows: minmax(0, 1.16fr) minmax(0, 0.9fr) minmax(0, 0.62fr);
+}
+
+.doctor-detail-right-column {
+  grid-template-rows: auto minmax(0, 1fr) minmax(0, 0.95fr);
+}
+
+.doctor-detail-panel,
+.doctor-detail-profile-card {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #dcecff;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: none;
+  padding: 14px;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.doctor-detail-panel:hover,
+.doctor-detail-profile-card:hover {
+  border-color: #b8dcff;
+  transform: none;
+}
+
+.doctor-detail-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  color: #244a6b;
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.doctor-detail-section-icon,
+.doctor-info-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  background: #eef7ff;
+  color: #4a93ff;
+}
+
+.doctor-detail-section-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.doctor-info-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.doctor-detail-section-icon svg,
+.doctor-info-icon svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.doctor-detail-profile-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  margin-bottom: 12px;
+}
+
+.doctor-detail-default-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #dcebff;
+}
+
+.doctor-detail-profile-copy {
+  min-width: 0;
+}
+
+.doctor-detail-profile-copy h1 {
+  margin: 0;
+  color: #1a365d;
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  font-size: clamp(19px, 1.5vw, 22px);
+  font-weight: 650;
+  line-height: 1.18;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.doctor-detail-profile-copy > span {
+  display: block;
+  margin-top: 5px;
+  color: #6c8197;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.doctor-detail-info-list {
+  min-height: 0;
+  display: grid;
+  gap: 8px;
+  overflow: auto;
+}
+
+.doctor-detail-dashboard .doctor-info-item {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #e4f0ff;
+  border-radius: 14px;
+  background: #fbfdff;
+  padding: 10px 12px;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.doctor-detail-dashboard .doctor-info-item:hover {
+  border-color: #c7e3ff;
+  background: #ffffff;
+  transform: none;
+}
+
+.doctor-detail-dashboard .doctor-info-item > div {
+  min-width: 0;
+}
+
+.doctor-detail-dashboard .doctor-info-item span:not(.doctor-info-icon) {
+  display: block;
+  color: #718096;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+  text-transform: none;
+}
+
+.doctor-detail-dashboard .doctor-info-item strong {
+  display: block;
+  margin-top: 4px;
+  color: #244a6b;
+  font-size: 13.5px;
+  font-weight: 550;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.doctor-detail-dashboard .status-badge {
+  width: auto;
+  max-width: 100%;
+  justify-content: flex-start;
+}
+
+.doctor-detail-stats-grid {
+  grid-column: auto;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  min-height: 0;
+}
+
+.doctor-detail-stats-grid .metric-card {
+  min-height: 76px;
+  border: 1px solid #e4f0ff;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: none;
+  padding: 10px;
+}
+
+.doctor-detail-stats-grid .metric-card:hover {
+  border-color: #c7e3ff;
+  background: #fbfdff;
+  transform: none;
+}
+
+.doctor-detail-stats-grid .metric-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+}
+
+.doctor-detail-stats-grid .metric-card p {
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.doctor-detail-stats-grid .metric-card strong {
+  margin-top: 4px;
+  font-size: clamp(17px, 1.3vw, 20px);
+  font-weight: 600;
+}
+
+.doctor-detail-stats-grid .metric-card .metric-delta {
+  font-size: 10.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doctor-detail-panel-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.doctor-detail-panel-title-row .doctor-detail-section-heading {
+  margin: 0;
+}
+
+.doctor-detail-link-button {
+  flex: 0 0 auto;
+  border: 1px solid #dcecff;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #4a93ff;
+  padding: 7px 11px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 550;
+  cursor: pointer;
+}
+
+.doctor-detail-link-button:hover {
+  border-color: #8dc1ff;
+  background: #f8fbff;
+}
+
+.doctor-detail-review-panel,
+.doctor-detail-activity-panel {
+  min-height: 0;
+}
+
+.doctor-detail-review-grid,
+.doctor-review-modal-list {
+  min-height: 0;
+  display: grid;
+  gap: 10px;
+  overflow: auto;
+}
+
+.doctor-detail-review-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.doctor-detail-review-item {
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  border: 1px solid #e4f0ff;
+  border-radius: 16px;
+  background: #fbfdff;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.doctor-detail-review-item > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.doctor-detail-review-item strong {
+  min-width: 0;
+  color: #1a365d;
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doctor-detail-review-item span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  color: #b7791f;
+  font-size: 12px;
+  font-weight: 550;
+}
+
+.doctor-detail-review-item span .doctor-star-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.doctor-detail-review-item p {
+  display: -webkit-box;
+  margin: 8px 0 0;
+  overflow: hidden;
+  color: #64748b;
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+}
+
+.doctor-review-modal-list .doctor-detail-review-item p {
+  display: block;
+}
+
+.doctor-review-modal-list .doctor-detail-review-item {
+  aspect-ratio: auto;
+}
+
+.doctor-detail-shift-grid {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  overflow: auto;
+}
+
+.doctor-detail-shift-card {
+  min-width: 0;
+  border: 1px solid #e4f0ff;
+  border-radius: 16px;
+  background: #fbfdff;
+  padding: 12px;
+}
+
+.doctor-detail-shift-card > div > span {
+  display: block;
+  color: #4a93ff;
+  font-size: 12px;
+  font-weight: 550;
+}
+
+.doctor-detail-shift-card > div > strong {
+  display: block;
+  margin-top: 4px;
+  color: #244a6b;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.doctor-detail-shift-card dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0 0;
+}
+
+.doctor-detail-shift-card dl div {
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 9px;
+}
+
+.doctor-detail-shift-card dt {
+  color: #718096;
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+.doctor-detail-shift-card dd {
+  margin: 4px 0 0;
+  color: #244a6b;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.doctor-detail-empty-note {
+  margin: 0;
+  border: 1px solid #e4f0ff;
+  border-radius: 16px;
+  background: #fbfdff;
+  color: #718096;
+  padding: 14px;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.doctor-detail-main .detail-modal {
+  box-shadow: none;
+}
+
+.doctor-detail-main .detail-modal-header h2 {
+  font-weight: 650;
+}
+
+@media (max-width: 1180px) {
+  .doctor-detail-dashboard {
+    grid-template-columns: minmax(280px, 0.42fr) minmax(0, 0.58fr);
+  }
+
+  .doctor-detail-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .doctor-detail-review-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-height: 740px) {
+  .doctor-detail-main .doctor-page-content {
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .doctor-detail-dashboard,
+  .doctor-detail-left-column,
+  .doctor-detail-right-column {
+    gap: 8px;
+  }
+
+  .doctor-detail-panel {
+    border-radius: 18px;
+    padding: 10px;
+  }
+
+  .doctor-detail-section-heading {
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .doctor-detail-default-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .doctor-detail-dashboard .doctor-info-item,
+  .doctor-detail-review-item,
+  .doctor-detail-shift-card {
+    padding: 9px 10px;
+  }
+
+  .doctor-detail-stats-grid .metric-card {
+    min-height: 66px;
+    padding: 8px;
+  }
+}
+
+.doctor-detail-left-column {
+  grid-template-rows: minmax(0, 1fr) minmax(0, 0.82fr) minmax(0, 0.54fr);
+}
+
+.doctor-detail-profile-panel {
+  justify-content: flex-start;
+}
+
+.doctor-detail-profile-panel .doctor-detail-profile-head {
+  margin-bottom: 10px;
+}
+
+.doctor-detail-profile-panel .doctor-detail-info-list,
+.doctor-detail-panel .doctor-detail-info-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.doctor-detail-profile-panel .doctor-detail-info-list .doctor-info-item:last-child {
+  grid-column: 1 / -1;
+}
+
+.doctor-detail-dashboard .doctor-info-item {
+  align-items: center;
+  min-height: 48px;
+  height: 100%;
+  padding: 8px 10px;
+}
+
+.doctor-info-icon {
+  align-self: center;
+  width: 30px;
+  height: 30px;
+}
+
+.doctor-detail-dashboard .doctor-info-item span:not(.doctor-info-icon) {
+  font-size: 11.5px;
+}
+
+.doctor-detail-dashboard .doctor-info-item strong {
+  margin-top: 2px;
+  font-size: 12.8px;
+}
+
+.doctor-detail-profile-copy h1 {
+  font-size: clamp(18px, 1.38vw, 21px);
+}
+
+.doctor-detail-stats-grid .metric-card {
+  min-height: 64px;
+  align-items: center;
+}
+
+.doctor-detail-stats-grid .metric-card .metric-delta {
+  display: none;
+}
+
+.doctor-detail-stats-grid .metric-card strong {
+  font-size: clamp(18px, 1.35vw, 21px);
+}
+
+.doctor-detail-review-panel .doctor-detail-section-icon {
+  background: #fff1c7;
+  color: #ffb800;
+}
+
+.doctor-detail-activity-panel .doctor-detail-section-icon {
+  background: #dcebff;
+  color: #4a93ff;
+}
+
+.doctor-detail-review-panel {
+  padding-bottom: 12px;
+}
+
+.doctor-detail-review-grid {
+  flex: 1 1 auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.doctor-detail-review-item {
+  min-height: 0;
+  aspect-ratio: auto;
+  border-radius: 15px;
+  padding: 9px;
+}
+
+.doctor-detail-review-grid .doctor-detail-review-item {
+  height: 100%;
+}
+
+.doctor-detail-review-item strong {
+  font-size: 12.2px;
+  font-weight: 550;
+}
+
+.doctor-detail-review-item span {
+  color: #ffb800;
+  font-size: 11.5px;
+}
+
+.doctor-detail-review-item span .doctor-star-icon {
+  width: 12px;
+  height: 12px;
+  fill: #ffb800;
+}
+
+.doctor-detail-review-item p {
+  margin-top: 6px;
+  font-size: 11.5px;
+  line-height: 1.36;
+  -webkit-line-clamp: 5;
+}
+
+.doctor-review-modal-list {
+  overflow: auto;
+}
+
+.doctor-review-modal-list .doctor-detail-review-item {
+  min-height: auto;
+  padding: 12px;
+}
+
+.doctor-review-modal-list .doctor-detail-review-item p {
+  font-size: 12.5px;
+}
+
+.doctor-detail-activity-panel {
+  padding-bottom: 12px;
+}
+
+.doctor-detail-shift-grid {
+  flex: 1 1 auto;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.doctor-detail-shift-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-color: #dcecff;
+  background: #f8fbff;
+}
+
+.doctor-detail-shift-card > div > span {
+  color: #4a93ff;
+}
+
+@media (max-height: 740px) {
+  .doctor-detail-dashboard .doctor-info-item {
+    min-height: 42px;
+    padding: 7px 9px;
+  }
+
+  .doctor-info-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .doctor-detail-review-grid {
+    gap: 7px;
+  }
+
+  .doctor-detail-review-item {
+    padding: 8px;
+  }
+
+  .doctor-detail-review-item p {
+    font-size: 11px;
+    line-height: 1.3;
+    -webkit-line-clamp: 4;
+  }
+}
+
+.doctor-detail-profile-panel .doctor-detail-profile-head {
+  align-items: center;
+  gap: 14px;
+  min-height: 66px;
+  margin-bottom: 12px;
+}
+
+.doctor-detail-profile-panel .doctor-detail-default-avatar {
+  width: 60px;
+  height: 60px;
+}
+
+.doctor-detail-profile-panel .doctor-detail-profile-copy {
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+}
+
+.doctor-detail-profile-panel .doctor-detail-profile-copy h1 {
+  color: #14365f;
+  font-size: clamp(23px, 1.9vw, 28px);
+  font-weight: 750;
+  line-height: 1.12;
+}
+
+.doctor-detail-profile-panel .doctor-detail-profile-copy > span {
+  display: none;
+}
+
+.doctor-detail-profile-panel .doctor-detail-info-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.doctor-detail-profile-panel .doctor-detail-info-list .doctor-info-item:last-child {
+  grid-column: auto;
+}
+
+.doctor-detail-profile-panel .doctor-info-item {
+  min-height: 50px;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: center;
+}
+
+.doctor-detail-profile-panel .doctor-info-item .doctor-info-icon {
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  align-self: center;
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  line-height: 0;
+}
+
+.doctor-detail-profile-panel .doctor-info-item .doctor-info-icon svg {
+  display: block;
+  width: 17px;
+  height: 17px;
+}
+
+.doctor-detail-profile-panel .doctor-info-item > div {
+  display: flex;
+  min-height: 30px;
+  flex-direction: column;
+  justify-content: center;
+  align-self: center;
+  line-height: 1.25;
+}
+
+.doctor-detail-profile-panel .doctor-info-item span:not(.doctor-info-icon),
+.doctor-detail-profile-panel .doctor-info-item strong {
+  line-height: 1.25;
+}
+
+.doctor-detail-profile-panel .doctor-info-item .status-badge {
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+.doctor-detail-dashboard .doctor-detail-profile-panel .doctor-profile-status-item .status-badge {
+  width: 142px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 4px;
+  padding: 0 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.doctor-detail-profile-panel .doctor-profile-status-item > div {
+  justify-content: center;
+}
+
+.doctor-detail-dashboard .doctor-detail-profile-panel .doctor-profile-status-item .status-badge-dot {
+  display: block;
+  width: 7px;
+  height: 7px;
+  min-width: 7px;
+  flex: 0 0 7px;
+  margin: 0;
+  border-radius: 50%;
+  background: currentColor;
+  line-height: 0;
+}
+
+.doctor-detail-dashboard .doctor-detail-profile-panel .doctor-profile-status-item .status-badge-label {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-height: 740px) {
+  .doctor-detail-profile-panel .doctor-detail-profile-head {
+    min-height: 56px;
+    margin-bottom: 8px;
+  }
+
+  .doctor-detail-profile-panel .doctor-detail-default-avatar {
+    width: 52px;
+    height: 52px;
+  }
+
+  .doctor-detail-profile-panel .doctor-detail-profile-copy {
+    min-height: 52px;
+  }
+
+  .doctor-detail-profile-panel .doctor-detail-profile-copy h1 {
+    font-size: clamp(21px, 1.65vw, 24px);
+  }
+}
+
