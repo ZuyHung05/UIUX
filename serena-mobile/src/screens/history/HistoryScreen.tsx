@@ -1,4 +1,4 @@
-import { Star } from 'lucide-react-native/icons';
+import { Star } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ConfirmModal } from '../../components/common/ConfirmModal';
