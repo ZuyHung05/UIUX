@@ -245,11 +245,11 @@
 }
 
 .auth-header-logo {
-  width: clamp(110px, 12vh, 130px);
-  height: clamp(110px, 12vh, 130px);
+  width: clamp(132px, 15vh, 164px);
+  height: clamp(132px, 15vh, 164px);
   object-fit: contain;
   display: block;
-  margin: 0;
+  margin: -8px 0 -4px;
 }
 
 .auth-header h1 {

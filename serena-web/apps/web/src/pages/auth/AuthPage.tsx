@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import sereneHealthLogo from '../../assets/icons/serene_health_logo_blue.svg'
+import sereneHealthLogo from '../../assets/icons/serene_health_logo_blue_2.svg'
 import { useToast } from '../../components/ui/Toast'
 import './AuthPage.css'
 

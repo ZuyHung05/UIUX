@@ -28,6 +28,7 @@ import {
 } from "lucide-react-native";
 import Svg, { Path, Rect, G, ClipPath, Defs } from "react-native-svg";
 
+import { SereneHeartLogo } from "../../components/brand/SereneHeartLogo";
 import { COLORS, TYPOGRAPHY } from "../../utils/theme";
 
 type DoctorCard = {
@@ -247,10 +248,9 @@ export default function AppointmentScreen() {
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Image
-            source={require("../../assets/SerenaIcon.png")}
-            style={styles.logo}
-          />
+          <View style={styles.logo}>
+            <SereneHeartLogo size={50} />
+          </View>
           <View>
             <Text style={styles.headerTitle}>Lịch hẹn</Text>
             <Text style={styles.headerSubtitle}>Quản lý lịch khám của bạn</Text>
@@ -261,7 +261,7 @@ export default function AppointmentScreen() {
           hitSlop={10}
           style={styles.bellButton}
         >
-          <Bell size={28} color={COLORS.secondary} />
+          <Bell size={26} color={COLORS.secondary} />
         </Pressable>
       </View>
 
@@ -887,26 +887,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 16,
+    paddingVertical: 15,
     backgroundColor: COLORS.white,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#E5E7EB",
+    borderBottomWidth: 1.27,
+    borderBottomColor: COLORS.border,
   },
   headerLeft: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
   },
   logo: {
-    width: 52,
-    height: 52,
-    resizeMode: "contain",
+    width: 50,
+    height: 50,
+    marginRight: 12,
+    transform: [{ translateY: 2 }],
   },
   headerTitle: {
     ...TYPOGRAPHY.h1,
     color: COLORS.accent,
-    lineHeight: 34,
   },
   headerSubtitle: {
     ...TYPOGRAPHY.caption,
@@ -914,8 +912,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   bellButton: {
-    width: 44,
-    height: 44,
+    padding: 5,
     alignItems: "center",
     justifyContent: "center",
   },
