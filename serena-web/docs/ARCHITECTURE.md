@@ -1,4 +1,4 @@
-# Kiến trúc hệ thống
+# Kiến trúc hệ thống Serene Health
 
 Hệ thống được tổ chức theo hướng monorepo để tách rõ frontend và backend nhưng vẫn giữ
 chung tài liệu, quy ước và cấu hình làm việc nhóm.
