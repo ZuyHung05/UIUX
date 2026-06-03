@@ -22,7 +22,7 @@ import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 export default function HomeScreen() {
     const navigation = useNavigation<any>();
     return (
-        <MainLayout title="Serena Health" subtitle="Serena - Trợ lý y tế thông minh">
+        <MainLayout title="Serena Health" subtitle="Serena - Trợ lý y tế thông minh" isScrollable={false}>
             <TouchableOpacity style={styles.appointmentCard}>
                 <View style={styles.cardHeader}>
                     <View>
@@ -65,32 +65,36 @@ export default function HomeScreen() {
                     title="Tư vấn với AI"
                     subtitle="Tư vấn sức khỏe ban đầu với AI"
                     bgColor="#E3F0FF"
+                    onPress={() => navigation.navigate('Consultation')}
                 />
                 <FeatureItem
                     icon={<Stethoscope color="#B694FF" size={26} />}
                     title="Tư vấn Bác sĩ"
                     subtitle="Kết nối trực tiếp với bác sĩ"
                     bgColor="#F3E8FF"
+                    onPress={() => navigation.navigate('Consultation')}
                 />
                 <FeatureItem
                     icon={<Calendar color="#6BCF6B" size={26} />}
                     title="Đặt lịch khám"
                     subtitle="Đặt lịch hẹn trực tiếp với bác sĩ"
                     bgColor="#E8FFE8"
+                    onPress={() => navigation.navigate('Appointment')}
                 />
                 <FeatureItem
                     icon={<ClipboardList color="#FFA94D" size={26} />}
                     title="Hồ sơ sức khỏe"
                     subtitle="Quản lý thông tin y tế cá nhân"
                     bgColor="#FFF8E8"
+                    onPress={() => navigation.navigate('Profile')}
                 />
             </View>
 
         </MainLayout>
     );
 }
-const FeatureItem = ({ icon, title, subtitle, bgColor }: any) => (
-    <TouchableOpacity style={styles.featureBox}>
+const FeatureItem = ({ icon, title, subtitle, bgColor, onPress }: any) => (
+    <TouchableOpacity style={styles.featureBox} onPress={onPress}>
         <View style={[styles.iconCircle, { backgroundColor: bgColor }]}>
             {icon}
         </View>

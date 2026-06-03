@@ -1,12 +1,21 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Header } from '../../../components/layout/header/Header'
 import { Sidebar } from '../../../components/layout/sidebar/Sidebar'
 import '../../../components/layout/DesktopShell.css'
 import { PrimaryButton } from '../../../components/ui/ActionButton'
+import { DetailModal } from '../../../components/ui/DetailModal'
+import { MetricCard } from '../../../components/ui/MetricCard'
+import {
+  CalendarMetricIcon,
+  CheckMetricIcon,
+  ClockMetricIcon,
+  StarMetricIcon,
+  UsersMetricIcon,
+} from '../../../components/ui/metricIcons'
 import { StatusBadge } from '../../../components/ui/StatusBadge'
 import { managerSidebarConfig } from '../managerSidebarConfig'
-import { doctorToFormValues, formatCurrency, initialDoctorFormValues } from './doctorMockData'
+import { doctorToFormValues, initialDoctorFormValues } from './doctorMockData'
 import { DoctorFormSections } from './DoctorFormSections'
 import { useDoctorsData } from './DoctorsDataContext'
 import type { Doctor, DoctorFormErrors, DoctorFormValues } from './doctorTypes'
@@ -14,11 +23,13 @@ import { hasFormErrors, validateDoctorForm } from './doctorValidation'
 import './DoctorManagement.css'
 
 function DoctorAvatar({ doctor }: { doctor: Doctor }) {
+  void doctor
+
   return (
-    <div className="doctor-detail-avatar" style={{ backgroundColor: doctor.avatarColor }} aria-hidden="true">
+    <div className="doctor-avatar doctor-detail-default-avatar" aria-hidden="true">
       <svg viewBox="0 0 24 24">
         <circle cx="12" cy="8" r="4" />
-        <path d="M4.5 21a7.5 7.5 0 0 1 15 0" />
+        <path d="M5 21a7 7 0 0 1 14 0v1H5v-1Z" />
       </svg>
     </div>
   )
@@ -32,31 +43,113 @@ function StarIcon() {
   )
 }
 
-function InfoItem({ label, value }: { label: string; value: ReactNode }) {
+function BriefcaseIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M9 7V5.8c0-.7.6-1.3 1.3-1.3h3.4c.7 0 1.3.6 1.3 1.3V7" />
+      <path d="M5 7.5h14A2.5 2.5 0 0 1 21.5 10v8A2.5 2.5 0 0 1 19 20.5H5A2.5 2.5 0 0 1 2.5 18v-8A2.5 2.5 0 0 1 5 7.5Z" />
+      <path d="M9 13h6" />
+    </svg>
+  )
+}
+
+function ContactIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M6.5 5.5h11A1.5 1.5 0 0 1 19 7v10a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 17V7a1.5 1.5 0 0 1 1.5-1.5Z" />
+      <path d="m6 8 6 4.5L18 8" />
+    </svg>
+  )
+}
+
+function IdCardIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="4" y="5" width="16" height="14" rx="2" />
+      <circle cx="9" cy="10" r="2" />
+      <path d="M7 15c.6-1.4 1.6-2.1 3-2.1S12.4 13.6 13 15" />
+      <path d="M14.5 10h3M14.5 14h3" />
+    </svg>
+  )
+}
+
+function LocationIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 21s7-5.3 7-12a7 7 0 0 0-14 0c0 6.7 7 12 7 12Z" />
+      <circle cx="12" cy="9" r="2.5" />
+    </svg>
+  )
+}
+
+function SectionHeading({ icon, title }: { icon: ReactNode; title: string }) {
+  return (
+    <h3 className="doctor-detail-section-heading">
+      <span className="doctor-detail-section-icon" aria-hidden="true">
+        {icon}
+      </span>
+      {title}
+    </h3>
+  )
+}
+
+function InfoItem({ label, value, icon }: { label: string; value: ReactNode; icon?: ReactNode }) {
   return (
     <div className="doctor-info-item">
-      <span>{label}</span>
-      <strong>{value}</strong>
+      {icon ? (
+        <span className="doctor-info-icon" aria-hidden="true">
+          {icon}
+        </span>
+      ) : null}
+      <div>
+        <span>{label}</span>
+        <strong>{value}</strong>
+      </div>
     </div>
   )
 }
 
-function ProfileDetailItem({ label, value }: { label: string; value: ReactNode }) {
-  return (
-    <div className="doctor-profile-detail-item">
-      <span>{label}</span>
-      <strong>{value}</strong>
-    </div>
-  )
-}
+function buildTodayShiftCards(doctor: Doctor) {
+  if (!doctor.hasCurrentShift || doctor.schedule.length === 0) {
+    return []
+  }
 
-function DoctorRecordRow({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div className="doctor-emr-record-row">
-      <span className="doctor-emr-record-label">{label}</span>
-      <div className="doctor-emr-record-value">{children}</div>
-    </div>
-  )
+  const firstSchedule = doctor.schedule[0]
+  const normalizedTime = firstSchedule.time.toLowerCase()
+  const hasMorning = /0?7|0?8|0?9|10|11|12/.test(normalizedTime)
+  const hasAfternoon = /13|14|15|16|17|18|19/.test(normalizedTime)
+  const baseAppointments = Math.max(doctor.appointmentsToday, 0)
+  const morningAppointments = Math.ceil(baseAppointments / (hasMorning && hasAfternoon ? 2 : 1))
+  const afternoonAppointments = Math.max(baseAppointments - morningAppointments, 0)
+
+  if (hasMorning && hasAfternoon) {
+    return [
+      {
+        id: 'morning',
+        title: 'Ca sáng',
+        time: '08:00 - 12:00',
+        appointments: morningAppointments,
+        pendingConsults: Math.max(1, Math.floor(morningAppointments / 2)),
+      },
+      {
+        id: 'afternoon',
+        title: 'Ca chiều',
+        time: '13:00 - 17:00',
+        appointments: afternoonAppointments,
+        pendingConsults: Math.max(0, Math.floor(afternoonAppointments / 2)),
+      },
+    ]
+  }
+
+  return [
+    {
+      id: hasAfternoon ? 'afternoon' : 'morning',
+      title: hasAfternoon ? 'Ca chiều' : 'Ca sáng',
+      time: firstSchedule.time,
+      appointments: baseAppointments,
+      pendingConsults: Math.max(0, Math.floor(baseAppointments / 2)),
+    },
+  ]
 }
 
 function DetailNotFound() {
@@ -87,13 +180,7 @@ export function DoctorDetailPage() {
   const [isEditing, setIsEditing] = useState(false)
   const [values, setValues] = useState<DoctorFormValues>(() => (doctor ? doctorToFormValues(doctor) : initialDoctorFormValues))
   const [errors, setErrors] = useState<DoctorFormErrors>({})
-
-  useEffect(() => {
-    if (doctor) {
-      setValues(doctorToFormValues(doctor))
-      setErrors({})
-    }
-  }, [doctor])
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
 
   if (!doctor) {
     return <DetailNotFound />
@@ -122,11 +209,18 @@ export function DoctorDetailPage() {
     setIsEditing(false)
   }
 
+  const completedAppointments = Math.round(doctor.totalConsultations * (doctor.completionRate / 100))
+  const reviewPreview = doctor.reviews.slice(0, 3)
+  const todayShiftCards = buildTodayShiftCards(doctor)
+
   return (
     <div className="desktop-shell-page doctor-management-page">
       <Sidebar config={managerSidebarConfig} />
       <Header profileRole={managerSidebarConfig.profileRole} />
-      <main className="desktop-shell-main doctor-management-main" aria-label="Chi tiết bác sĩ">
+      <main
+        className={`desktop-shell-main doctor-management-main ${isEditing ? 'doctor-edit-main' : 'doctor-detail-main'}`}
+        aria-label="Chi tiết bác sĩ"
+      >
         <section className="doctor-page-content">
           <div className="doctor-detail-actions">
             <PrimaryButton variant="secondary" onClick={() => navigate('/manager/doctors')}>
@@ -168,97 +262,154 @@ export function DoctorDetailPage() {
               <DoctorFormSections values={values} errors={errors} includeAccountSection={false} onChange={updateField} />
             </section>
           ) : (
-            <section className="doctor-emr-view-container">
-              <div className="doctor-emr-view-header-block">
-                <h1 className="doctor-emr-view-title">Hồ sơ bác sĩ chi tiết</h1>
-              </div>
-
-              <section className="doctor-emr-profile-section">
-                <DoctorAvatar doctor={doctor} />
-                <div className="doctor-emr-profile-box">
-                  <ProfileDetailItem label="Mã bác sĩ" value={doctor.id} />
-                  <ProfileDetailItem label="Họ tên" value={doctor.fullName} />
-                  <ProfileDetailItem label="Liên hệ" value={`${doctor.phone} · ${doctor.email}`} />
-                  <ProfileDetailItem label="Trạng thái" value={<StatusBadge status={doctor.status} />} />
-                </div>
-              </section>
-
-              <hr className="doctor-emr-divider" />
-
-              <div className="doctor-emr-two-columns">
-                <article className="doctor-emr-column-card">
-                  <h3 className="doctor-emr-column-title">Thông tin chuyên môn</h3>
-                  <div className="doctor-tab-grid">
-                    <InfoItem label="Chuyên khoa" value={doctor.specialty} />
-                    <InfoItem label="Bằng cấp" value={doctor.degree} />
-                    <InfoItem label="Kinh nghiệm" value={`${doctor.yearsExperience} năm`} />
-                    <InfoItem label="Chi nhánh" value={doctor.branch} />
-                    <InfoItem label="Giá tư vấn" value={formatCurrency(doctor.consultationFee)} />
-                    <InfoItem label="Giá khám" value={formatCurrency(doctor.examinationFee)} />
-                  </div>
-                </article>
-
-                <article className="doctor-emr-column-card">
-                  <h3 className="doctor-emr-column-title">Lịch làm việc cơ bản</h3>
-                  <div className="doctor-emr-history-list">
-                    {doctor.schedule.map((item, index) => (
-                      <div className={index === 0 ? 'doctor-emr-history-item active' : 'doctor-emr-history-item'} key={`${item.day}-${item.time}`}>
-                        <div className="doctor-emr-history-meta">
-                          <span>{item.day}</span>
-                          {index === 0 ? <span className="doctor-emr-active-badge">Đang áp dụng</span> : null}
+            <>
+              <section className="doctor-detail-dashboard">
+                <aside className="doctor-detail-left-column">
+                  <article className="doctor-detail-panel doctor-detail-profile-panel">
+                    <div className="doctor-detail-profile-head">
+                      <DoctorAvatar doctor={doctor} />
+                      <div className="doctor-detail-profile-copy">
+                        <h1>{doctor.fullName}</h1>
+                      </div>
+                    </div>
+                    <div className="doctor-detail-info-list">
+                      <InfoItem label="Mã bác sĩ" value={doctor.id} icon={<IdCardIcon />} />
+                      <InfoItem label="Chuyên khoa" value={doctor.specialty} icon={<BriefcaseIcon />} />
+                      <InfoItem label="Chi nhánh" value={doctor.branch} icon={<LocationIcon />} />
+                      <div className="doctor-info-item doctor-profile-status-item">
+                        <span className="doctor-info-icon" aria-hidden="true">
+                          <ClockMetricIcon />
+                        </span>
+                        <div>
+                          <span>Trạng thái hoạt động</span>
+                          <StatusBadge status={doctor.status} />
                         </div>
-                        <strong>{item.time}</strong>
                       </div>
-                    ))}
-                  </div>
-                </article>
-              </div>
-
-              <section className="doctor-emr-records-section">
-                <DoctorRecordRow label="Tổng quan chuyên môn">
-                  <p>{doctor.shortBio}</p>
-                  <span className="doctor-rating-pill">
-                    <StarIcon />
-                    Đánh giá trung bình {doctor.rating.toFixed(1)}/5
-                  </span>
-                </DoctorRecordRow>
-
-                <DoctorRecordRow label="Lịch hẹn hôm nay">
-                  <div className="doctor-list-panel">
-                    <div className="doctor-list-item">
-                      <strong>{doctor.appointmentsToday} lịch hẹn được ghi nhận trong ngày</strong>
-                      <span>08:30 - Tư vấn trực tuyến · Đã xác nhận</span>
                     </div>
-                    <div className="doctor-list-item">
-                      <strong>10:15 - Khám tại chi nhánh</strong>
-                      <span>Trạng thái: Chờ tiếp nhận</span>
-                    </div>
-                  </div>
-                </DoctorRecordRow>
+                  </article>
 
-                <DoctorRecordRow label="Đánh giá bệnh nhân">
-                  <div className="doctor-list-panel">
-                    {doctor.reviews.map((review) => (
-                      <div className="doctor-list-item" key={review.id}>
-                        <strong>
-                          {review.patientName} · {review.rating.toFixed(1)}/5
-                        </strong>
-                        <p>{review.comment}</p>
+                  <article className="doctor-detail-panel">
+                    <SectionHeading icon={<ContactIcon />} title="Thông tin cá nhân" />
+                    <div className="doctor-detail-info-list">
+                      <InfoItem label="Giới tính" value={doctor.gender} />
+                      <InfoItem label="Ngày sinh" value={doctor.birthday} />
+                      <InfoItem label="Email" value={doctor.email} />
+                      <InfoItem label="Số điện thoại" value={doctor.phone} />
+                    </div>
+                  </article>
+
+                  <article className="doctor-detail-panel">
+                    <SectionHeading icon={<BriefcaseIcon />} title="Thông tin chuyên môn" />
+                    <div className="doctor-detail-info-list">
+                      <InfoItem label="Bằng cấp" value={doctor.degree} />
+                      <InfoItem label="Số năm kinh nghiệm" value={`${doctor.yearsExperience} năm`} />
+                    </div>
+                  </article>
+                </aside>
+
+                <section className="doctor-detail-right-column">
+                  <div className="metrics-grid doctor-detail-stats-grid">
+                    <MetricCard
+                      label="Lịch hẹn hoàn thành"
+                      value={completedAppointments.toLocaleString('vi-VN')}
+                      icon={<CalendarMetricIcon />}
+                      iconClassName="metric-icon-blue"
+                    />
+                    <MetricCard
+                      label="Ca tư vấn hoàn thành"
+                      value={doctor.totalConsultations.toLocaleString('vi-VN')}
+                      icon={<UsersMetricIcon />}
+                      iconClassName="metric-icon-green"
+                    />
+                    <MetricCard
+                      label="Tỉ lệ hoàn thành lịch"
+                      value={`${doctor.completionRate}%`}
+                      icon={<CheckMetricIcon />}
+                      iconClassName="metric-icon-purple"
+                    />
+                    <MetricCard
+                      label="CSAT"
+                      value={`${doctor.csat}/5`}
+                      icon={<StarMetricIcon />}
+                      iconClassName="metric-icon-yellow"
+                    />
+                  </div>
+
+                  <article className="doctor-detail-panel doctor-detail-review-panel">
+                    <div className="doctor-detail-panel-title-row">
+                      <SectionHeading icon={<StarMetricIcon />} title="Đánh giá từ bệnh nhân" />
+                      <button type="button" className="doctor-detail-link-button" onClick={() => setIsReviewModalOpen(true)}>
+                        Xem tất cả
+                      </button>
+                    </div>
+                    <div className="doctor-detail-review-grid">
+                      {reviewPreview.map((review) => (
+                        <div className="doctor-detail-review-item" key={review.id}>
+                          <div>
+                            <strong>{review.patientName}</strong>
+                            <span>
+                              <StarIcon />
+                              {review.rating.toFixed(1)}
+                            </span>
+                          </div>
+                          <p>{review.comment}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </article>
+
+                  <article className="doctor-detail-panel doctor-detail-activity-panel">
+                    <SectionHeading icon={<ClockMetricIcon />} title="Hoạt động hôm nay" />
+                    {todayShiftCards.length > 0 ? (
+                      <div className="doctor-detail-shift-grid">
+                        {todayShiftCards.map((shift) => (
+                          <div className="doctor-detail-shift-card" key={shift.id}>
+                            <div>
+                              <span>{shift.title}</span>
+                              <strong>{shift.time}</strong>
+                            </div>
+                            <dl>
+                              <div>
+                                <dt>Lịch hẹn</dt>
+                                <dd>{shift.appointments}</dd>
+                              </div>
+                              <div>
+                                <dt>Tư vấn chờ</dt>
+                                <dd>{shift.pendingConsults}</dd>
+                              </div>
+                            </dl>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </DoctorRecordRow>
-
-                <DoctorRecordRow label="Thống kê hiệu suất">
-                  <div className="doctor-tab-grid">
-                    <InfoItem label="Tổng ca tư vấn" value={doctor.totalConsultations.toLocaleString('vi-VN')} />
-                    <InfoItem label="Tỉ lệ hoàn thành lịch" value={`${doctor.completionRate}%`} />
-                    <InfoItem label="Điểm CSAT" value={`${doctor.csat}/5`} />
-                    <InfoItem label="Đánh giá trung bình" value={`${doctor.rating.toFixed(1)}/5`} />
-                  </div>
-                </DoctorRecordRow>
+                    ) : (
+                      <p className="doctor-detail-empty-note">Hôm nay bác sĩ không có lịch làm việc.</p>
+                    )}
+                  </article>
+                </section>
               </section>
-            </section>
+
+              <DetailModal
+                open={isReviewModalOpen}
+                onClose={() => setIsReviewModalOpen(false)}
+                title="Đánh giá từ bệnh nhân"
+                subtitle={doctor.fullName}
+              >
+                <div className="doctor-review-modal-list">
+                  {doctor.reviews.map((review) => (
+                    <div className="doctor-detail-review-item" key={review.id}>
+                      <div>
+                        <strong>{review.patientName}</strong>
+                        <span>
+                          <StarIcon />
+                          {review.rating.toFixed(1)}
+                        </span>
+                      </div>
+                      <p>{review.comment}</p>
+                    </div>
+                  ))}
+                </div>
+              </DetailModal>
+            </>
           )}
         </section>
       </main>

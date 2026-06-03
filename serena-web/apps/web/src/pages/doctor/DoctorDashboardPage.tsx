@@ -89,7 +89,17 @@ export function DoctorDashboardPage() {
           />
         )
       case 'Lịch làm việc':
-        return <SchedulePage onBackToDashboard={handleBackToDashboard} />
+        return (
+          <SchedulePage
+            onBackToDashboard={handleBackToDashboard}
+            onViewPatientProfile={(patientId) => {
+              setSelectedPatientId(patientId)
+              setSelectedEncounterDate(null)
+              setReferrerTab('Lịch làm việc')
+              setActiveTab('Danh sách bệnh nhân')
+            }}
+          />
+        )
 
       default:
         return <DashboardTab onNavigateTab={setActiveTab} />

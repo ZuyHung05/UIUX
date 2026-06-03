@@ -163,31 +163,20 @@ export const SCHEDULE_DATA: Record<string, Shift[]> = new Proxy(baseScheduleData
           id: `m-today-morning`,
           title: 'Ca sáng',
           time: '08:00 - 12:00',
-          count: 8,
+          count: 2,
           status: 'Đang diễn ra',
           patients: [
-            { name: 'Nguyễn Thị B', id: '#12345', time: '08:00' },
-            { name: 'Lê Mạnh T', id: '#12344', time: '08:30' },
-            { name: 'Trần Văn C', id: '#12346', time: '09:00' },
-            { name: 'Lê Thị D', id: '#12347', time: '09:30' },
-            { name: 'Phạm Văn E', id: '#12348', time: '10:00' },
-            { name: 'Vũ Văn X', id: '#12399', time: '10:30' },
-            { name: 'Đặng Thị Y', id: '#12400', time: '11:00' },
-            { name: 'Trần Diệu N', id: '#12341', time: '11:30' },
+            { name: 'Phan Văn R', id: 'BN-2026-015', time: '08:00' },
+            { name: 'Trần Văn C', id: 'BN-2026-003', time: '10:00' },
           ],
         },
         {
           id: `m-today-afternoon`,
           title: 'Ca chiều',
           time: '14:00 - 18:00',
-          count: 6,
+          count: 1,
           patients: [
-            { name: 'Hoàng Văn A', id: '#12350', time: '14:00' },
-            { name: 'Lý Thị K', id: '#12351', time: '14:30' },
-            { name: 'Nguyễn Thị Hoa', id: '#12352', time: '15:00' },
-            { name: 'Đỗ Hoàng Quân', id: '#12353', time: '15:30' },
-            { name: 'Trần Văn Tú', id: '#12354', time: '16:00' },
-            { name: 'Lê Văn Khang', id: '#12355', time: '16:30' },
+            { name: 'Dương Thị Hoa', id: 'BN-2026-025', time: '14:00' },
           ],
         },
       ];
@@ -265,9 +254,9 @@ export const SCHEDULE_DATA: Record<string, Shift[]> = new Proxy(baseScheduleData
     const hasAfternoon = !hasMorning || (day + month) % 3 === 0;
 
     const namesPool = [
-      'Nguyễn Văn A', 'Trần Thị B', 'Lê Văn C', 'Phạm Thị D', 'Đỗ Thị F',
-      'Nguyễn Thị Hoa', 'Đỗ Hoàng Quân', 'Trần Văn Tú', 'Lê Văn Khang',
-      'Hoàng Văn An', 'Lý Thị Kim', 'Vũ Văn Xuân', 'Đặng Thị Yến', 'Trần Diệu Ngân'
+      'Nguyễn Văn A', 'Trần Thu Thảo', 'Lê Văn C', 'Phạm Thị D', 'Đỗ Thị F',
+      'Nguyễn Hoàng G', 'Vũ Thị H', 'Hoàng Văn I', 'Phạm Minh K',
+      'Đặng Thị L', 'Bùi Văn M', 'Ngô Thị N', 'Phan Văn R', 'Dương Thị Hoa'
     ];
 
     const reasonsPool = [

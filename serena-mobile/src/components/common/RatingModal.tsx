@@ -23,7 +23,6 @@ interface RatingModalProps {
 export const RatingModal = ({ isVisible, onClose, onSubmit }: RatingModalProps) => {
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
-
     useEffect(() => {
         if (isVisible) {
             setRating(0);
@@ -32,7 +31,7 @@ export const RatingModal = ({ isVisible, onClose, onSubmit }: RatingModalProps) 
     }, [isVisible]);
 
     const isReady = rating > 0;
-
+    if (!isVisible) return null;
     return (
         <Modal
             visible={isVisible}

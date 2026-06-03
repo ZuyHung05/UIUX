@@ -1,7 +1,7 @@
 .desktop-shell-page {
   --sidebar-width: 212px;
   --surface-gap: 6px;
-  --header-height: 60px;
+  --header-height: clamp(50px, 5.6vh, 52px);
   min-height: 100vh;
   background: #fafafa;
   color: #244a6b;
