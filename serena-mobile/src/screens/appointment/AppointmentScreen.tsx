@@ -8,6 +8,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
   Modal,
@@ -26,6 +27,7 @@ import {
   Phone,
   Plus,
   RefreshCw,
+  Search,
   Trash2,
   X,
 } from "lucide-react-native";
@@ -204,7 +206,7 @@ const timeSlots: TimeSlot[] = [
 
 export default function AppointmentScreen() {
   const [bookingVisible, setBookingVisible] = React.useState(false);
-  const [confirmVisible, setConfirmVisible] = React.useState(false);
+  const [paymentVisible, setPaymentVisible] = React.useState(false);
   const [addressVisible, setAddressVisible] = React.useState(false);
   const [contactVisible, setContactVisible] = React.useState(false);
   const [qrVisible, setQrVisible] = React.useState(false);
@@ -212,8 +214,11 @@ export default function AppointmentScreen() {
   const [cancelConfirmVisible, setCancelConfirmVisible] = React.useState(false);
   const [selectedDateIndex, setSelectedDateIndex] = React.useState(0);
   const [selectedTimeIndex, setSelectedTimeIndex] = React.useState(1);
-  const [selectedDoctor, setSelectedDoctor] = React.useState<DoctorCard>(doctors[0]);
+  const [selectedDoctor, setSelectedDoctor] = React.useState<DoctorCard | null>(null);
   const [tempSelectedDoctor, setTempSelectedDoctor] = React.useState<DoctorCard | null>(null);
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [sortDistance, setSortDistance] = React.useState(false);
+  const [filterToday, setFilterToday] = React.useState(false);
   const [selectedInfo, setSelectedInfo] = React.useState<{ name: string; specialty: string } | null>(null);
   const [qrAppointment, setQrAppointment] = React.useState<Appointment | null>(null);
   const [upcomingAppointments, setUpcomingAppointments] = React.useState<Appointment[]>(initialAppointments);
@@ -229,6 +234,7 @@ export default function AppointmentScreen() {
   const handleOpenBooking = () => {
     setIsEditMode(false);
     setEditingIndex(null);
+    setSelectedDoctor(null);
     setBookingVisible(true);
   };
 
@@ -242,13 +248,13 @@ export default function AppointmentScreen() {
     setContactVisible(true);
   };
 
-  const handleRequestConfirm = () => {
+  const handleRequestPayment = () => {
     setBookingVisible(false);
-    setConfirmVisible(true);
+    setPaymentVisible(true);
   };
 
-  const handleCancelConfirm = () => {
-    setConfirmVisible(false);
+  const handleCancelPayment = () => {
+    setPaymentVisible(false);
     setBookingVisible(true);
   };
 
@@ -273,8 +279,34 @@ export default function AppointmentScreen() {
     }
     setDoctorListVisible(false);
     setTempSelectedDoctor(null);
+    setSearchQuery("");
+    setSortDistance(false);
+    setFilterToday(false);
     setBookingVisible(true);
   };
+
+  const filteredDoctors = React.useMemo(() => {
+    let list = [...doctors];
+    if (searchQuery) {
+      const lowerQ = searchQuery.toLowerCase();
+      list = list.filter(
+        (d) =>
+          d.name.toLowerCase().includes(lowerQ) ||
+          d.specialty.toLowerCase().includes(lowerQ)
+      );
+    }
+    if (filterToday) {
+      // Mock filter for 'Có ca rảnh trong hôm nay' (using highlight as a mock)
+      list = list.filter((d) => d.highlight);
+    }
+    if (sortDistance) {
+      list.sort(
+        (a, b) =>
+          parseFloat(a.distance ?? "0") - parseFloat(b.distance ?? "0")
+      );
+    }
+    return list;
+  }, [searchQuery, filterToday, sortDistance]);
 
   // Edit appointment
   const handleEditAppointment = (idx: number) => {
@@ -348,7 +380,7 @@ export default function AppointmentScreen() {
         setUpcomingAppointments((prev) => [updatedAppointment, ...prev]);
       }
     }
-    setConfirmVisible(false);
+    setPaymentVisible(false);
     setBookingVisible(false);
     setIsEditMode(false);
     setEditingIndex(null);
@@ -422,14 +454,6 @@ export default function AppointmentScreen() {
                 {/* Dropdown menu */}
                 {dropdownIndex === idx && (
                   <View style={styles.dropdown}>
-                    <TouchableOpacity
-                      style={styles.dropdownItem}
-                      onPress={() => handleEditAppointment(idx)}
-                    >
-                      <Edit3 size={16} color="#1E3A52" />
-                      <Text style={styles.dropdownText}>Chỉnh sửa lịch</Text>
-                    </TouchableOpacity>
-                    <View style={styles.dropdownDivider} />
                     <TouchableOpacity
                       style={styles.dropdownItem}
                       onPress={() => handleRequestCancel(idx)}
@@ -506,8 +530,7 @@ export default function AppointmentScreen() {
         onPress={handleOpenBooking}
         activeOpacity={0.85}
       >
-        <Plus size={24} color="#FFFFFF" />
-        <Text style={styles.ctaText}>Đặt lịch hẹn khám</Text>
+        <Plus size={32} color="#FFFFFF" />
       </TouchableOpacity>
 
       {/* ===== BOOKING / EDIT MODAL ===== */}
@@ -540,29 +563,39 @@ export default function AppointmentScreen() {
             </View>
 
             {/* Doctor card - change button hidden in edit mode */}
-            <View style={styles.selectedDoctorCard}>
-              {getAvatarSource(selectedDoctor?.name ?? "") ? (
-                <Image source={getAvatarSource(selectedDoctor?.name ?? "")!} style={styles.modalAvatarImage} />
-              ) : (
-                <View style={styles.modalAvatar} />
-              )}
-              <View style={styles.selectedDoctorMeta}>
-                <Text style={styles.modalDoctorName}>{selectedDoctor?.name ?? "BS. Kiều Thanh N"}</Text>
-                <Text style={styles.modalDoctorSpecialty}>{selectedDoctor?.specialty ?? "Khoa Da liễu"}</Text>
+            {selectedDoctor ? (
+              <View style={styles.selectedDoctorCard}>
+                {getAvatarSource(selectedDoctor.name) ? (
+                  <Image source={getAvatarSource(selectedDoctor.name)!} style={styles.modalAvatarImage} />
+                ) : (
+                  <View style={styles.modalAvatar} />
+                )}
+                <View style={styles.selectedDoctorMeta}>
+                  <Text style={styles.modalDoctorName}>{selectedDoctor.name}</Text>
+                  <Text style={styles.modalDoctorSpecialty}>{selectedDoctor.specialty}</Text>
+                </View>
+                {!isEditMode && (
+                  <TouchableOpacity
+                    style={styles.changeDoctorBtn}
+                    onPress={handleOpenDoctorList}
+                    hitSlop={8}
+                  >
+                    <RefreshCw size={14} color="#5B9DFF" />
+                    <Text style={styles.changeDoctorText}>Đổi</Text>
+                  </TouchableOpacity>
+                )}
               </View>
-              {!isEditMode && (
-                <TouchableOpacity
-                  style={styles.changeDoctorBtn}
-                  onPress={handleOpenDoctorList}
-                  hitSlop={8}
-                >
-                  <RefreshCw size={14} color="#5B9DFF" />
-                  <Text style={styles.changeDoctorText}>Đổi</Text>
-                </TouchableOpacity>
-              )}
-            </View>
+            ) : (
+              <TouchableOpacity style={styles.emptyDoctorCard} onPress={handleOpenDoctorList} activeOpacity={0.8}>
+                <View style={styles.emptyDoctorIconWrap}>
+                  <Plus size={24} color="#5B9DFF" />
+                </View>
+                <Text style={styles.emptyDoctorText}>Chọn bác sĩ</Text>
+              </TouchableOpacity>
+            )}
 
-            <View style={styles.monthRow}>
+            <View style={{ opacity: selectedDoctor ? 1 : 0.4 }} pointerEvents={selectedDoctor ? "auto" : "none"}>
+              <View style={styles.monthRow}>
               <TouchableOpacity style={styles.monthNav} hitSlop={8}>
                 <ChevronLeft size={18} color="#1E3A52" />
               </TouchableOpacity>
@@ -623,77 +656,53 @@ export default function AppointmentScreen() {
                 </Pressable>
               ))}
             </View>
+            </View>
 
             <TouchableOpacity
-              style={styles.confirmButton}
-              onPress={handleRequestConfirm}
+              style={[styles.confirmButton, !selectedDoctor && { backgroundColor: "#94A3B8" }]}
+              onPress={handleRequestPayment}
+              disabled={!selectedDoctor}
             >
-              <Text style={styles.confirmButtonText}>
-                {isEditMode ? "Cập nhật lịch" : "Đặt lịch"}
-              </Text>
+              <Text style={styles.confirmButtonText}>Thanh toán</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      {/* ===== CONFIRM BOOKING / EDIT MODAL ===== */}
+      {/* ===== PAYMENT MODAL ===== */}
       <Modal
-        visible={confirmVisible}
+        visible={paymentVisible}
         transparent
         animationType="fade"
-        onRequestClose={handleCancelConfirm}
+        onRequestClose={handleCancelPayment}
       >
         <View style={styles.confirmOverlay}>
           <Pressable
             style={StyleSheet.absoluteFill}
-            onPress={handleCancelConfirm}
+            onPress={handleCancelPayment}
           />
-          <View style={styles.confirmCard}>
-            <View style={styles.confirmHeaderRow}>
-              <View style={styles.confirmIconWrap}>
-                <CalendarConfirmIcon />
-              </View>
-              <Text style={styles.confirmTitle}>
-                {isEditMode ? "Xác nhận chỉnh sửa" : "Xác nhận đặt lịch"}
-              </Text>
+          <View style={styles.paymentCard}>
+            <View style={styles.paymentHeaderRow}>
+              <Text style={styles.paymentTitle}>Thanh toán tư vấn</Text>
+              <TouchableOpacity onPress={handleCancelPayment} hitSlop={10}>
+                <X size={20} color="#1E293B" />
+              </TouchableOpacity>
             </View>
-            <Text style={styles.confirmDesc}>
-              {isEditMode ? (
-                <>
-                  Bạn có chắc chắn muốn chỉnh sửa lịch khám với{" "}
-                  <Text style={styles.confirmBold}>{getConfirmText().doctorName}</Text>{" "}
-                  sang lúc{" "}
-                  <Text style={styles.confirmHighlight}>{getConfirmText().time}</Text>{" "}
-                  ngày{" "}
-                  <Text style={styles.confirmBold}>{getConfirmText().date}</Text>{" "}
-                  không?
-                </>
-              ) : (
-                <>
-                  Bạn có chắc chắn muốn đặt lịch khám với{" "}
-                  <Text style={styles.confirmBold}>{getConfirmText().doctorName}</Text>{" "}
-                  vào lúc{" "}
-                  <Text style={styles.confirmHighlight}>{getConfirmText().time}</Text>{" "}
-                  ngày{" "}
-                  <Text style={styles.confirmBold}>{getConfirmText().date}</Text>{" "}
-                  không?
-                </>
-              )}
+
+            <View style={styles.paymentQrWrap}>
+              <QrCodePattern data="PAYMENT_CONSULTATION" />
+            </View>
+
+            <Text style={styles.paymentDesc}>
+              Vui lòng quét mã QR để thanh toán chi phí khám (150.000đ)
             </Text>
-            <View style={styles.confirmActions}>
-              <TouchableOpacity
-                style={styles.confirmCancelBtn}
-                onPress={handleCancelConfirm}
-              >
-                <Text style={styles.confirmCancelText}>Hủy</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.confirmAcceptBtn}
-                onPress={handleConfirmBooking}
-              >
-                <Text style={styles.confirmAcceptText}>Xác nhận</Text>
-              </TouchableOpacity>
-            </View>
+
+            <TouchableOpacity
+              style={styles.paymentBtn}
+              onPress={handleConfirmBooking}
+            >
+              <Text style={styles.paymentBtnText}>Xác nhận đã chuyển khoản</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -742,36 +751,49 @@ export default function AppointmentScreen() {
       {/* ===== DOCTOR LIST MODAL ===== */}
       <Modal
         visible={doctorListVisible}
-        transparent
         animationType="slide"
         onRequestClose={handleCancelDoctorList}
       >
-        <View style={styles.modalOverlay}>
-          <Pressable
-            style={StyleSheet.absoluteFill}
-            onPress={handleCancelDoctorList}
-          />
-          <View style={[styles.sheet, { maxHeight: SCREEN_HEIGHT * 0.75 }]}>
-            <View style={styles.sheetHandle} />
-            <View style={styles.sheetHeader}>
-              <Text style={styles.sheetTitle}>Chọn bác sĩ</Text>
-              <TouchableOpacity
-                onPress={handleCancelDoctorList}
-                style={styles.closeButton}
-                hitSlop={10}
-              >
-                <X size={22} color="#1E293B" />
-              </TouchableOpacity>
-            </View>
+        <View style={styles.fullScreenModal}>
+          <View style={styles.fullScreenHeader}>
+            <TouchableOpacity onPress={handleCancelDoctorList} hitSlop={10} style={styles.closeButton}>
+              <ChevronLeft size={24} color="#1E3A52" />
+            </TouchableOpacity>
+            <Text style={styles.fullScreenTitle}>Chọn bác sĩ</Text>
+            <View style={{ width: 24 }} />
+          </View>
 
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              style={{ maxHeight: SCREEN_HEIGHT * 0.48 }}
+          <View style={styles.searchContainer}>
+            <Search size={20} color="#94A3B8" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Tìm kiếm bác sĩ, chuyên khoa..."
+              placeholderTextColor="#94A3B8"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+          </View>
+
+          <View style={styles.filterRow}>
+            <TouchableOpacity 
+              style={[styles.filterChip, sortDistance && styles.filterChipActive]}
+              onPress={() => setSortDistance(!sortDistance)}
             >
-              {doctors.map((doctor) => {
-                const isSelected = tempSelectedDoctor
-                  ? tempSelectedDoctor.name === doctor.name
-                  : selectedDoctor.name === doctor.name;
+              <Text style={[styles.filterChipText, sortDistance && styles.filterChipTextActive]}>Gần nhất</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.filterChip, filterToday && styles.filterChipActive]}
+              onPress={() => setFilterToday(!filterToday)}
+            >
+              <Text style={[styles.filterChipText, filterToday && styles.filterChipTextActive]}>Có ca rảnh hôm nay</Text>
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView showsVerticalScrollIndicator={false} style={styles.doctorListScroll}>
+            {filteredDoctors.map((doctor) => {
+              const isSelected = tempSelectedDoctor
+                ? tempSelectedDoctor.name === doctor.name
+                : selectedDoctor?.name === doctor.name;
                 return (
                   <Pressable
                     key={doctor.name}
@@ -817,7 +839,7 @@ export default function AppointmentScreen() {
               })}
             </ScrollView>
 
-            <View style={styles.doctorListActions}>
+            <View style={styles.doctorListActionsFixed}>
               <TouchableOpacity
                 style={styles.doctorListCancelBtn}
                 onPress={handleCancelDoctorList}
@@ -836,7 +858,6 @@ export default function AppointmentScreen() {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
       </Modal>
 
       {/* ===== ADDRESS MODAL ===== */}
@@ -1343,14 +1364,12 @@ const styles = StyleSheet.create({
   floatingCta: {
     position: "absolute",
     bottom: 24,
-    alignSelf: "center",
-    flexDirection: "row",
+    right: 24,
     alignItems: "center",
     justifyContent: "center",
-    gap: 12,
-    height: 56,
-    paddingHorizontal: 32,
-    borderRadius: 999,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: "#3F83F8",
     shadowColor: "#3F83F8",
     shadowOpacity: 0.4,
@@ -1571,6 +1590,64 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: 17,
   },
+  /* ===== PAYMENT MODAL ===== */
+  paymentCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 24,
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 24,
+    alignItems: "center",
+    width: "100%",
+    maxWidth: 340,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
+  },
+  paymentHeaderRow: {
+    flexDirection: "row" as const,
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    marginBottom: 20,
+  },
+  paymentTitle: {
+    ...TYPOGRAPHY.h2,
+    color: "#1E3A52",
+    fontSize: 20,
+  },
+  paymentQrWrap: {
+    backgroundColor: "#FFFFFF",
+    padding: 16,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    marginBottom: 20,
+  },
+  paymentDesc: {
+    ...TYPOGRAPHY.body,
+    color: "#1E3A52",
+    fontSize: 14,
+    lineHeight: 22,
+    textAlign: "center",
+    marginBottom: 24,
+    paddingHorizontal: 10,
+  },
+  paymentBtn: {
+    width: "100%",
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "#3F83F8",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  paymentBtnText: {
+    ...TYPOGRAPHY.button,
+    color: "#FFFFFF",
+    fontSize: 16,
+  },
   confirmOverlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.45)",
@@ -1666,6 +1743,117 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.button,
     color: "#FFFFFF",
     fontSize: 16,
+  },
+  /* ===== EMPTY DOCTOR CARD ===== */
+  emptyDoctorCard: {
+    flexDirection: "row" as const,
+    alignItems: "center",
+    backgroundColor: "#F8FAFC",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1.5,
+    borderColor: "#E2E8F0",
+    borderStyle: "dashed" as const,
+    gap: 14,
+  },
+  emptyDoctorIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: "rgba(91, 157, 255, 0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  emptyDoctorText: {
+    ...TYPOGRAPHY.h2,
+    color: "#5B9DFF",
+    fontSize: 16,
+  },
+
+  /* ===== FULL SCREEN MODAL ===== */
+  fullScreenModal: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+  },
+  fullScreenHeader: {
+    flexDirection: "row" as const,
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingTop: 54,
+    paddingBottom: 16,
+    backgroundColor: COLORS.white,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F1F5F9",
+  },
+  fullScreenTitle: {
+    ...TYPOGRAPHY.h2,
+    color: "#1E3A52",
+    fontSize: 18,
+  },
+  searchContainer: {
+    flexDirection: "row" as const,
+    alignItems: "center",
+    backgroundColor: "#F8FAFC",
+    marginHorizontal: 16,
+    marginTop: 16,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    height: 44,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    ...TYPOGRAPHY.body,
+    fontSize: 15,
+    color: "#1E3A52",
+    height: "100%",
+  },
+  filterRow: {
+    flexDirection: "row" as const,
+    paddingHorizontal: 16,
+    marginTop: 12,
+    marginBottom: 16,
+    gap: 10,
+  },
+  filterChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: "#F1F5F9",
+    borderWidth: 1,
+    borderColor: "transparent",
+  },
+  filterChipActive: {
+    backgroundColor: "rgba(91, 157, 255, 0.1)",
+    borderColor: "#5B9DFF",
+  },
+  filterChipText: {
+    ...TYPOGRAPHY.body,
+    fontSize: 13,
+    color: "#64748B",
+  },
+  filterChipTextActive: {
+    color: "#5B9DFF",
+    fontWeight: "600" as const,
+  },
+  doctorListScroll: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+  doctorListActionsFixed: {
+    flexDirection: "row" as const,
+    padding: 16,
+    paddingBottom: 34,
+    backgroundColor: COLORS.white,
+    borderTopWidth: 1,
+    borderTopColor: "#F1F5F9",
+    gap: 12,
   },
 
   /* ===== DOCTOR LIST MODAL ===== */
