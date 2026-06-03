@@ -10,9 +10,10 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { Mail, ShieldCheck, UserRound } from 'lucide-react-native';
-import Svg, { Polygon } from 'react-native-svg';
+import { Eye, EyeOff, Lock, Mail, ShieldCheck, UserRound } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { SereneHeartLogo } from '../../components/brand/SereneHeartLogo';
+import { COLORS } from '../../utils/theme';
 
 type AuthMode = 'login' | 'register';
 
@@ -66,7 +67,7 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
                         />
 
                         <AuthField
-                            icon="shield"
+                            icon="lock"
                             label="Mật khẩu"
                             placeholder="Nhập mật khẩu"
                             secureTextEntry
@@ -75,7 +76,7 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
 
                         {isRegister ? (
                             <AuthField
-                                icon="shield"
+                                icon="lock"
                                 label="Nhập lại mật khẩu"
                                 placeholder="Nhập lại mật khẩu"
                                 secureTextEntry
@@ -134,7 +135,7 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
 }
 
 interface AuthFieldProps {
-    icon: 'user' | 'mail' | 'shield';
+    icon: 'user' | 'mail' | 'shield' | 'lock';
     label: string;
     placeholder: string;
     secureTextEntry?: boolean;
@@ -150,21 +151,43 @@ function AuthField({
     keyboardType = 'default',
     textContentType,
 }: AuthFieldProps) {
-    const Icon = icon === 'user' ? UserRound : icon === 'mail' ? Mail : ShieldCheck;
+    const [showPassword, setShowPassword] = useState(false);
+    const isPasswordField = secureTextEntry;
+    const Icon =
+        icon === 'user'
+            ? UserRound
+            : icon === 'mail'
+            ? Mail
+            : icon === 'lock'
+            ? Lock
+            : ShieldCheck;
 
     return (
         <View style={styles.fieldGroup}>
             <Text style={styles.label}>{label}</Text>
             <View style={styles.inputShell}>
-                <Icon size={20} color="#1E4671" strokeWidth={2.2} style={styles.inputIcon} />
+                <Icon size={20} color="rgba(36, 74, 107, 0.45)" strokeWidth={2.2} style={styles.inputIcon} />
                 <TextInput
                     placeholder={placeholder}
-                    placeholderTextColor="#D2D5DB"
-                    secureTextEntry={secureTextEntry}
+                    placeholderTextColor="#A0AEC0"
+                    secureTextEntry={isPasswordField && !showPassword}
                     keyboardType={keyboardType}
                     textContentType={textContentType}
-                    style={styles.input}
+                    style={[styles.input, isPasswordField && styles.passwordInput]}
                 />
+                {isPasswordField ? (
+                    <Pressable
+                        onPress={() => setShowPassword(!showPassword)}
+                        style={styles.passwordToggle}
+                        hitSlop={8}
+                    >
+                        {showPassword ? (
+                            <EyeOff size={20} color="rgba(36, 74, 107, 0.55)" strokeWidth={2.2} />
+                        ) : (
+                            <Eye size={20} color="rgba(36, 74, 107, 0.55)" strokeWidth={2.2} />
+                        )}
+                    </Pressable>
+                ) : null}
             </View>
         </View>
     );
@@ -172,18 +195,16 @@ function AuthField({
 
 function SerenaMark() {
     return (
-        <Svg width={100} height={100} viewBox="0 0 100 100" style={styles.logo}>
-            <Polygon points="29.2,0 58.4,50 29.2,100 0,50" fill="#4E9FFF" opacity={0.6} />
-            <Polygon points="50,0 79.2,50 50,100 20.8,50" fill="#8DC1FF" opacity={0.6} />
-            <Polygon points="70.8,0 100,50 70.8,100 41.6,50" fill="#4E9FFF" opacity={0.6} />
-        </Svg>
+        <View style={styles.logo}>
+            <SereneHeartLogo size={132} />
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.background,
     },
     keyboardView: {
         flex: 1,
@@ -206,10 +227,13 @@ const styles = StyleSheet.create({
         maxWidth: 417,
     },
     logo: {
-        marginBottom: 27,
+        width: 132,
+        height: 132,
+        marginBottom: 16,
+        transform: [{ translateY: 3 }],
     },
     title: {
-        color: '#244A6B',
+        color: COLORS.accent,
         fontSize: 24,
         lineHeight: 28,
         fontWeight: '700',
@@ -217,7 +241,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     subtitle: {
-        color: '#6B7280',
+        color: '#6C8197',
         fontSize: 14,
         lineHeight: 20,
         textAlign: 'center',
@@ -226,10 +250,12 @@ const styles = StyleSheet.create({
     formPanel: {
         width: '100%',
         maxWidth: 417,
-        backgroundColor: '#F5F9F9',
+        backgroundColor: COLORS.white,
         borderRadius: 28,
         paddingHorizontal: 32,
         marginTop: 32,
+        borderWidth: 1,
+        borderColor: 'rgba(36, 74, 107, 0.08)',
     },
     registerPanel: {
         minHeight: 674,
@@ -246,7 +272,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     label: {
-        color: '#244A6B',
+        color: COLORS.accent,
         fontSize: 16,
         lineHeight: 24,
         fontWeight: '500',
@@ -256,9 +282,9 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 69,
         borderRadius: 28,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.white,
         borderWidth: 1,
-        borderColor: '#F1F3F7',
+        borderColor: 'rgba(36, 74, 107, 0.15)',
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 16,
@@ -270,14 +296,25 @@ const styles = StyleSheet.create({
     },
     inputIcon: {
         marginRight: 12,
-        opacity: 0.5,
+        opacity: 1,
     },
     input: {
         flex: 1,
-        color: '#244A6B',
+        color: COLORS.text,
         fontSize: 16,
         lineHeight: 19,
         paddingVertical: 0,
+    },
+    passwordInput: {
+        paddingRight: 40,
+    },
+    passwordToggle: {
+        position: 'absolute',
+        right: 16,
+        height: 24,
+        width: 24,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     loginOptions: {
         flexDirection: 'row',
@@ -299,44 +336,44 @@ const styles = StyleSheet.create({
         height: 20,
         borderRadius: 2.5,
         borderWidth: 1,
-        borderColor: '#767676',
-        backgroundColor: '#FFFFFF',
+        borderColor: 'rgba(36, 74, 107, 0.35)',
+        backgroundColor: COLORS.white,
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: 12,
     },
     checkboxChecked: {
-        borderColor: '#5B9BFA',
+        borderColor: COLORS.accent,
+        backgroundColor: COLORS.accent,
     },
     checkboxDot: {
         width: 12,
         height: 12,
         borderRadius: 2,
-        backgroundColor: '#5B9BFA',
+        backgroundColor: COLORS.white,
     },
     rememberText: {
-        color: '#244A6B',
+        color: COLORS.subtext,
         fontSize: 16,
         lineHeight: 24,
     },
     forgotText: {
-        color: '#718096',
+        color: COLORS.subtext,
         fontSize: 16,
         lineHeight: 24,
     },
     primaryButton: {
-        alignSelf: 'center',
-        width: 200,
-        height: 48,
-        borderRadius: 28,
-        backgroundColor: '#5B9DFF',
+        width: '100%',
+        height: 52,
+        borderRadius: 999,
+        backgroundColor: COLORS.accent,
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 8,
     },
     primaryButtonText: {
-        color: '#FFFFFF',
-        fontSize: 20,
+        color: COLORS.white,
+        fontSize: 18,
         lineHeight: 24,
         fontWeight: '700',
     },
@@ -356,7 +393,7 @@ const styles = StyleSheet.create({
         marginTop: 28,
     },
     switchMuted: {
-        color: '#BAB7CF',
+        color: '#64748B',
         fontSize: 16,
         lineHeight: 16,
     },

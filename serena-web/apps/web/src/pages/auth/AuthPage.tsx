@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import sereneHealthLogo from '../../assets/icons/serene_health_logo_blue.svg'
+import sereneHealthLogo from '../../assets/icons/serene_health_logo_blue_2.svg'
 import { useToast } from '../../components/ui/Toast'
 import './AuthPage.css'
 
 type AuthMode = 'login' | 'forgot' | 'signup' | 'forgotLoading' | 'forgotSuccess'
-type AccountRole = 'doctor' | 'manager'
+type AccountRole = 'doctor' | 'manager' | 'expert'
 
 type Account = {
   email: string
@@ -54,6 +54,13 @@ const initialAccounts: Account[] = [
     fullName: 'Trần Hoài Nam',
     password: DEFAULT_PASSWORD,
     role: 'manager',
+  },
+  {
+    email: 'expert@gmail.com',
+    phone: '0900000003',
+    fullName: 'Chuyên gia',
+    password: DEFAULT_PASSWORD,
+    role: 'expert',
   },
 ]
 
@@ -365,7 +372,19 @@ export function AuthPage() {
     setLoginStatus('')
     showToast('Đăng nhập thành công!')
     window.setTimeout(() => {
-      navigate(account.role === 'doctor' ? '/doctor/dashboard' : '/manager/dashboard')
+      if (account.role === 'doctor') {
+        navigate('/doctor/dashboard')
+        return
+      }
+
+      if (account.role === 'expert') {
+        window.localStorage.removeItem('serena-expert-workflow-state-v1')
+        window.sessionStorage.removeItem('serena-expert-flash-message')
+        navigate('/dashboard')
+        return
+      }
+
+      navigate('/manager/dashboard')
     }, 650)
   }
 

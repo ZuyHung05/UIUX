@@ -10,6 +10,19 @@ import { DoctorNewPage } from './pages/manager/doctors/DoctorNewPage'
 import { DoctorsDataProvider } from './pages/manager/doctors/DoctorsDataContext'
 import { ManagerServicesPricingPage } from './pages/manager/services-pricing/ManagerServicesPricingPage'
 import { ManagerScheduleAssignmentPage } from './pages/manager/schedules/ManagerScheduleAssignmentPage'
+import {
+  ConversationReviewDetailPage,
+  ConversationReviewPage,
+  ErrorDetailPage,
+  ExpertDashboardPage,
+  FlaggedErrorsPage,
+  KnowledgeBasePage,
+  KnowledgeFormPage,
+  ProcessingHistoryDetailPage,
+  ProcessingHistoryPage,
+  TrainingDataPage,
+  TrainingFormPage,
+} from './pages/expert/ExpertPages'
 
 function App() {
   return (
@@ -28,6 +41,18 @@ function App() {
 
         <Route path="/manager/chatbot-monitor" element={<ChatbotMonitorPage />} />
         <Route path="/doctor/dashboard" element={<DoctorDashboardPage />} />
+        <Route path="/dashboard" element={<ExpertDashboardPage />} />
+        <Route path="/conversations" element={<ConversationReviewPage />} />
+        <Route path="/conversations/:id/review" element={<ConversationReviewDetailPage />} />
+        <Route path="/errors" element={<FlaggedErrorsPage />} />
+        <Route path="/errors/:id" element={<ErrorDetailPage />} />
+        <Route path="/processing-history" element={<ProcessingHistoryPage />} />
+        <Route path="/processing-history/:id" element={<ProcessingHistoryDetailPage />} />
+        <Route path="/knowledge" element={<KnowledgeBasePage />} />
+        <Route path="/knowledge/new" element={<KnowledgeFormPage />} />
+        <Route path="/knowledge/:id/edit" element={<KnowledgeFormPage />} />
+        <Route path="/training-data" element={<TrainingDataPage />} />
+        <Route path="/training-data/new" element={<TrainingFormPage />} />
         {/* Fallback route */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
