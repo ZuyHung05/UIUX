@@ -199,7 +199,7 @@ export default function ConsultationScreen({ navigation }: any) {
                 data={messages}
                 renderItem={renderMessage}
                 keyExtractor={item => item.id}
-                contentContainerStyle={{ padding: 15 }}
+                contentContainerStyle={{ padding: 0 }}
                 showsVerticalScrollIndicator={false}
             />
 

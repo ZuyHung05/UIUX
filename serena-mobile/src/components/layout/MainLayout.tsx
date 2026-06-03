@@ -53,7 +53,8 @@ export const MainLayout = ({
                     style={[
                         styles.content,
                         { backgroundColor },
-                        commonPaddingStyles
+                        commonPaddingStyles,
+
                     ]}
                 >
                     {children}
