@@ -663,6 +663,55 @@
   color: #94A3B8;
 }
 
+.preconsult-ai-summary {
+  width: min(560px, calc(100% - 48px));
+  margin: 24px auto 0;
+  padding: 18px 20px;
+  border: 1px solid #BBF7D0;
+  border-radius: 18px;
+  background: #F0FDF4;
+  color: #14532D;
+  box-shadow: 0 12px 24px rgba(22, 163, 74, 0.08);
+}
+
+.preconsult-ai-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #DCFCE7;
+  color: #15803D;
+  font-size: 11.5px;
+  font-weight: 850;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.preconsult-ai-summary p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 700;
+}
+
+.preconsult-ai-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.preconsult-ai-meta span {
+  padding: 5px 9px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(34, 197, 94, 0.26);
+  color: #166534;
+  font-size: 12px;
+  font-weight: 750;
+}
+
 /* Chat Footer (New / Start Consultation) */
 .chat-footer-new {
   padding: 24px 20px 32px 20px;
@@ -783,7 +832,8 @@
   border: 1px solid #E2E8F0;
 }
 
-.chat-input-pill-wrapper input {
+.chat-input-pill-wrapper input,
+.chat-input-pill-wrapper textarea {
   flex: 1;
   border: none !important;
   background: transparent !important;
@@ -791,6 +841,16 @@
   font-size: 13.5px;
   outline: none;
   color: #1E293B;
+}
+
+.chat-input-pill-wrapper textarea {
+  min-height: 38px;
+  max-height: 104px;
+  line-height: 1.45;
+  resize: none;
+  overflow-y: auto;
+  font-family: inherit;
+  white-space: pre-wrap;
 }
 
 .input-icon-btn {
@@ -2064,4 +2124,409 @@
   .live-consultation-container {
     grid-template-columns: 252px minmax(0, 1fr) 306px;
   }
+}
+
+/* Doctor live consultation refinements */
+.consultation-sidebar-pane,
+.consultation-sidebar,
+.clinical-workspace-sidebar {
+  background: #FFFFFF;
+}
+
+.consultation-card,
+.case-queue-card,
+.chat-header-card,
+.workspace-accordion-section,
+.info-item-card,
+.chatbot-modal-panel {
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.chat-header-card {
+  border: 1px solid #E6EFFA;
+  box-shadow: 0 6px 18px rgba(36, 74, 107, 0.04);
+}
+
+.chat-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chatbot-summary-header-btn {
+  background: #F0FDF4;
+  color: #15803D;
+  border: 1px solid #86EFAC;
+  padding: 10px 18px;
+  border-radius: 24px;
+  font-size: 12.5px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.chatbot-summary-header-btn:hover {
+  background: #DCFCE7;
+  border-color: #22C55E;
+  color: #166534;
+}
+
+.chat-message-row.system,
+.chat-message-row.ai {
+  justify-content: center;
+}
+
+.chat-message-row.patient .chat-message-bubble {
+  background: #FFFFFF;
+  border: 1px solid #E6EFFA;
+}
+
+.chat-message-row.doctor .chat-message-bubble {
+  background: #F0F7FF;
+  border: 1px solid #DCEBFF;
+}
+
+.chat-message-row.system .chat-message-bubble,
+.chat-message-row.ai .chat-message-bubble {
+  max-width: 82%;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.chat-message-row.system .chat-message-bubble {
+  background: #F8FBFF;
+  border: 1px dashed #BCD7F5;
+  color: #466581;
+  font-weight: 750;
+  text-align: center;
+}
+
+.chat-message-row.ai .chat-message-bubble {
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  color: #14532D;
+  font-weight: 650;
+  text-align: left;
+}
+
+.clinical-workspace-sidebar {
+  gap: 8px;
+  padding: 16px 14px;
+}
+
+.workspace-accordion-section {
+  padding: 11px 12px;
+  border-color: #DCEBFF;
+  border-radius: 10px;
+}
+
+.workspace-accordion-section:hover {
+  background: #FAFDFF;
+  border-color: #BCD7F5;
+}
+
+.workspace-accordion-section.notes-section,
+.workspace-accordion-section.notes-section:hover {
+  background: #FFFFFF;
+  border-color: #FDE68A;
+}
+
+.workspace-accordion-header {
+  cursor: pointer;
+}
+
+.section-title-wrapper {
+  gap: 9px;
+  font-size: 12.5px;
+}
+
+.section-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.workspace-accordion-content,
+.notes-content-wrapper {
+  margin-top: 10px;
+  gap: 8px;
+}
+
+.info-item-card {
+  border: 1px solid #E6EFFA;
+  padding: 9px 11px;
+  border-radius: 8px;
+}
+
+.info-item-label {
+  font-size: 11px;
+}
+
+.info-item-value {
+  font-size: 12.5px;
+}
+
+.empty-data-card {
+  background: #FAFDFF;
+  border-style: dashed;
+  color: #718096;
+}
+
+.note-intro-card {
+  padding: 9px 10px;
+  gap: 4px;
+}
+
+.note-intro-card p {
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.note-input-group {
+  gap: 5px;
+}
+
+.note-textarea {
+  min-height: 58px;
+  padding: 8px 10px;
+  font-size: 12.5px;
+}
+
+.scrollable-content {
+  max-height: 138px;
+}
+
+.handoff-severity-badge {
+  border-radius: 999px;
+  cursor: default;
+  box-shadow: none;
+}
+
+.vitals-inline-row span {
+  background: #F8FBFF;
+  border: 1px solid #DCEBFF;
+  border-radius: 10px;
+  color: #244A6B;
+  cursor: default;
+  box-shadow: none;
+}
+
+.chatbot-summary-note {
+  background: #F8FBFF;
+  border-left: 3px solid #3B82F6;
+  border-radius: 8px;
+  color: #466581;
+  cursor: default;
+}
+
+.chatbot-modal-footer {
+  justify-content: flex-end;
+}
+
+.chatbot-modal-footer .chatbot-close-action-btn.secondary {
+  background: #3B82F6;
+  color: #FFFFFF;
+  border-color: #3B82F6;
+}
+
+.chatbot-modal-footer .chatbot-close-action-btn.secondary:hover {
+  background: #2563EB;
+  border-color: #2563EB;
+}
+
+/* Compact notes and clearer AI handoff cards for demo flow */
+.workspace-accordion-section.notes-section.expanded {
+  padding-bottom: 10px;
+}
+
+.workspace-accordion-section.notes-section .notes-content-wrapper {
+  gap: 7px;
+}
+
+.workspace-accordion-section.notes-section .note-input-label {
+  font-size: 11.5px;
+}
+
+.workspace-accordion-section.notes-section .note-textarea {
+  min-height: 44px;
+  max-height: 54px;
+  padding: 7px 9px;
+  line-height: 1.32;
+}
+
+.workspace-accordion-section.notes-section .note-footer-bar {
+  margin-top: 2px;
+  gap: 8px;
+}
+
+.workspace-accordion-section.notes-section .save-note-btn {
+  min-height: 32px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.chat-message-row.system,
+.chat-message-row.ai {
+  width: 100%;
+  justify-content: stretch;
+}
+
+.chat-message-row.system .chat-message-bubble,
+.chat-message-row.ai .chat-message-bubble {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  margin: 0 6px;
+  padding: 12px 14px 12px 44px;
+  border-radius: 14px;
+  box-shadow: none;
+}
+
+.chat-message-row.system .chat-message-bubble::before,
+.chat-message-row.ai .chat-message-bubble::before {
+  position: absolute;
+  left: 14px;
+  top: 12px;
+  width: 20px;
+  height: 20px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.chat-message-row.system .chat-message-bubble {
+  background: #FAFDFF;
+  border: 1px dashed #9EC5FE;
+  color: #244A6B;
+  text-align: left;
+}
+
+.chat-message-row.system .chat-message-bubble::before {
+  content: "i";
+  background: #EAF3FF;
+  color: #2563EB;
+}
+
+.chat-message-row.ai .chat-message-bubble {
+  background: #F0FDF4;
+  border: 1px solid #86EFAC;
+  color: #14532D;
+}
+
+.chat-message-row.ai .chat-message-bubble::before {
+  content: "AI";
+  width: 24px;
+  background: #DCFCE7;
+  color: #15803D;
+  font-size: 10px;
+}
+
+.handoff-severity-badge {
+  background: #FFF7ED !important;
+  border: 1px solid #FED7AA !important;
+  color: #C2410C !important;
+  border-radius: 999px !important;
+  padding: 5px 10px !important;
+  cursor: default !important;
+}
+
+.vitals-inline-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.vitals-inline-row span {
+  background: transparent !important;
+  border: none !important;
+  border-left: 3px solid #93C5FD !important;
+  border-radius: 0 !important;
+  padding: 4px 8px !important;
+  text-align: left !important;
+  color: #244A6B !important;
+  font-size: 12px !important;
+  cursor: default !important;
+}
+
+.chatbot-summary-note {
+  background: #FAFDFF !important;
+  border: none !important;
+  border-left: 4px solid #2563EB !important;
+  border-radius: 0 10px 10px 0 !important;
+  color: #466581 !important;
+  font-style: italic;
+  cursor: default !important;
+}
+
+.consultation-tab-container.active-chat-mode,
+.consultation-tab-container.active-chat-mode .consultation-main-pane,
+.consultation-tab-container.active-chat-mode .active-chat-state {
+  height: calc(100vh - 74px);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.consultation-tab-container.active-chat-mode .chat-header-card,
+.consultation-tab-container.active-chat-mode .chat-action-tags,
+.consultation-tab-container.active-chat-mode .chat-input-form,
+.consultation-tab-container.active-chat-mode .chat-footer-ended,
+.consultation-tab-container.active-chat-mode .chat-footer-new {
+  flex: 0 0 auto;
+}
+
+.consultation-tab-container.active-chat-mode .chat-messages-area {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 18px;
+}
+
+.clinical-timestamp-badge {
+  background: #FAFDFF !important;
+  border: none !important;
+  border-left: 3px solid #94A3B8 !important;
+  border-radius: 0 8px 8px 0 !important;
+  color: #64748B !important;
+  padding: 5px 9px !important;
+  cursor: default !important;
+  font-style: italic;
+}
+
+.chat-input-form {
+  align-items: flex-end;
+}
+
+.chat-input-pill-wrapper {
+  align-items: flex-end;
+  border-radius: 22px;
+}
+
+.chat-input-pill-wrapper .input-icon-btn,
+.chat-input-pill-wrapper .send-msg-button {
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
+
+.chat-message-row.system,
+.chat-message-row.ai {
+  justify-content: center;
+}
+
+.chat-message-row.system .chat-message-bubble,
+.chat-message-row.ai .chat-message-bubble {
+  width: min(640px, calc(100% - 48px));
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+.chat-message-row.system .chat-message-bubble {
+  padding-block: 10px;
+}
+
+.chat-message-row.ai .chat-message-bubble {
+  padding-block: 10px;
 }
