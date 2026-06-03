@@ -51,14 +51,14 @@ export const CONSULTATION_HISTORY = [
 ];
 
 export const CLINIC_HISTORY = [
-  {
-    id: "1",
-    doctor: "BS. Lê Minh K",
-    specialty: "Bác sĩ đa khoa",
-    status: "Sắp diễn ra",
-    time: "10:00 - 25/05/2026",
-    location: "Phòng khám Tâm Anh",
-  },
+  // {
+  //   id: "1",
+  //   doctor: "BS. Lê Minh K",
+  //   specialty: "Bác sĩ đa khoa",
+  //   status: "Sắp diễn ra",
+  //   time: "10:00 - 25/05/2026",
+  //   location: "Phòng khám Tâm Anh",
+  // },
   {
     id: "2",
     doctor: "BS. Nguyễn Văn M",

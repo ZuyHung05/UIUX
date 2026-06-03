@@ -9,9 +9,11 @@ import ConsultationItem from '../../components/history/ConsultationtItem';
 import { MainLayout } from '../../components/layout/MainLayout';
 import { CLINIC_HISTORY, CONSULTATION_HISTORY } from '../../services/mockData';
 import { COLORS, TYPOGRAPHY } from '../../utils/theme';
-
-export const HistoryScreen = () => {
-    const [tab, setTab] = useState('tu-van');
+interface HistoryScreenProps {
+    initialTab?: 'tu-van' | 'kham';
+}
+export const HistoryScreen = ({ initialTab }: HistoryScreenProps) => {
+    const [tab, setTab] = useState(initialTab || 'tu-van');
 
     const [isRatingVisible, setIsRatingVisible] = useState(false);
     const [isConfirmVisible, setIsConfirmVisible] = useState(false);

@@ -15,6 +15,7 @@ interface MainLayoutProps {
     padding?: number;
     showBack?: boolean;
     showRightIcon?: boolean;
+    rightElement?: React.ReactNode;
 }
 
 export const MainLayout = ({
@@ -25,7 +26,8 @@ export const MainLayout = ({
     backgroundColor = COLORS.background,
     padding = 20,
     showBack = false,
-    showRightIcon = false
+    showRightIcon = false,
+    rightElement
 }: MainLayoutProps) => {
     const commonPaddingStyles = {
         paddingHorizontal: padding,
@@ -36,7 +38,7 @@ export const MainLayout = ({
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: COLORS.background }]} edges={['top']}>
             <StatusBar style="dark" />
-            <AppHeader title={title} subtitle={subtitle} showBack={showBack} showRightIcon={showRightIcon} />
+            <AppHeader title={title} subtitle={subtitle} showBack={showBack} showRightIcon={showRightIcon} rightElement={rightElement} />
             {isScrollable ? (
                 <ScrollView
                     style={[styles.content, { backgroundColor }]}
@@ -53,7 +55,8 @@ export const MainLayout = ({
                     style={[
                         styles.content,
                         { backgroundColor },
-                        commonPaddingStyles
+                        commonPaddingStyles,
+
                     ]}
                 >
                     {children}
