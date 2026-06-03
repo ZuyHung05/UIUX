@@ -1433,3 +1433,433 @@
   display: inline-block;
   line-height: 1.2;
 }
+
+/* ==========================================================================
+   Chatbot AI Summary Panel Accordion & Card Styles
+   ========================================================================== */
+.section-title-wrapper.chatbot-summary-theme {
+  color: #10B981;
+}
+
+.workspace-accordion-section.chatbot-summary-section {
+  background: #e7f7ee;
+  border-color: #adecbb;
+}
+
+.workspace-accordion-section.chatbot-summary-section:hover {
+  background: #d6f2e1;
+  border-color: #8be0a3;
+}
+
+.chatbot-summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.summary-severity-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #244A6B;
+}
+
+.summary-severity-label {
+  font-weight: 600;
+  color: #718096;
+}
+
+.summary-severity-badge {
+  font-size: 11px;
+  font-weight: 750;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.summary-severity-badge.red {
+  color: #EF4444;
+  background: #FEF2F2;
+  border: 1px solid #FEE2E2;
+}
+
+.summary-severity-badge.orange {
+  color: #3B82F6;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+}
+
+.summary-severity-badge.gray {
+  color: #718096;
+  background: #EDF2F7;
+  border: 1px solid #E2E8F0;
+}
+
+.summary-detail-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summary-detail-block strong {
+  font-size: 12.5px;
+  color: #1E293B;
+  font-weight: 700;
+}
+
+.summary-detail-block p {
+  margin: 0;
+  font-size: 13px;
+  color: #4A5568;
+  line-height: 1.45;
+}
+
+.summary-detail-block p.suggested-diag {
+  color: #10B981;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Chatbot AI Summary Modal Styles
+   ========================================================================== */
+.chatbot-summary-modal-card {
+  background: #FFFFFF;
+  border-radius: 24px;
+  width: 760px;
+  max-width: 90vw;
+  max-height: 85vh;
+  box-shadow: none;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modal-appear 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+}
+
+.chatbot-modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #F1F5F9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #F8FAFC;
+}
+
+.chatbot-modal-title-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.chatbot-modal-avatar-glow {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #E6F4EA;
+  color: #137333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chatbot-modal-avatar-glow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.chatbot-modal-title-group h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #1E293B;
+}
+
+.chatbot-modal-title-group p {
+  margin: 2px 0 0 0;
+  font-size: 12px;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.chatbot-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+  background: #FFFFFF;
+}
+
+.chatbot-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 640px) {
+  .chatbot-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chatbot-modal-panel {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chatbot-modal-panel.symp-panel {
+  border-color: #E2E8F0;
+}
+
+.chatbot-modal-panel.vitals-panel {
+  border-color: #E2E8F0;
+}
+
+.chatbot-modal-panel.history-panel {
+  border-color: #E2E8F0;
+}
+
+.chatbot-modal-panel.ai-panel {
+  background: #F0FDF4;
+  border-color: #DCFCE7;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #E2E8F0;
+}
+
+.chatbot-modal-panel.ai-panel .panel-header {
+  border-bottom-color: #BBF7D0;
+}
+
+.panel-header svg {
+  width: 18px;
+  height: 18px;
+  color: #64748B;
+  flex-shrink: 0;
+}
+
+.chatbot-modal-panel.ai-panel .panel-header svg {
+  color: #16A34A;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #1E293B;
+}
+
+.chatbot-modal-panel.ai-panel .panel-header h3 {
+  color: #14532D;
+}
+
+.panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #334155;
+  flex: 1;
+}
+
+.clinical-text {
+  margin: 0;
+  font-style: italic;
+  color: #475569;
+}
+
+.clinical-timestamp-badge {
+  font-size: 11px;
+  color: #64748B;
+  font-weight: 500;
+  background: #F1F5F9;
+  padding: 4px 8px;
+  border-radius: 6px;
+  align-self: flex-start;
+}
+
+/* Vitals pills */
+.vitals-badge-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.vital-badge-pill {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vital-label {
+  font-size: 11px;
+  color: #64748B;
+  font-weight: 600;
+}
+
+.vital-value-group {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.vital-val {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1E293B;
+}
+
+.vital-unit {
+  font-size: 10px;
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+.no-vitals-text {
+  margin: 0;
+  color: #94A3B8;
+  font-style: italic;
+}
+
+/* History lists */
+.history-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.history-info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.row-label {
+  font-size: 11px;
+  color: #64748B;
+  font-weight: 600;
+}
+
+.row-value {
+  font-size: 13px;
+  color: #1E293B;
+  font-weight: 700;
+}
+
+.row-value-badge {
+  font-size: 11px;
+  font-weight: 750;
+  padding: 2px 8px;
+  border-radius: 4px;
+  align-self: flex-start;
+}
+
+.row-value-badge.red {
+  color: #EF4444;
+  background: #FEF2F2;
+  border: 1px solid #FEE2E2;
+}
+
+/* AI panel blocks */
+.ai-severity-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-severity-label {
+  font-weight: 600;
+  color: #14532D;
+  font-size: 12.5px;
+}
+
+.ai-severity-badge-large {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.ai-severity-badge-large.red {
+  color: #FFFFFF;
+  background: #EF4444;
+}
+
+.ai-severity-badge-large.orange {
+  color: #FFFFFF;
+  background: #F97316;
+}
+
+.ai-severity-badge-large.gray {
+  color: #1E293B;
+  background: #E2E8F0;
+}
+
+.ai-diagnosis-block, .ai-triage-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.block-label {
+  font-size: 11px;
+  color: #14532D;
+  font-weight: 700;
+}
+
+.diagnosis-val {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #15803D;
+}
+
+.triage-val {
+  margin: 0;
+  color: #166534;
+  font-weight: 500;
+}
+
+/* Modal Footer */
+.chatbot-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #F1F5F9;
+  display: flex;
+  justify-content: flex-end;
+  background: #FFFFFF;
+}
+
+.chatbot-close-action-btn {
+  background: #10B981;
+  color: #FFFFFF;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.chatbot-close-action-btn:hover {
+  background: #059669;
+}
+

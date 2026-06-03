@@ -355,7 +355,7 @@ export function DashboardTab({
                 </div>
                 <div className="appt-reason-block" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <span className="appt-detail-label" style={{ color: '#718096', fontSize: '13px', fontWeight: 600 }}>Lý do khám & Triệu chứng đăng ký:</span>
-                  <p className="appt-reason-text" style={{ margin: '4px 0 0', padding: '12px 16px', background: '#FFF7ED', borderLeft: '4px solid #EA580C', borderRadius: '6px', color: '#C2410C', fontWeight: 600, fontSize: '13.5px', lineHeight: '1.5' }}>
+                  <p className="appt-reason-text">
                     {activePatientFromMap.reason}
                   </p>
                 </div>
@@ -487,7 +487,7 @@ export function DashboardTab({
       <section className="figma-metrics-row">
         <MetricCard label="Tổng bệnh nhân hôm nay" value={stats.todayPatients} delta="Gồm ca trực tiếp và tư vấn" icon={icons.pulse} iconClassName="metric-icon-blue" />
         <MetricCard label="Tin nhắn cần phản hồi" value={stats.pendingReplies} delta="Đang chờ bác sĩ trả lời" icon={icons.message} iconClassName="metric-icon-green" />
-        <MetricCard label="Ca tư vấn hôm nay" value={stats.todayConsultations} delta="Tư vấn từ xa qua chat" icon={icons.clock} iconClassName="metric-icon-yellow" />
+        <MetricCard label="Ca tư vấn hôm nay" value={stats.todayConsultations} delta="Tư vấn từ xa qua chat" icon={icons.clock} iconClassName="metric-icon-gray" />
         <MetricCard label="Số ca cảnh báo khẩn cấp" value={stats.aiUrgentAlerts} delta="AI phát hiện, cần kiểm tra" icon={icons.star} iconClassName="metric-icon-pink" />
       </section>
 
