@@ -1,4 +1,4 @@
-import type { Branch, Doctor, DoctorFormValues, DoctorSchedule, DoctorStatus, Gender, Specialty } from './doctorTypes'
+import type { Branch, Doctor, DoctorFormValues, DoctorReview, DoctorSchedule, DoctorStatus, Gender, Specialty } from './doctorTypes'
 import { branchNames } from '../../../data/branchMockData'
 
 export const specialties: Specialty[] = ['Nội tiết', 'Tim mạch', 'Sản phụ khoa', 'Nhi khoa', 'Da liễu', 'Tai Mũi Họng']
@@ -125,6 +125,55 @@ const doctorSeeds: DoctorSeed[] = [
   { id: '30254', fullName: 'BS. Lưu Thành Đạt', gender: 'Nam', specialty: 'Tim mạch', branch: 'Chi nhánh Hồ Chí Minh', hasCurrentShift: false, hasActiveAppointment: false, rating: 4.4 },
 ]
 
+const patientReviewSamples = [
+  {
+    patientName: 'Minh Anh',
+    comment: 'Bác sĩ tư vấn rõ ràng, giải thích dễ hiểu và theo sát kế hoạch điều trị.',
+  },
+  {
+    patientName: 'Quốc Huy',
+    comment: 'Thời gian phản hồi nhanh, hướng dẫn chi tiết các bước cần theo dõi tại nhà.',
+  },
+  {
+    patientName: 'Thanh Trúc',
+    comment: 'Bác sĩ hỏi bệnh kỹ, thái độ nhẹ nhàng và giúp tôi yên tâm hơn sau buổi tư vấn.',
+  },
+  {
+    patientName: 'Hoàng Nam',
+    comment: 'Lịch khám được xác nhận đúng giờ, phần dặn dò sau khám ngắn gọn và dễ thực hiện.',
+  },
+  {
+    patientName: 'Gia Linh',
+    comment: 'Tôi hài lòng vì bác sĩ giải thích rõ khi nào cần tái khám và khi nào cần đi sớm.',
+  },
+  {
+    patientName: 'Bảo Ngọc',
+    comment: 'Thông tin chuyên môn đầy đủ, cách trao đổi thân thiện và không tạo cảm giác vội.',
+  },
+  {
+    patientName: 'Tuấn Kiệt',
+    comment: 'Bác sĩ phản hồi đúng vấn đề, phần tư vấn sau khám giúp tôi dễ theo dõi triệu chứng.',
+  },
+  {
+    patientName: 'Ngọc Diệp',
+    comment: 'Tôi đánh giá cao cách bác sĩ giải thích kết quả và đưa ra hướng chăm sóc phù hợp.',
+  },
+]
+
+function makeDoctorReviews(seed: DoctorSeed, index: number): DoctorReview[] {
+  return patientReviewSamples.map((review, reviewIndex) => {
+    const ratingOffset = ((index + reviewIndex) % 3) * 0.1
+    const rating = Math.max(4.1, Math.min(5, Number((seed.rating - ratingOffset).toFixed(1))))
+
+    return {
+      id: `review-${seed.id}-${reviewIndex + 1}`,
+      patientName: review.patientName,
+      rating,
+      comment: review.comment,
+    }
+  })
+}
+
 function makeDoctor(seed: DoctorSeed, index: number): Doctor {
   const yearsExperience = 6 + (index % 13)
   const consultationFee = 220000 + (index % 5) * 20000
@@ -166,14 +215,7 @@ function makeDoctor(seed: DoctorSeed, index: number): Doctor {
     totalConsultations: 720 + index * 47,
     completionRate: 90 + (index % 9),
     csat: Math.min(5, Number((seed.rating - 0.1).toFixed(1))),
-    reviews: [
-      {
-        id: `review-${seed.id}`,
-        patientName: index % 2 === 0 ? 'Minh Anh' : 'Quốc Huy',
-        rating: seed.rating,
-        comment: 'Bác sĩ tư vấn rõ ràng, thân thiện và theo sát kế hoạch điều trị.',
-      },
-    ],
+    reviews: makeDoctorReviews(seed, index),
     username,
   }
 }

@@ -247,8 +247,8 @@
   min-width: 0;
   min-height: 0;
   box-sizing: border-box;
-  border: 1.5px solid #eef2f8;
-  border-radius: 22px;
+  border: 2px solid #eef2f8;
+  border-radius: 24px;
   background: #fff;
   padding: clamp(10px, 1vh, 14px) clamp(13px, 1.05vw, 18px);
   box-shadow: none;
