@@ -19,9 +19,9 @@ export default function ConsultationScreen({ navigation }: any) {
         },
         {
             id: '1',
-            text: 'Chào bạn, tôi là Serena. Tôi có thể giúp bạn sàng lọc triệu chứng. Bạn đang cảm thấy thế nào?',
+            text: 'Chào bạn, tôi là Serena. Bạn muốn thực hiện sàng lọc triệu chứng với AI (Miễn phí) hay kết nối tư vấn trực tiếp với Bác sĩ chuyên khoa (Có phí)?',
             sender: 'bot',
-            quickReplies: ['Đau đầu', 'Đau dạ dày', 'Sốt / Ho', 'Khác (Tôi muốn tự nhập)']
+            quickReplies: ['🔍 Sàng lọc với AI', '👨‍⚕️ Tư vấn với Bác sĩ']
         }
     ]);
 
@@ -98,22 +98,49 @@ export default function ConsultationScreen({ navigation }: any) {
         setInputText('');
 
         setTimeout(() => {
-            if (text === 'Khác (Tôi muốn tự nhập)') {
-                setPlaceholder("Mô tả triệu chứng của bạn tại đây...");
+            if (text.includes('Bác sĩ') || text.includes('Tư vấn') || text.includes('Kết nối')) {
                 setMessages(prev => [...prev, {
                     id: Date.now().toString(),
-                    text: 'Mời bạn mô tả chi tiết triệu chứng đang gặp phải. Bạn có thể gõ vào ô chat bên dưới hoặc nhấn vào biểu tượng Micro 🎙️ để nói cho Serena nghe nhé.',
+                    text: 'Hệ thống đang chuẩn bị kết nối bạn với bác sĩ trực tuyến. Phí dịch vụ là 150.000đ/lượt. Bạn vui lòng xác nhận thanh toán để bắt đầu.',
                     sender: 'bot',
+                    isComplexAction: true
                 }]);
                 return;
             }
-            if (step === 1) {
-                // Bước 2: Hỏi về thời gian
+
+            if (text.includes('Sàng lọc')) {
                 setMessages(prev => [...prev, {
                     id: Date.now().toString(),
-                    text: `Bạn bị ${text.toLowerCase()} từ bao lâu rồi?`,
+                    text: 'Vâng, mời bạn chọn vùng đang cảm thấy khó chịu nhất trên cơ thể:',
                     sender: 'bot',
-                    quickReplies: ['Mới bị thôi', 'Đã 2-3 ngày', 'Hơn 1 tuần']
+                    quickReplies: ['Đầu / Cổ', 'Ngực / Bụng', 'Tay / Chân', 'Khác']
+                }]);
+                setStep(1); // Bắt đầu luồng step-by-step
+                return;
+            }
+            if (text.includes('Khác')) {
+                setPlaceholder("Mô tả triệu chứng tại đây...");
+                setMessages(prev => [...prev, {
+                    id: Date.now().toString(),
+                    text: 'Mời bạn nhập chi tiết vấn đề sức khỏe đang gặp phải. Bạn có thể gõ vào ô chat hoặc nhấn biểu tượng Micro 🎙️ để sử dụng giọng nói nhé.',
+                    sender: 'bot',
+                }]);
+                setStep(1.5); // Đưa vào nhánh nhập tự do trước khi nhảy về luồng thời gian
+                return;
+            }
+            if (step === 1 || step === 1.5) {
+                // Bước 2: Hỏi về thời gian
+                let symptomSnippet = text.toLowerCase();
+                // Xử lý sượng chữ: Nếu là vùng chung thì đổi từ ngữ cho mượt
+                if (symptomSnippet.includes('đầu')) symptomSnippet = 'khó chịu vùng đầu cổ';
+                if (symptomSnippet.includes('ngực')) symptomSnippet = 'khó chịu vùng ngực bụng';
+                if (symptomSnippet.includes('tay')) symptomSnippet = 'đau nhức tay chân';
+
+                setMessages(prev => [...prev, {
+                    id: Date.now().toString(),
+                    text: `Serena đã ghi nhận tình trạng ${symptomSnippet} của bạn. Bạn đã xuất hiện dấu hiệu này từ bao lâu rồi?`,
+                    sender: 'bot',
+                    quickReplies: ['Mới bị trong ngày', 'Đã 2-3 ngày nay', 'Kéo dài hơn 1 tuần']
                 }]);
                 setStep(2);
             }
@@ -156,6 +183,24 @@ export default function ConsultationScreen({ navigation }: any) {
                 }
                 setStep(5);
             }
+            else if (step === 5) {
+                if (text === 'Có, hướng dẫn tôi') {
+                    setMessages(prev => [...prev, {
+                        id: Date.now().toString(),
+                        text: '💡 LỜI KHUYÊN Y TẾ TỪ SERENA AI:\n\n1. Nghỉ ngơi hoàn toàn tại không gian thoáng mát.\n2. Bổ sung nhiều nước ấm hoặc nước điện giải (Oresol).\n3. Theo dõi thân nhiệt mỗi 4 tiếng.\n\nNếu có dấu hiệu tăng nặng đột ngột, hãy quay lại đây gõ "Bác sĩ" để được kết nối ngay lập tức.',
+                        sender: 'bot',
+                        quickReplies: ['Cảm ơn Serena']
+                    }]);
+                } else if (text === 'Cảm ơn Serena') {
+                    setMessages(prev => [...prev, {
+                        id: Date.now().toString(),
+                        text: 'Rất vui được đồng hành cùng sức khỏe của bạn! Để giúp Serena cải thiện năng lực tư vấn, bạn vui lòng dành chút thời gian đánh giá phiên hỗ trợ này nhé.',
+                        sender: 'bot',
+                        isRatingAction: true
+                    }]);
+                    setStep(0); // Đưa trạng thái step về mặc định kết thúc luồng
+                }
+            }
         }, 1000);
     }, [step]);
     const handlePaymentConfirm = () => {
@@ -172,46 +217,7 @@ export default function ConsultationScreen({ navigation }: any) {
             }]);
         }, 2500);
     };
-    //         // KỊCH BẢN 1: TRIỆU CHỨNG NHẸ (Tư vấn xong kết thúc)
-    //         if (text === 'Đau đầu' || text === 'Cảm ơn Serena') {
-    //             const botReply = {
-    //                 id: Date.now().toString(),
-    //                 text: 'Dựa trên sàng lọc, bạn có dấu hiệu căng thẳng nhẹ. Hãy nghỉ ngơi, uống đủ nước và theo dõi thêm 24h nhé.',
-    //                 sender: 'bot',
-    //                 quickReplies: ['Cảm ơn Serena', 'Vẫn thấy lo lắng']
-    //             };
-    //             if (text === 'Cảm ơn Serena') {
-    //                 setMessages(prev => [...prev, { id: 'r1', text: 'Rất vui được giúp bạn! Đừng quên đánh giá trải nghiệm nhé.', sender: 'bot', isRatingAction: true }]);
-    //             } else {
-    //                 setMessages(prev => [...prev, botReply]);
-    //             }
-    //         }
 
-    //         // KỊCH BẢN 2: TRIỆU CHỨNG CẦN CHUYÊN MÔN (Dẫn dắt kết nối bác sĩ)
-    //         else if (text === 'Sốt / Ho' || text === 'Vẫn thấy lo lắng' || text === 'Tư vấn bác sĩ ngay') {
-    //             const upsellMsg = {
-    //                 id: Date.now().toString(),
-    //                 text: 'Triệu chứng của bạn cần được bác sĩ chuyên khoa kiểm tra để đảm bảo an toàn. Bạn muốn kết nối ngay hay đặt lịch khám tại viện?',
-    //                 sender: 'bot',
-    //                 isComplexAction: true // Hiện 2 option điều hướng
-    //             };
-    //             setMessages(prev => [...prev, upsellMsg]);
-    //             setPlaceholder("Nhấn nút chọn hoặc nhập yêu cầu cụ thể...");
-    //         }
-
-    //         // KỊCH BẢN 3: NGƯỜI DÙNG TỰ NHẬP (Linh hoạt)
-    //         else {
-    //             setMessages(prev => [...prev, {
-    //                 id: Date.now().toString(),
-    //                 text: 'Serena đã ghi nhận thông tin: "' + text + '". Bạn có muốn kết nối với bác sĩ để trao đổi kỹ hơn không?',
-    //                 sender: 'bot',
-    //                 quickReplies: ['Tư vấn bác sĩ ngay', 'Để sau']
-    //             }]);
-    //         }
-    //     }, 1000);
-    // }, [phase]);
-
-    // RENDER COMPONENTS
     const renderMessage = ({ item }: any) => {
         const isBot = item.sender === 'bot';
 
@@ -235,15 +241,17 @@ export default function ConsultationScreen({ navigation }: any) {
                     )}
                     <View style={[styles.bubble, isBot ? styles.botBubble : styles.userBubble]}>
                         <Text style={{ color: isBot ? COLORS.text : 'white', ...TYPOGRAPHY.body }}>{item.text}</Text>
+                        {isBot && item.id !== 'disclaimer' && (
+                            <TouchableOpacity
+                                onPress={() => toggleSpeech(item.id)}
+                                style={styles.audioBtn}
+                            >
+                                <Volume2 size={16} color={playingId === item.id ? COLORS.primary : COLORS.placeholder}
+                                />
+                            </TouchableOpacity>
+                        )}
                     </View>
-                    {isBot && item.id !== 'disclaimer' && (
-                        <TouchableOpacity
-                            onPress={() => toggleSpeech(item.id)}
-                            style={styles.audioBtn}
-                        >
-                            <Volume2 size={16} color={playingId === item.id ? COLORS.primary : COLORS.placeholder} />
-                        </TouchableOpacity>
-                    )}
+
                 </View>
 
                 {/* Option đa dạng kịch bản */}
@@ -307,7 +315,8 @@ export default function ConsultationScreen({ navigation }: any) {
                 <View style={styles.inputBar}>
                     <TouchableOpacity style={styles.iconBtn}><Mic size={22} color={COLORS.secondary} /></TouchableOpacity>
                     <TextInput
-                        placeholder={placeholder}
+                        placeholder={inputText.length > 0 ? "" : placeholder}
+                        placeholderTextColor={COLORS.placeholder}
                         style={styles.input}
                         value={inputText}
                         onChangeText={setInputText}
@@ -379,6 +388,7 @@ const styles = StyleSheet.create({
     avatar: { width: 32, height: 32, borderRadius: 16, justifyContent: 'center', alignItems: 'center', marginRight: 8 },
     bubble: { maxWidth: '80%', padding: 14, borderRadius: 20, alignSelf: 'flex-start' },
     botBubble: { backgroundColor: '#F0F4FF', borderBottomLeftRadius: 4, paddingBottom: 8 },
+
     userBubble: { backgroundColor: COLORS.primary, borderBottomRightRadius: 4, alignSelf: 'flex-end' },
 
     // Kịch bản điều hướng
@@ -390,7 +400,7 @@ const styles = StyleSheet.create({
     chip: { borderRadius: 15, backgroundColor: COLORS.white, borderColor: COLORS.secondary, borderWidth: 1 },
 
     inputBar: { flexDirection: 'row', alignItems: 'center', padding: 8, backgroundColor: 'white', marginBottom: 40, borderRadius: 30, marginHorizontal: 10, elevation: 5 },
-    input: { flex: 1, marginHorizontal: 8, ...TYPOGRAPHY.body },
+    input: { flex: 1, marginHorizontal: 8, ...TYPOGRAPHY.body, color: COLORS.text },
     plusBtn: { padding: 5 },
     iconBtn: { padding: 8 },
     sendBtn: { backgroundColor: COLORS.primary, width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },

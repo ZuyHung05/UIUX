@@ -12,6 +12,7 @@ export const COLORS = {
   text: "#244A6B",
   subtext: "#718096",
   placeholder: "#A0AEC0",
+  grayLight: "#CBD5E0",
 
   // States & Badges
   notification: "#FF6B9D",
