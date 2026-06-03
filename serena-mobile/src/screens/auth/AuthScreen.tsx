@@ -1,3 +1,4 @@
+import { Mail, ShieldCheck, UserRound } from 'lucide-react-native';
 import React, { useState } from 'react';
 import {
     KeyboardAvoidingView,
@@ -10,9 +11,9 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { Mail, ShieldCheck, UserRound } from 'lucide-react-native';
-import Svg, { Polygon } from 'react-native-svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Svg, { Polygon } from 'react-native-svg';
+import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 
 type AuthMode = 'login' | 'register';
 
@@ -20,11 +21,17 @@ interface AuthScreenProps {
     onAuthenticated: () => void;
 }
 
-export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
+export default function AuthScreen({ navigation }: any) {
     const [mode, setMode] = useState<AuthMode>('login');
     const [rememberMe, setRememberMe] = useState(false);
 
     const isRegister = mode === 'register';
+    const handleAuthAction = () => {
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'MainTabs' }],
+        });
+    };
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -101,7 +108,7 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
 
                         <TouchableOpacity
                             activeOpacity={0.85}
-                            onPress={onAuthenticated}
+                            onPress={handleAuthAction}
                             style={styles.primaryButton}
                         >
                             <Text style={styles.primaryButtonText}>
@@ -183,7 +190,7 @@ function SerenaMark() {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.background,
     },
     keyboardView: {
         flex: 1,
@@ -209,8 +216,8 @@ const styles = StyleSheet.create({
         marginBottom: 27,
     },
     title: {
-        color: '#244A6B',
-        fontSize: 24,
+        color: COLORS.accent,
+        ...TYPOGRAPHY.h1,
         lineHeight: 28,
         fontWeight: '700',
         letterSpacing: 0.8,
