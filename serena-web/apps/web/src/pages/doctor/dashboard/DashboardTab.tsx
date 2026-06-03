@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { FilterSelect } from '../../../components/ui/FilterSelect'
 import { MetricCard } from '../../../components/ui/MetricCard'
 import { ReturnButton } from '../../../components/ui/ReturnButton'
@@ -116,7 +117,7 @@ const clinicalPatientsMap: Record<string, {
 
 // Today's dynamic timeline entries (extended to 17:30 per feedback)
 const todayTimeline = [
-  { time: '08:00 - 08:30', patientId: '25', name: 'Dương Thị Hoa', type: 'Khám trực tiếp', status: 'Đã khám' },
+  { time: '08:00 - 08:30', patientId: '25', name: 'Dương Thị Hoa', type: 'Khám trực tiếp', status: 'Đã khám', priority: 'Khẩn cấp' },
   { time: '10:00 - 10:30', patientId: '15', name: 'Phan Văn R', type: 'Khám trực tiếp', status: 'Đang khám' },
   { time: '15:00 - 15:30', patientId: '7', name: 'Vũ Thị H', type: 'Khám trực tiếp', status: 'Đang chờ' },
   { time: '16:00 - 16:30', patientId: '8', name: 'Phạm Bích Vân', type: 'Khám trực tiếp', status: 'Đang chờ' }
@@ -126,8 +127,8 @@ const todayTimeline = [
 
 // Slim-down unread messages list (Tin nhắn đang chờ)
 const messages = [
-  { id: '1', name: 'Nguyễn Văn A', text: 'Bác sĩ ơi, dạo này tôi hay thấy chóng mặt và suy ...', time: '09:36', unread: true },
-  { id: '4', name: 'Nguyễn Thị N', text: 'Xin chào bác sĩ, tôi đang gặp tình trạng đau đầu...', time: '08:15', unread: false },
+  { id: '1', name: 'Nguyễn Văn A', text: 'Bác sĩ ơi, dạo này tôi hay thấy chóng mặt và suy nhược...', sentAt: '09:36', unread: true },
+  { id: '4', name: 'Nguyễn Thị N', text: 'Xin chào bác sĩ, tôi đang gặp tình trạng đau đầu kéo dài...', sentAt: '08:15', unread: false },
 ]
 
 export function DashboardTab({
@@ -148,6 +149,7 @@ export function DashboardTab({
 
   // Clinical intake form states (for popup modal)
   const [showExamModal, setShowExamModal] = useState<boolean>(false)
+  const [examModalMode, setExamModalMode] = useState<'record' | 'ai'>('record')
   const [symptoms, setSymptoms] = useState('')
   const [diagnosis, setDiagnosis] = useState('')
   const [prescription, setPrescription] = useState('')
@@ -169,12 +171,20 @@ export function DashboardTab({
 
   const handleSaveExamination = () => {
     if (!symptoms.trim() || !diagnosis.trim()) {
-      triggerToast('⚠️ Vui lòng nhập đầy đủ triệu chứng lâm sàng và chẩn đoán trước khi hoàn thành!')
+      triggerToast('⚠️ Vui lòng nhập mô tả bệnh và chẩn đoán cuối cùng trước khi lưu!')
       return
     }
     triggerToast(`✓ Đã lưu hồ sơ khám & kê đơn thuốc cho bệnh nhân ${activePatient.name} thành công!`)
     setShowExamModal(false)
+    setExamModalMode('record')
     setSymptoms('')
+    setDiagnosis('')
+    setPrescription('')
+  }
+
+  const resetExamDraft = () => {
+    setExamModalMode('record')
+    setSymptoms(activePatient.reason)
     setDiagnosis('')
     setPrescription('')
   }
@@ -207,17 +217,10 @@ export function DashboardTab({
   // Metrics multipliers
   const filterMultiplier = selectedFilter === 'Tuần này' ? 5 : selectedFilter === 'Tháng này' ? 20 : 1
   const stats = {
-    total: 12 * filterMultiplier,
-    waiting: 8 * filterMultiplier,
-    processing: 2 * filterMultiplier,
-    completed: 12 * filterMultiplier,
-  }
-
-  const getDeltaText = (baseDelta: string) => {
-    if (selectedFilter === 'Hôm nay') return `${baseDelta} so với hôm qua`;
-    if (selectedFilter === 'Tuần này') return `${baseDelta} so với tuần trước`;
-    if (selectedFilter === 'Tháng này') return `${baseDelta} so với tháng trước`;
-    return baseDelta;
+    todayPatients: 12 * filterMultiplier,
+    pendingReplies: 2 * filterMultiplier,
+    todayConsultations: 2 * filterMultiplier,
+    aiUrgentAlerts: 1 * filterMultiplier,
   }
 
   // Admit patient to room via timeline click
@@ -441,152 +444,18 @@ export function DashboardTab({
 
       {/* Metrics Row */}
       <section className="figma-metrics-row">
-        <MetricCard label="Tổng số ca khám" value={stats.total} delta={getDeltaText("+2%")} icon={icons.pulse} iconClassName="metric-icon-blue" />
-        <MetricCard label="Ca chờ khám sảnh" value={stats.waiting} delta={getDeltaText("-1 ca")} icon={icons.clock} iconClassName="metric-icon-yellow" />
-        <MetricCard label="Ca đang khám" value={stats.processing} delta={getDeltaText("+0 ca")} icon={icons.message} iconClassName="metric-icon-blue" />
-        <MetricCard label="Ca hoàn thành" value={stats.completed} delta={getDeltaText("+12%")} icon={icons.star} iconClassName="metric-icon-green" />
+        <MetricCard label="Tổng bệnh nhân hôm nay" value={stats.todayPatients} delta="Gồm ca trực tiếp và tư vấn" icon={icons.pulse} iconClassName="metric-icon-blue" />
+        <MetricCard label="Tin nhắn cần phản hồi" value={stats.pendingReplies} delta="Đang chờ bác sĩ trả lời" icon={icons.message} iconClassName="metric-icon-green" />
+        <MetricCard label="Ca tư vấn hôm nay" value={stats.todayConsultations} delta="Tư vấn từ xa qua chat" icon={icons.clock} iconClassName="metric-icon-yellow" />
+        <MetricCard label="Số ca cảnh báo khẩn cấp" value={stats.aiUrgentAlerts} delta="AI phát hiện, cần kiểm tra" icon={icons.star} iconClassName="metric-icon-pink" />
       </section>
 
       {/* Main Grid */}
       <div className="figma-dashboard-grid">
 
-        {/* Left Column: Active Clinical Workspace & Slim Messages */}
+        {/* Left Column: Direct exam schedule with the active case expanded inline */}
         <div className="grid-column-left">
 
-          {/* 1. CA KHÁM HIỆN TẠI (The Clinical Workstation) */}
-          <section className="figma-section-card active-exam-workstation">
-            <div className="section-header">
-              <div className="title-area">
-                <h2>Ca khám bệnh hiện tại</h2>
-                {isCurrentlyExamining && (
-                  <span className="live-status-pill animate-pulse-green">Đang ở trong phòng</span>
-                )}
-              </div>
-            </div>
-
-            {activePatient && (
-              <div className="workspace-main-panel">
-                <div className="workspace-brief-row">
-                  <div className="workspace-patient-avatar">
-                    {activePatient.name.split(' ').pop()?.[0]}
-                  </div>
-                  <div className="workspace-patient-meta">
-                    <div className="meta-top">
-                      <h3>{activePatient.name}</h3>
-                    </div>
-                    <div className="meta-bottom">
-                      <span className="sub-tag">{activePatient.gender} • {activePatient.age} tuổi</span>
-                      <span className="sub-tag code-style">{activePatient.code}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="workspace-clinical-card">
-                  <div className="detail-item-large">
-                    <span className="block-label">Thời gian ca khám:</span>
-                    <strong className="detail-val-time">
-                      <svg viewBox="0 0 24 24" style={{ width: '16px', height: '16px', fill: 'none', stroke: '#3B82F6', strokeWidth: '2.5', marginRight: '6px', display: 'inline-block', verticalAlign: 'middle' }}>
-                        <circle cx="12" cy="12" r="10" />
-                        <polyline points="12 6 12 12 16 14" />
-                      </svg>
-                      {activePatient.timeSlot}
-                    </strong>
-                  </div>
-
-                  <div className="detail-item-large" style={{ marginTop: '16px' }}>
-                    <span className="block-label">Lý do khám & Triệu chứng đăng ký:</span>
-                    <p className="detail-val-reason">{activePatient.reason}</p>
-                  </div>
-                </div>
-
-                <div className="workspace-footer-group">
-                  {patientTimelineEntry?.type === 'Tư vấn từ xa' && (
-                    <button
-                      className="btn-exam-action-chat"
-                      onClick={() => {
-                        if (onViewChatMessage) {
-                          onViewChatMessage(activePatient.id)
-                        } else {
-                          onNavigateTab?.('Tư vấn trực tiếp')
-                        }
-                      }}
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '16px', height: '16px' }}>
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                      </svg>
-                      NHẮN TIN TƯ VẤN NGAY (CHAT)
-                    </button>
-                  )}
-                  <button
-                    className="btn-exam-action-filled"
-                    onClick={() => {
-                      setSymptoms('')
-                      setDiagnosis('')
-                      setPrescription('')
-                      setShowExamModal(true)
-                    }}
-                  >
-                    GHI KẾT QUẢ KHÁM & KÊ ĐƠN THUỐC
-                  </button>
-                  <button
-                    className="btn-exam-action-outline"
-                    onClick={() => {
-                      setViewingPatientId(activePatient.id)
-                      setSelectedEncounterIdx(0)
-                    }}
-                  >
-                    XEM HỒ SƠ BỆNH ÁN CHI TIẾT
-                  </button>
-                </div>
-              </div>
-            )}
-          </section>
-
-          {/* 2. TIN NHẮN ĐANG CHỜ (Slim messenger representation) */}
-          <section className="figma-section-card waiting-messages-card">
-            <div className="section-header">
-              <div className="title-area">
-                <h2>Tin nhắn đang chờ</h2>
-                <span className="slim-count-badge">2 ca cần hỗ trợ</span>
-              </div>
-              <button className="view-all-btn" onClick={() => onNavigateTab?.('Tư vấn trực tiếp')}>
-                Mở khung chat {ChevronIcon()}
-              </button>
-            </div>
-
-            <div className="list-container slender-list">
-              {messages.map((m, idx) => (
-                <div
-                  className={`slender-message-row ${m.unread ? 'unread' : ''}`}
-                  key={idx}
-                  onClick={() => onViewChatMessage ? onViewChatMessage(m.id) : onNavigateTab?.('Tư vấn trực tiếp')}
-                >
-                  <div className="slender-left">
-                    <div className="avatar-placeholder-slender">
-                      {m.name.split(' ').pop()?.[0]}
-                    </div>
-                    <div className="slender-meta">
-                      <div className="slender-name-row">
-                        <strong className={m.unread ? 'unread-bold' : ''}>{m.name}</strong>
-                        {m.unread && <span className="unread-dot-indicator"></span>}
-                      </div>
-                      <p className={`slender-preview ${m.unread ? 'unread-bold' : ''}`}>{m.text}</p>
-                    </div>
-                  </div>
-                  <div className="slender-right">
-                    <span className="slender-time">{m.time}</span>
-                    <button className="btn-reply-slender">Phản hồi</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
-
-        {/* Right Column: Timeline controller & EMR pending completions list */}
-        <div className="grid-column-right">
-
-          {/* 1. DÒNG THỜI GIAN HÔM NAY (The timeline patient summoner) */}
           <section className="figma-section-card today-timeline-card">
             <div className="section-header">
               <h2>Ca khám trực tiếp hôm nay</h2>
@@ -598,6 +467,7 @@ export function DashboardTab({
                 const isExamining = item.status === 'Đang khám';
                 const isCompleted = item.status === 'Đã khám';
                 const isActiveAdmitted = item.patientId === activePatientId;
+                const itemPatient = clinicalPatientsMap[item.patientId];
 
                 return (
                   <div
@@ -613,15 +483,65 @@ export function DashboardTab({
                       <div className="node-vertical-line"></div>
                     </div>
 
-                    <div className="node-details-card">
-                      <div className="card-top-row">
-                        <h4>{item.name}</h4>
-                        <span className={`status-tag ${isCompleted ? 'done' : isExamining ? 'processing' : 'waiting'}`}>
-                          {item.status === 'Đã khám' ? 'Đã kết thúc' : item.status}
-                        </span>
-                      </div>
-                      <div className="card-bottom-row">
-                        <span className="service-desc">{item.type}</span>
+                    <div className="timeline-node-content">
+                      <div className={`node-details-card ${isActiveAdmitted && itemPatient ? 'expanded-active-card' : ''}`}>
+                        <div className="card-top-row">
+                          <h4>{item.name}</h4>
+                          <div className="status-tag-group">
+                            {item.priority === 'Khẩn cấp' && (
+                              <span className="status-tag urgent-alert">Khẩn cấp</span>
+                            )}
+                            <span className={`status-tag ${isCompleted ? 'done' : isExamining ? 'processing' : 'waiting'}`}>
+                              {item.status === 'Đã khám' ? 'Đã kết thúc' : item.status}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="card-bottom-row">
+                          <span className="service-desc">{item.type}</span>
+                        </div>
+
+                        {isActiveAdmitted && itemPatient && (
+                          <div className="timeline-inline-details" onClick={(event) => event.stopPropagation()}>
+                            <div className="inline-patient-meta">
+                              <span>{itemPatient.gender} • {itemPatient.age} tuổi</span>
+                              <span className="sub-tag code-style">{itemPatient.code}</span>
+                            </div>
+
+                            <div className="expanded-exam-clinical">
+                              <div className="compact-detail-row">
+                                <span className="block-label">Thời gian</span>
+                                <strong className="detail-val-time compact-detail-time">
+                                  {itemPatient.timeSlot}
+                                </strong>
+                              </div>
+                              <div className="compact-detail-row reason-row">
+                                <span className="block-label">Lý do khám</span>
+                                <p className="detail-val-reason compact-detail-reason">{itemPatient.reason}</p>
+                              </div>
+                            </div>
+
+                            <div className="expanded-exam-actions">
+                              <button
+                              className="btn-exam-action-filled"
+                              onClick={() => {
+                                resetExamDraft()
+                                setShowExamModal(true)
+                              }}
+                            >
+                                Kết luận bệnh & kê đơn
+                              </button>
+                              <button
+                                className="btn-exam-action-outline"
+                                onClick={() => {
+                                  setViewingPatientId(itemPatient.id)
+                                  setSelectedEncounterIdx(0)
+                                }}
+                              >
+                                Xem hồ sơ bệnh án chi tiết
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -629,17 +549,58 @@ export function DashboardTab({
               })}
             </div>
           </section>
+        </div>
 
+        {/* Right Column: Waiting messages */}
+        <div className="grid-column-right">
+          <section className="figma-section-card waiting-messages-card">
+            <div className="section-header">
+              <div className="title-area">
+                <h2>Tin nhắn đang chờ</h2>
+              </div>
+              <button className="view-all-btn" onClick={() => onNavigateTab?.('Tư vấn trực tiếp')}>
+                Mở khung chat {ChevronIcon()}
+              </button>
+            </div>
+
+            <div className="list-container slender-list">
+              {messages.map((m, idx) => (
+                <div
+                  className={`slender-message-row ${m.unread ? 'unread' : ''}`}
+                  key={idx}
+                  onClick={() => onViewChatMessage ? onViewChatMessage(m.id) : onNavigateTab?.('Tư vấn trực tiếp')}
+                >
+                  <div className="avatar-placeholder-slender">
+                    {m.name.split(' ').pop()?.[0]}
+                  </div>
+                  <div className="slender-meta">
+                    <div className="message-summary-row">
+                      <div className="slender-name-row">
+                        <strong className={m.unread ? 'unread-bold' : ''}>{m.name}</strong>
+                        {m.unread && <span className="unread-dot-indicator"></span>}
+                      </div>
+                      <span className="message-sent-time">Nhắn lúc {m.sentAt}</span>
+                    </div>
+                    <p className={`slender-preview ${m.unread ? 'unread-bold' : ''}`}>{m.text}</p>
+                    <span className="message-source-note">Chatbot sàng lọc</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
 
       </div>
 
       {/* EMR Popup Modal for writing medical record directly on Dashboard */}
-      {showExamModal && activePatient && (
+      {showExamModal && activePatient && typeof document !== 'undefined' && createPortal((
         <div className="emr-modal-overlay">
           <div className="emr-modal-container">
             <div className="emr-modal-header">
-              <h3>Ghi kết quả khám & Kê đơn thuốc</h3>
+              <div>
+                <h3>{examModalMode === 'record' ? 'Kết luận bệnh & kê đơn' : 'Gợi ý AI tham khảo'}</h3>
+                <p>{examModalMode === 'record' ? 'Bác sĩ ghi nhận triệu chứng, xác nhận chẩn đoán và kê đơn.' : 'AI chỉ hỗ trợ tham khảo, không thay thế kết luận của bác sĩ.'}</p>
+              </div>
               <button className="close-modal-btn" onClick={() => setShowExamModal(false)}>×</button>
             </div>
             <div className="emr-modal-patient-info">
@@ -647,44 +608,99 @@ export function DashboardTab({
               <span>Mã bệnh nhân: <strong>{activePatient.code}</strong></span>
             </div>
             <div className="emr-modal-body">
-              <div className="form-input-group">
-                <label htmlFor="clinical-symptoms">Triệu chứng lâm sàng <span className="required-star">*</span></label>
-                <textarea
-                  id="clinical-symptoms"
-                  value={symptoms}
-                  onChange={e => setSymptoms(e.target.value)}
-                  placeholder="VD: Bệnh nhân ho khan, sốt 39 độ về đêm, đau rát họng..."
-                  rows={3}
-                />
-              </div>
-              <div className="form-input-group">
-                <label htmlFor="clinical-diagnosis">Chẩn đoán bệnh lý <span className="required-star">*</span></label>
-                <textarea
-                  id="clinical-diagnosis"
-                  value={diagnosis}
-                  onChange={e => setDiagnosis(e.target.value)}
-                  placeholder="VD: Viêm họng cấp do nhiễm siêu vi, theo dõi sốt cao..."
-                  rows={2}
-                />
-              </div>
-              <div className="form-input-group">
-                <label htmlFor="clinical-prescription">Kê toa & Đơn thuốc điều trị</label>
-                <textarea
-                  id="clinical-prescription"
-                  value={prescription}
-                  onChange={e => setPrescription(e.target.value)}
-                  placeholder="VD: Paracetamol 500mg - uống 1 viên khi sốt trên 38.5 độ, tối đa 3 viên/ngày..."
-                  rows={4}
-                />
-              </div>
+              {examModalMode === 'record' ? (
+                <section className="doctor-final-panel compact-record-flow">
+                  <div className="record-section-heading">
+                    <h4>Ghi nhận & kết luận</h4>
+                    <span>Bác sĩ xác nhận</span>
+                  </div>
+
+                  <div className="record-form-grid compact-flow-grid">
+                    <div className="form-input-group full-span">
+                      <label htmlFor="patient-symptoms">Ghi nhận triệu chứng <span className="required-star">*</span></label>
+                      <textarea
+                        id="patient-symptoms"
+                        value={symptoms}
+                        onChange={e => setSymptoms(e.target.value)}
+                        placeholder="VD: Tê bì châm chích đầu ngón tay, ngón chân đối xứng; xuất hiện nhiều về đêm..."
+                        rows={2}
+                      />
+                    </div>
+
+                    <div className="form-input-group">
+                      <label htmlFor="clinical-diagnosis">Kết luận của bác sĩ <span className="required-star">*</span></label>
+                      <textarea
+                        id="clinical-diagnosis"
+                        value={diagnosis}
+                        onChange={e => setDiagnosis(e.target.value)}
+                        placeholder="VD: Theo dõi bệnh lý thần kinh ngoại biên mức độ nhẹ..."
+                        rows={2}
+                      />
+                    </div>
+
+                    <div className="form-input-group">
+                      <label htmlFor="clinical-prescription">Kê đơn & dặn dò</label>
+                      <textarea
+                        id="clinical-prescription"
+                        value={prescription}
+                        onChange={e => setPrescription(e.target.value)}
+                        placeholder="VD: Vitamin B1-B6-B12 sau ăn; tái khám sau 7 ngày nếu không giảm..."
+                        rows={2}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="ai-entry-strip">
+                    <div>
+                      <strong>Cần tham khảo AI trước khi kết luận?</strong>
+                      <p>AI gợi ý bệnh có thể gặp, câu hỏi nên hỏi thêm và hướng đơn thuốc tham khảo.</p>
+                    </div>
+                    <button className="emr-btn-outline compact-ai-btn" type="button" onClick={() => setExamModalMode('ai')}>
+                      Xem gợi ý AI
+                    </button>
+                  </div>
+                </section>
+              ) : (
+                <section className="clinical-ai-panel ai-full-panel">
+                  <div className="ai-support-list ai-support-grid">
+                    <div className="ai-support-card">
+                      <span>Tóm tắt triệu chứng</span>
+                      <p>{symptoms || activePatient.reason}</p>
+                    </div>
+                    <div className="ai-support-card warning">
+                      <span>Dấu hiệu cần hỏi thêm</span>
+                      <ul>
+                        <li>Có yếu cơ, mất cảm giác nhanh hoặc đau tăng dần không?</li>
+                        <li>Có tiền sử đái tháo đường, thiếu vitamin B12 hoặc dùng thuốc mới không?</li>
+                      </ul>
+                    </div>
+                    <div className="ai-support-card">
+                      <span>Bệnh có thể gặp</span>
+                      <ul>
+                        <li>Bệnh lý thần kinh ngoại biên.</li>
+                        <li>Thiếu vitamin nhóm B hoặc rối loạn chuyển hóa.</li>
+                        <li>Chèn ép thần kinh do tư thế/lao động lặp lại.</li>
+                      </ul>
+                    </div>
+                    <div className="ai-support-card">
+                      <span>Đơn thuốc tham khảo</span>
+                      <p>Vitamin nhóm B, thuốc giảm đau phù hợp nếu đau nhiều, hẹn tái khám hoặc làm xét nghiệm theo đánh giá của bác sĩ.</p>
+                    </div>
+                  </div>
+                </section>
+              )}
             </div>
             <div className="emr-modal-footer">
-              <button className="emr-btn-outline" onClick={() => setShowExamModal(false)}>Hủy</button>
-              <button className="emr-btn-filled" onClick={handleSaveExamination}>Lưu đợt khám</button>
+              {examModalMode === 'ai' ? (
+                <button className="emr-btn-outline" onClick={() => setExamModalMode('record')}>Quay lại nhập bệnh án</button>
+              ) : (
+                <button className="emr-btn-outline" onClick={() => setShowExamModal(false)}>Hủy</button>
+              )}
+              <button className="emr-btn-filled" onClick={handleSaveExamination}>Lưu kết luận & đơn thuốc</button>
             </div>
           </div>
         </div>
-      )}
+      ), document.body)}
     </div>
   );
 }
