@@ -1,12 +1,17 @@
 import { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Platform, View, StyleSheet, useWindowDimensions } from 'react-native';
+import { Platform, View, StyleSheet } from 'react-native';
 import AppNavigator from './src/navigation/AppNavigator';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { width } = useWindowDimensions();
-  const isDesktopWeb = Platform.OS === 'web' && width > 480;
+
+  const isDesktopWeb = Platform.OS === 'web' && (() => {
+    if (typeof navigator !== 'undefined' && navigator.userAgent) {
+      return !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+    return true;
+  })();
 
   return (
     <View style={isDesktopWeb ? styles.webContainer : styles.mobileContainer}>
@@ -35,10 +40,8 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   phoneFrame: {
-    width: '100%',
-    maxWidth: 420,
-    height: '100%',
-    maxHeight: 880,
+    width: 390,
+    height: 844,
     backgroundColor: '#FFFFFF',
     borderRadius: 36,
     overflow: 'hidden',

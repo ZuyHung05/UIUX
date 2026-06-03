@@ -398,25 +398,7 @@ export default function AppointmentScreen() {
   const currentInfo = selectedInfo ? doctorInfoMap[selectedInfo.name] : null;
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["top"]}>
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <View style={styles.logo}>
-            <SereneHeartLogo size={50} />
-          </View>
-          <View>
-            <Text style={styles.headerTitle}>Lịch hẹn</Text>
-            <Text style={styles.headerSubtitle}>Quản lý lịch khám của bạn</Text>
-          </View>
-        </View>
-        <Pressable
-          onPress={() => Alert.alert("Thông báo", "Chưa có thông báo mới.")}
-          hitSlop={10}
-          style={styles.bellButton}
-        >
-          <Bell size={26} color={COLORS.secondary} />
-        </Pressable>
-      </View>
+    <MainLayout title="Lịch hẹn" subtitle="Quản lý lịch khám của bạn" isScrollable={false} padding={20}>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -1068,7 +1050,7 @@ export default function AppointmentScreen() {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </MainLayout>
   );
 }
 

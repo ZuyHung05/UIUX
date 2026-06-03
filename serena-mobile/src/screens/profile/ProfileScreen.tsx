@@ -32,7 +32,7 @@ export default function ProfileScreen() {
     };
     return (
         <MainLayout title="Cá nhân" subtitle="Quản lý hồ sơ của bạn"
-            isScrollable={false}
+            isScrollable={true}
             padding={16}>
 
             <View style={styles.userSection}>
@@ -69,10 +69,7 @@ export default function ProfileScreen() {
             {/* 3. Vùng chứa nội dung Hồ sơ (Ẩn/Hiện) */}
             {isEMRExpanded ? (
                 <View style={{ flex: 1 }}>
-                    <ScrollView
-                        showsVerticalScrollIndicator={false}
-                        contentContainerStyle={{ paddingBottom: 10 }}
-                    >
+                    <View style={{ paddingBottom: 10 }}>
                         <TouchableOpacity style={styles.uploadCard}>
                             <Camera size={24} color={COLORS.primary} />
                             <Text style={styles.uploadTitle}>Chụp / Tải đơn thuốc cũ</Text>
@@ -85,7 +82,7 @@ export default function ProfileScreen() {
                                 <RecordCard icon={<Beaker color={COLORS.primary} size={20} />} title="Xét nghiệm máu" date="05/07/2023" />
                             </View>
                         )}
-                    </ScrollView>
+                    </View>
                 </View>) : (
                 /* Khi thu gọn thì chỉ hiện mỗi nút Upload  */
                 <TouchableOpacity style={styles.uploadCard}>
