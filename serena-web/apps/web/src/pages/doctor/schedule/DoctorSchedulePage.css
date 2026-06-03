@@ -1255,10 +1255,26 @@
 
 .doctor-schedule-page .week-calendar-grid {
   width: 100%;
-  min-width: 1240px;
-  grid-template-columns: 56px repeat(7, minmax(172px, 1fr));
+  max-width: 100%;
+  grid-template-columns: 56px repeat(7, minmax(0, 1fr));
   grid-template-rows: 40px repeat(4, minmax(120px, 1fr)) 0 26px 0 repeat(4, minmax(120px, 1fr));
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.doctor-schedule-page .week-calendar-grid::-webkit-scrollbar {
+  width: 5px;
+  height: 0;
+}
+
+.doctor-schedule-page .week-calendar-grid::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(141, 193, 255, 0.62);
+}
+
+.doctor-schedule-page .week-calendar-grid::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .doctor-schedule-page .week-calendar-header {
@@ -1288,6 +1304,7 @@
 }
 
 .doctor-schedule-page .week-time-corner {
+  min-width: 0;
   left: 0;
   z-index: 8;
   justify-content: center;
@@ -1297,6 +1314,7 @@
 
 .doctor-schedule-page .week-time-label {
   position: sticky;
+  min-width: 0;
   left: 0;
   z-index: 5;
   display: flex;
@@ -1309,6 +1327,15 @@
   background: #f6fbff;
 }
 
+.doctor-schedule-page .week-day-header {
+  min-width: 0;
+}
+
+.doctor-schedule-page .week-day-header span,
+.doctor-schedule-page .week-day-header strong {
+  max-width: 100%;
+}
+
 .doctor-schedule-page .week-day-header.selected strong {
   background: #d7ecff;
   color: #244a6b;
@@ -1319,6 +1346,7 @@
 }
 
 .doctor-schedule-page .week-day-cell {
+  min-width: 0;
   padding: 3px;
 }
 
@@ -1348,6 +1376,8 @@
 
 .doctor-schedule-page .week-appointment {
   min-height: 54px;
+  width: calc(100% - 6px);
+  max-width: calc(100% - 6px);
   display: grid;
   grid-template-rows: minmax(0, auto) auto;
   gap: 4px;
@@ -1372,10 +1402,15 @@
 .doctor-schedule-page .week-appointment strong,
 .doctor-schedule-page .week-appointment.morning strong,
 .doctor-schedule-page .week-appointment.afternoon strong {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
   color: #244a6b;
   font-size: 12.6px;
   font-weight: 600;
   line-height: 1.18;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .doctor-schedule-page .week-appointment span,
@@ -1501,9 +1536,10 @@
 
 @media (max-height: 780px) {
   .doctor-schedule-page .week-calendar-grid {
-    min-width: 1160px;
-    grid-template-columns: 52px repeat(7, minmax(160px, 1fr));
+    grid-template-columns: 52px repeat(7, minmax(0, 1fr));
     grid-template-rows: 36px repeat(4, minmax(108px, 1fr)) 0 22px 0 repeat(4, minmax(108px, 1fr));
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .doctor-schedule-page .week-appointment {

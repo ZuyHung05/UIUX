@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import CalendarMonth from '../../../components/doctor-schedule/CalendarMonth';
 import { PrimaryButton } from '../../../components/ui/ActionButton';
 import { DetailModal } from '../../../components/ui/DetailModal';
+import { ScrollArea } from '../../../components/ui/ScrollArea';
 import { Patient, SCHEDULE_DATA, Shift } from '../../../data/scheduleData';
 import { initialPatients } from '../patients/PatientListTab';
 import '../patients/PatientListTab.css';
@@ -43,6 +44,11 @@ const getHourSlot = (time: string) => {
   return `${hour}:00`;
 };
 
+const getShiftScrollSlot = (shift: Shift) => {
+  const tone = getShiftTone(shift.title);
+  return tone === 'morning' ? '07:00' : '14:00';
+};
+
 const getAppointmentOffset = (time: string) => {
   const minute = Number(getPatientStartTime(time).split(':')[1] || 0);
   return minute >= 30 ? 50 : 0;
@@ -70,6 +76,7 @@ const SchedulePage = ({
   onViewPatientProfile?: (patientId: string) => void
 }) => {
   type CalendarAppointment = Patient & { shiftTitle: string; dateKey: string };
+  const pageRef = useRef<HTMLDivElement | null>(null);
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -173,6 +180,25 @@ const SchedulePage = ({
     setSelectedAppointment(patient);
   };
 
+  const scrollToShift = (shift: Shift) => {
+    setSelectedShift(shift);
+
+    window.requestAnimationFrame(() => {
+      const grid = pageRef.current?.querySelector<HTMLElement>('.week-calendar-grid');
+      const targetSlot = getShiftScrollSlot(shift);
+      const target = pageRef.current?.querySelector<HTMLElement>(`[data-time-slot="${targetSlot}"]`);
+
+      if (!grid || !target) {
+        return;
+      }
+
+      grid.scrollTo({
+        top: targetSlot === '07:00' ? 0 : Math.max(target.offsetTop - 44, 0),
+        behavior: 'smooth',
+      });
+    });
+  };
+
   const renderShiftSummary = (shift: Shift) => {
     const isSelected = selectedShift?.id === shift.id;
     const tone = getShiftTone(shift.title);
@@ -182,7 +208,7 @@ const SchedulePage = ({
         key={shift.id}
         type="button"
         className={`shift-summary-card ${tone} ${isSelected ? 'selected' : ''}`}
-        onClick={() => setSelectedShift(shift)}
+        onClick={() => scrollToShift(shift)}
       >
         <div>
           <strong>{shift.title}</strong>
@@ -197,7 +223,7 @@ const SchedulePage = ({
   };
 
   return (
-    <div className="schedule-page doctor-schedule-page">
+    <div className="schedule-page doctor-schedule-page" ref={pageRef}>
 
       <header className="patient-tab-header schedule-header">
         <div className="tab-titles">
@@ -243,7 +269,7 @@ const SchedulePage = ({
             <span>{weekRangeLabel}</span>
           </div>
 
-          <div className="week-calendar-grid">
+          <ScrollArea className="week-calendar-grid">
             <div className="week-time-corner">Giờ</div>
             {weekDays.map((day) => {
               const isSelected = day.dateKey === selectedDate;
@@ -270,7 +296,7 @@ const SchedulePage = ({
                     </div>
                   ) : (
                     <>
-                      <div className="week-time-label">{slot}</div>
+                      <div className="week-time-label" data-time-slot={slot}>{slot}</div>
                       {weekDays.map((day) => {
                         const appointments = weeklyAppointments[day.dateKey]?.[slot] || [];
                         const isSelected = day.dateKey === selectedDate;
@@ -300,7 +326,7 @@ const SchedulePage = ({
                 </div>
               );
             })}
-          </div>
+          </ScrollArea>
         </section>
       </main>
       <DetailModal
