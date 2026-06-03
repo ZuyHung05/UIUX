@@ -110,15 +110,15 @@ const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: COLORS.white },
     scrollContent: {
         padding: 20,
-        paddingBottom: 90,
+        paddingBottom: 95,
     },
 
     // Appointment Card
     appointmentCard: {
         backgroundColor: COLORS.primary, // #3F6DC9
         borderRadius: 24,
-        padding: 16,
-        marginBottom: 20,
+        padding: 14,
+        marginBottom: 18,
     },
     cardHeader: {
         flexDirection: 'row',

@@ -12,8 +12,10 @@ import {
   TouchableOpacity,
   View,
   Modal,
+  SafeAreaView,
 } from "react-native";
 import {
+  Bell,
   Calendar,
   ChevronLeft,
   ChevronRight,
@@ -354,7 +356,7 @@ export default function AppointmentScreen() {
       const selectedTime = timeSlots[selectedTimeIndex];
       const dateNum = parseInt(selectedDate.date, 10);
       const refDate = new Date(2026, 4, dateNum);
-      
+
       const fullDayNames = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
       const dayName = fullDayNames[refDate.getDay()];
       const scheduleStr = `${dayName}, ${String(dateNum).padStart(2, "0")}/05/2026`;
@@ -596,66 +598,66 @@ export default function AppointmentScreen() {
 
             <View style={{ opacity: selectedDoctor ? 1 : 0.4 }} pointerEvents={selectedDoctor ? "auto" : "none"}>
               <View style={styles.monthRow}>
-              <TouchableOpacity style={styles.monthNav} hitSlop={8}>
-                <ChevronLeft size={18} color="#1E3A52" />
-              </TouchableOpacity>
-              <Text style={styles.monthLabel}>Tháng 5, 2026</Text>
-              <TouchableOpacity style={styles.monthNav} hitSlop={8}>
-                <ChevronRight size={18} color="#1E3A52" />
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity style={styles.monthNav} hitSlop={8}>
+                  <ChevronLeft size={18} color="#1E3A52" />
+                </TouchableOpacity>
+                <Text style={styles.monthLabel}>Tháng 5, 2026</Text>
+                <TouchableOpacity style={styles.monthNav} hitSlop={8}>
+                  <ChevronRight size={18} color="#1E3A52" />
+                </TouchableOpacity>
+              </View>
 
-            <View style={styles.dateRow}>
-              {dateChips.map((item) => (
-                <Pressable
-                  key={`${item.dayLabel}-${item.date}`}
-                  style={[
-                    styles.dateChip,
-                    selectedDateIndex === dateChips.indexOf(item) &&
-                      styles.dateChipSelected,
-                  ]}
-                  onPress={() => setSelectedDateIndex(dateChips.indexOf(item))}
-                >
-                  <Text style={styles.dateChipDay}>{item.dayLabel}</Text>
-                  <Text
+              <View style={styles.dateRow}>
+                {dateChips.map((item) => (
+                  <Pressable
+                    key={`${item.dayLabel}-${item.date}`}
                     style={[
-                      styles.dateChipDate,
+                      styles.dateChip,
                       selectedDateIndex === dateChips.indexOf(item) &&
+                      styles.dateChipSelected,
+                    ]}
+                    onPress={() => setSelectedDateIndex(dateChips.indexOf(item))}
+                  >
+                    <Text style={styles.dateChipDay}>{item.dayLabel}</Text>
+                    <Text
+                      style={[
+                        styles.dateChipDate,
+                        selectedDateIndex === dateChips.indexOf(item) &&
                         styles.dateChipDateSelected,
-                    ]}
-                  >
-                    {item.date}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
+                      ]}
+                    >
+                      {item.date}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
 
-            <Text style={styles.slotTitle}>Chọn khung giờ</Text>
+              <Text style={styles.slotTitle}>Chọn khung giờ</Text>
 
-            <View style={styles.slotGrid}>
-              {timeSlots.map((slot, index) => (
-                <Pressable
-                  key={slot.label}
-                  style={[
-                    styles.slotChip,
-                    selectedTimeIndex === index && styles.slotChipSelected,
-                    slot.disabled && styles.slotChipDisabled,
-                  ]}
-                  disabled={slot.disabled}
-                  onPress={() => setSelectedTimeIndex(index)}
-                >
-                  <Text
+              <View style={styles.slotGrid}>
+                {timeSlots.map((slot, index) => (
+                  <Pressable
+                    key={slot.label}
                     style={[
-                      styles.slotText,
-                      selectedTimeIndex === index && styles.slotTextSelected,
-                      slot.disabled && styles.slotTextDisabled,
+                      styles.slotChip,
+                      selectedTimeIndex === index && styles.slotChipSelected,
+                      slot.disabled && styles.slotChipDisabled,
                     ]}
+                    disabled={slot.disabled}
+                    onPress={() => setSelectedTimeIndex(index)}
                   >
-                    {slot.label}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
+                    <Text
+                      style={[
+                        styles.slotText,
+                        selectedTimeIndex === index && styles.slotTextSelected,
+                        slot.disabled && styles.slotTextDisabled,
+                      ]}
+                    >
+                      {slot.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
             </View>
 
             <TouchableOpacity
@@ -775,13 +777,13 @@ export default function AppointmentScreen() {
           </View>
 
           <View style={styles.filterRow}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[styles.filterChip, sortDistance && styles.filterChipActive]}
               onPress={() => setSortDistance(!sortDistance)}
             >
               <Text style={[styles.filterChipText, sortDistance && styles.filterChipTextActive]}>Gần nhất</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[styles.filterChip, filterToday && styles.filterChipActive]}
               onPress={() => setFilterToday(!filterToday)}
             >
@@ -794,70 +796,70 @@ export default function AppointmentScreen() {
               const isSelected = tempSelectedDoctor
                 ? tempSelectedDoctor.name === doctor.name
                 : selectedDoctor?.name === doctor.name;
-                return (
-                  <Pressable
-                    key={doctor.name}
-                    style={[
-                      styles.doctorListItem,
-                      isSelected && styles.doctorListItemSelected,
-                    ]}
-                    onPress={() => setTempSelectedDoctor(doctor)}
-                  >
-                    <View style={styles.doctorListRow}>
-                      {getAvatarSource(doctor.name) ? (
-                        <Image source={getAvatarSource(doctor.name)!} style={styles.doctorListAvatar} />
-                      ) : (
-                        <View style={[styles.doctorListAvatar, { backgroundColor: "#A3B8CE" }]} />
-                      )}
-                      <View style={styles.doctorListInfo}>
-                        <Text style={styles.doctorListName}>{doctor.name}</Text>
-                        <Text style={styles.doctorListSpecialty}>{doctor.specialty}</Text>
-                      </View>
-                      {isSelected && (
-                        <View style={styles.doctorListCheck}>
-                          <Text style={styles.doctorListCheckText}>✓</Text>
-                        </View>
-                      )}
+              return (
+                <Pressable
+                  key={doctor.name}
+                  style={[
+                    styles.doctorListItem,
+                    isSelected && styles.doctorListItemSelected,
+                  ]}
+                  onPress={() => setTempSelectedDoctor(doctor)}
+                >
+                  <View style={styles.doctorListRow}>
+                    {getAvatarSource(doctor.name) ? (
+                      <Image source={getAvatarSource(doctor.name)!} style={styles.doctorListAvatar} />
+                    ) : (
+                      <View style={[styles.doctorListAvatar, { backgroundColor: "#A3B8CE" }]} />
+                    )}
+                    <View style={styles.doctorListInfo}>
+                      <Text style={styles.doctorListName}>{doctor.name}</Text>
+                      <Text style={styles.doctorListSpecialty}>{doctor.specialty}</Text>
                     </View>
-                    <View style={styles.doctorListMeta}>
-                      <View style={styles.doctorListMetaRow}>
-                        <MapPin size={14} color="#94A3B8" />
-                        <Text style={styles.doctorListMetaText}>{doctor.branch}</Text>
+                    {isSelected && (
+                      <View style={styles.doctorListCheck}>
+                        <Text style={styles.doctorListCheckText}>✓</Text>
                       </View>
-                      <View style={styles.doctorListMetaRow}>
-                        <Navigation size={14} color="#94A3B8" />
-                        <Text style={styles.doctorListMetaText} numberOfLines={1}>{doctor.address}</Text>
-                      </View>
-                      <View style={styles.doctorListDistanceRow}>
-                        <View style={styles.distanceBadge}>
-                          <Text style={styles.distanceBadgeText}>{doctor.distance}</Text>
-                        </View>
+                    )}
+                  </View>
+                  <View style={styles.doctorListMeta}>
+                    <View style={styles.doctorListMetaRow}>
+                      <MapPin size={14} color="#94A3B8" />
+                      <Text style={styles.doctorListMetaText}>{doctor.branch}</Text>
+                    </View>
+                    <View style={styles.doctorListMetaRow}>
+                      <Navigation size={14} color="#94A3B8" />
+                      <Text style={styles.doctorListMetaText} numberOfLines={1}>{doctor.address}</Text>
+                    </View>
+                    <View style={styles.doctorListDistanceRow}>
+                      <View style={styles.distanceBadge}>
+                        <Text style={styles.distanceBadgeText}>{doctor.distance}</Text>
                       </View>
                     </View>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
 
-            <View style={styles.doctorListActionsFixed}>
-              <TouchableOpacity
-                style={styles.doctorListCancelBtn}
-                onPress={handleCancelDoctorList}
-              >
-                <Text style={styles.doctorListCancelText}>Hủy</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.doctorListConfirmBtn,
-                  !tempSelectedDoctor && styles.doctorListConfirmBtnDisabled,
-                ]}
-                onPress={handleConfirmDoctorSelection}
-                disabled={!tempSelectedDoctor}
-              >
-                <Text style={styles.doctorListConfirmText}>Xác nhận</Text>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.doctorListActionsFixed}>
+            <TouchableOpacity
+              style={styles.doctorListCancelBtn}
+              onPress={handleCancelDoctorList}
+            >
+              <Text style={styles.doctorListCancelText}>Hủy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.doctorListConfirmBtn,
+                !tempSelectedDoctor && styles.doctorListConfirmBtnDisabled,
+              ]}
+              onPress={handleConfirmDoctorSelection}
+              disabled={!tempSelectedDoctor}
+            >
+              <Text style={styles.doctorListConfirmText}>Xác nhận</Text>
+            </TouchableOpacity>
           </View>
+        </View>
       </Modal>
 
       {/* ===== ADDRESS MODAL ===== */}

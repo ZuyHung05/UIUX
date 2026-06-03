@@ -1,3 +1,4 @@
+import { Eye, EyeOff, Lock, Mail, ShieldCheck, UserRound } from 'lucide-react-native';
 import React, { useState } from 'react';
 import {
     KeyboardAvoidingView,
@@ -10,10 +11,9 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { Eye, EyeOff, Lock, Mail, ShieldCheck, UserRound } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SereneHeartLogo } from '../../components/brand/SereneHeartLogo';
-import { COLORS } from '../../utils/theme';
+import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 
 type AuthMode = 'login' | 'register';
 
@@ -21,11 +21,17 @@ interface AuthScreenProps {
     onAuthenticated: () => void;
 }
 
-export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
+export default function AuthScreen({ navigation }: any) {
     const [mode, setMode] = useState<AuthMode>('login');
     const [rememberMe, setRememberMe] = useState(false);
 
     const isRegister = mode === 'register';
+    const handleAuthAction = () => {
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'MainTabs' }],
+        });
+    };
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -102,7 +108,7 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
 
                         <TouchableOpacity
                             activeOpacity={0.85}
-                            onPress={onAuthenticated}
+                            onPress={handleAuthAction}
                             style={styles.primaryButton}
                         >
                             <Text style={styles.primaryButtonText}>
@@ -157,10 +163,10 @@ function AuthField({
         icon === 'user'
             ? UserRound
             : icon === 'mail'
-            ? Mail
-            : icon === 'lock'
-            ? Lock
-            : ShieldCheck;
+                ? Mail
+                : icon === 'lock'
+                    ? Lock
+                    : ShieldCheck;
 
     return (
         <View style={styles.fieldGroup}>
@@ -234,7 +240,7 @@ const styles = StyleSheet.create({
     },
     title: {
         color: COLORS.accent,
-        fontSize: 24,
+        ...TYPOGRAPHY.h1,
         lineHeight: 28,
         fontWeight: '700',
         letterSpacing: 0.8,
