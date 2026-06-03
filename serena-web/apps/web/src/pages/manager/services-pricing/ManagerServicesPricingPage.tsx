@@ -338,7 +338,7 @@ export function ManagerServicesPricingPage() {
 
             <div className="clinic-toolbar">
               <div className="clinic-panel-filters">
-                <SearchInput value={query} onChange={setQuery} placeholder="Tìm nhanh..." />
+                <SearchInput value={query} onChange={setQuery} placeholder="Tìm theo tên hoặc mã chi nhánh" />
                 <FilterSelect
                   value={status}
                   onChange={(event) => setStatus(event.target.value)}

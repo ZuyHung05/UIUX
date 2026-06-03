@@ -134,14 +134,20 @@ export function DoctorManagementPage() {
     {
       key: 'actions',
       header: 'Hành động',
-      width: '118px',
+      width: '150px',
       align: 'center',
       render: (doctor) => (
         <div className="table-actions">
-          <IconButton label="Xem hoặc sửa thông tin" onClick={() => navigate(`/manager/doctors/${doctor.id}`)}>
+          <IconButton label="Xem thông tin chi tiết" onClick={() => navigate(`/manager/doctors/${doctor.id}`)}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 12s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5Z" />
               <circle cx="12" cy="12" r="2.4" />
+            </svg>
+          </IconButton>
+          <IconButton label="Chỉnh sửa thông tin" onClick={() => navigate(`/manager/doctors/${doctor.id}/edit`)}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5Z" />
             </svg>
           </IconButton>
           <IconButton label="Xóa bác sĩ" variant="danger" onClick={() => setDeleteCandidate(doctor)}>
@@ -199,7 +205,7 @@ export function DoctorManagementPage() {
 
           <div className="doctor-toolbar">
             <div className="doctor-toolbar-filters">
-              <SearchInput value={query} onChange={setQuery} placeholder="Tìm kiếm bác sĩ..." />
+              <SearchInput value={query} onChange={setQuery} placeholder="Tìm theo tên hoặc mã bác sĩ" />
               <FilterSelect
                 value={specialty}
                 onChange={(event) => setSpecialty(event.target.value)}
