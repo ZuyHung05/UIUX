@@ -6,6 +6,8 @@ import { MetricCard } from '../../../components/ui/MetricCard'
 import { ClockMetricIcon, MessageMetricIcon, PulseMetricIcon, UsersMetricIcon, StarMetricIcon } from '../../../components/ui/metricIcons'
 import { SearchInput } from '../../../components/ui/SearchInput'
 import { ReturnButton } from '../../../components/ui/ReturnButton'
+import { Pagination } from '../../../components/ui/Pagination'
+import { StatusBadge } from '../../../components/ui/StatusBadge'
 import './PatientListTab.css'
 
 // Clinical-grade patient mock data with EMR elements matching the wireframe exactly
@@ -1765,7 +1767,7 @@ export function PatientListTab({
       header: 'STT',
       width: '60px',
       align: 'center',
-      render: (_item, index) => index + 1,
+      render: (_item, index) => (currentPage - 1) * pageSize + index + 1,
     },
     {
       key: 'patient',
@@ -1811,11 +1813,15 @@ export function PatientListTab({
       header: 'Trạng thái',
       width: '130px',
       align: 'center',
-      render: (item) => (
-        <span className={`status-pill ${item.status === 'Đang chờ' ? 'waiting' : item.status === 'Đang khám' ? 'processing' : 'done'}`}>
-          {item.status}
-        </span>
-      )
+      render: (item) => {
+        const badgeStatus =
+          item.status === 'Đang chờ'
+            ? 'online'
+            : item.status === 'Đang khám'
+            ? 'busy'
+            : 'completed'
+        return <StatusBadge status={badgeStatus} label={item.status} />
+      }
     },
     {
       key: 'actions',
@@ -1905,86 +1911,51 @@ export function PatientListTab({
             onChange={setSearchTerm}
             placeholder="VD: Nhập mã BN (BN-2026-001) hoặc số điện thoại..."
           />
-
-          <div className="sort-selector-container">
-            <FilterSelect
-              value={serviceFilter}
-              onChange={e => setServiceFilter(e.target.value as any)}
-              options={[
-                { value: 'Tất cả', label: 'Dịch vụ' },
-                { value: 'Tư vấn', label: 'Tư vấn' },
-                { value: 'Khám trực tiếp', label: 'Khám trực tiếp' },
-                { value: 'Cả hai', label: 'Cả hai' },
-              ]}
-            />
-          </div>
-
-          <div className="sort-selector-container">
-            <FilterSelect
-              value={statusFilter}
-              onChange={e => setStatusFilter(e.target.value as any)}
-              options={[
-                { value: 'Tất cả', label: 'Trạng thái' },
-                { value: 'Đang chờ', label: 'Đang chờ' },
-                { value: 'Đang khám', label: 'Đang khám' },
-                { value: 'Đã kết thúc', label: 'Đã kết thúc' },
-              ]}
-            />
-          </div>
+          <FilterSelect
+            value={serviceFilter}
+            onChange={e => setServiceFilter(e.target.value as any)}
+            options={[
+              { value: 'Tất cả', label: 'Dịch vụ' },
+              { value: 'Tư vấn', label: 'Tư vấn' },
+              { value: 'Khám trực tiếp', label: 'Khám trực tiếp' },
+              { value: 'Cả hai', label: 'Cả hai' },
+            ]}
+          />
+          <FilterSelect
+            value={statusFilter}
+            onChange={e => setStatusFilter(e.target.value as any)}
+            options={[
+              { value: 'Tất cả', label: 'Trạng thái' },
+              { value: 'Đang chờ', label: 'Đang chờ' },
+              { value: 'Đang khám', label: 'Đang khám' },
+              { value: 'Đã kết thúc', label: 'Đã kết thúc' },
+            ]}
+          />
         </div>
+      </div>
 
-        {/* Top-Right Toolbar Pagination section */}
-        <div className="patient-toolbar-pagination">
-          <div className="page-size-selector">
-            <span className="page-size-label">Hiển thị:</span>
-            <select 
-              value={pageSize} 
-              onChange={e => {
-                setPageSize(Number(e.target.value));
-                setCurrentPage(1);
-              }}
-              className="page-size-select"
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={15}>15</option>
-            </select>
-            <span className="page-size-suffix">dòng</span>
-          </div>
+      <div className="patient-table-controls">
+        <label className="patient-page-size">
+          <span>Hiển thị</span>
+          <select 
+            value={pageSize} 
+            onChange={e => {
+              setPageSize(Number(e.target.value));
+              setCurrentPage(1);
+            }}
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={15}>15</option>
+          </select>
+          <span>dòng</span>
+        </label>
 
-          <div className="mini-pagination">
-            <button 
-              className="pag-nav-btn prev" 
-              disabled={currentPage === 1} 
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
-              type="button"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="pag-icon">
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-              <button 
-                key={page}
-                className={`pag-num-btn ${currentPage === page ? 'active' : ''}`} 
-                onClick={() => setCurrentPage(page)} 
-                type="button"
-              >
-                {page}
-              </button>
-            ))}
-            <button 
-              className="pag-nav-btn next" 
-              disabled={currentPage === totalPages || totalPages === 0} 
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
-              type="button"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="pag-icon">
-                <polyline points="9 6 15 12 9 18" />
-              </svg>
-            </button>
-          </div>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          pageCount={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       {/* Upgraded Table Layout of Patients */}
