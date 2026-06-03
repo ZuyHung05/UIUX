@@ -44,14 +44,14 @@ const initialAccounts: Account[] = [
   {
     email: 'doctor@gmail.com',
     phone: '0900000001',
-    fullName: 'Bac si',
+    fullName: 'Nguyễn Minh Anh',
     password: DEFAULT_PASSWORD,
     role: 'doctor',
   },
   {
     email: 'manager@gmail.com',
     phone: '0900000002',
-    fullName: 'Manager',
+    fullName: 'Trần Hoài Nam',
     password: DEFAULT_PASSWORD,
     role: 'manager',
   },
