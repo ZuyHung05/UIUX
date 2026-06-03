@@ -9,8 +9,10 @@ interface HeaderProps {
     subtitle?: string;
     showBack?: boolean;
     showRightIcon?: boolean;
+    showBell?: boolean;
+    rightElement?: React.ReactNode;
 }
-export const AppHeader = ({ title, subtitle, showBack = false, showRightIcon = false }: HeaderProps) => {
+export const AppHeader = ({ title, subtitle, showBack = false, showRightIcon = false, rightElement, showBell = true }: HeaderProps) => {
     const navigation = useNavigation<any>();
     const showMenu = () => {
         Alert.alert(
@@ -38,13 +40,17 @@ export const AppHeader = ({ title, subtitle, showBack = false, showRightIcon = f
                     <Text style={styles.brandSub}>{subtitle}</Text>
                 </View>
             </View>
-            {showRightIcon ? (
+            {rightElement ? rightElement : null}
+            {showRightIcon && (
                 <TouchableOpacity onPress={showMenu} style={{ padding: 5 }}>
                     <MoreVertical color={COLORS.secondary} size={26} />
                 </TouchableOpacity>
-            ) : (
-                <TouchableOpacity style={styles.notificationBtn}
-                    onPress={() => navigation.navigate('Notification')}>
+            )}
+            {(showBell && !showRightIcon && !rightElement) && (
+                <TouchableOpacity
+                    style={styles.notificationBtn}
+                    onPress={() => navigation.navigate('Notification')}
+                >
                     <Bell color={COLORS.secondary} size={26} />
                     <View style={styles.badge} />
                 </TouchableOpacity>

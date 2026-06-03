@@ -1,7 +1,8 @@
-import { AlertCircle, Bot, Mic, Plus, Send, User } from 'lucide-react-native';
-import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { AlertCircle, Bot, Calendar, LogOut, Mic, MoreVertical, Send, User, Volume2, X } from 'lucide-react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, Image, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { AppButton } from '../../components/common/AppButton';
+import { ConfirmModal } from '../../components/common/ConfirmModal';
 import { RatingModal } from '../../components/common/RatingModal';
 import { MainLayout } from '../../components/layout/MainLayout';
 import { COLORS, TYPOGRAPHY } from '../../utils/theme';
@@ -33,6 +34,62 @@ export default function ConsultationScreen({ navigation }: any) {
     const [isRatingVisible, setIsRatingVisible] = useState(false);
     const [isConfirmEndVisible, setIsConfirmEndVisible] = useState(false);
 
+    const [isMenuVisible, setIsMenuVisible] = useState(false);
+
+    const flatListRef = React.useRef<FlatList>(null);
+    const [playingId, setPlayingId] = useState<string | null>(null);
+
+    const toggleSpeech = (id: string) => {
+        setPlayingId(playingId === id ? null : id);
+    };
+
+    useEffect(() => {
+        if (messages.length > 0) {
+            setTimeout(() => {
+                flatListRef.current?.scrollToEnd({ animated: true });
+            }, 100);
+        }
+    }, [messages]);
+
+    const renderHeaderRight = () => (
+        <View style={{ flexDirection: 'row', gap: 15, alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => setIsMenuVisible(true)} style={{ padding: 5 }}>
+                <MoreVertical size={24} color={COLORS.text} />
+            </TouchableOpacity>
+
+            <Modal visible={isMenuVisible} transparent animationType="fade" onRequestClose={() => setIsMenuVisible(false)}>
+                <Pressable style={styles.menuOverlay} onPress={() => setIsMenuVisible(false)}>
+                    <View style={styles.menuContent}>
+                        {/* Mục 1: Đặt lịch */}
+                        <TouchableOpacity
+                            style={styles.menuItem}
+                            onPress={() => {
+                                setIsMenuVisible(false);
+                                navigation.navigate('MainTabs', { screen: 'Appointment' });
+                            }}
+                        >
+                            <Calendar size={18} color={COLORS.primary} style={{ marginRight: 10 }} />
+                            <Text style={styles.menuItemText}>Đặt lịch khám</Text>
+                        </TouchableOpacity>
+
+                        <View style={styles.divider} />
+
+                        {/* Mục 2: Kết thúc */}
+                        <TouchableOpacity
+                            style={styles.menuItem}
+                            onPress={() => {
+                                setIsMenuVisible(false);
+                                setTimeout(() => setIsConfirmEndVisible(true), 300);
+                            }}
+                        >
+                            <LogOut size={18} color={COLORS.warning} style={{ marginRight: 10 }} />
+                            <Text style={[styles.menuItemText, { color: COLORS.warning }]}>Kết thúc tư vấn</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Pressable>
+            </Modal>
+        </View>
+    );
 
     const handleSend = useCallback((text: string) => {
         if (!text.trim()) return;
@@ -41,6 +98,15 @@ export default function ConsultationScreen({ navigation }: any) {
         setInputText('');
 
         setTimeout(() => {
+            if (text === 'Khác (Tôi muốn tự nhập)') {
+                setPlaceholder("Mô tả triệu chứng của bạn tại đây...");
+                setMessages(prev => [...prev, {
+                    id: Date.now().toString(),
+                    text: 'Mời bạn mô tả chi tiết triệu chứng đang gặp phải. Bạn có thể gõ vào ô chat bên dưới hoặc nhấn vào biểu tượng Micro 🎙️ để nói cho Serena nghe nhé.',
+                    sender: 'bot',
+                }]);
+                return;
+            }
             if (step === 1) {
                 // Bước 2: Hỏi về thời gian
                 setMessages(prev => [...prev, {
@@ -57,32 +123,55 @@ export default function ConsultationScreen({ navigation }: any) {
                     id: Date.now().toString(),
                     text: 'Mức độ khó chịu của bạn trên thang điểm 10 là bao nhiêu? (1 là nhẹ, 10 là rất đau)',
                     sender: 'bot',
-                    quickReplies: ['1-3 (Nhẹ)', '4-7 (Vừa)', '8-10 (Rất nặng)']
+                    quickReplies: ['😀 1-3: Nhẹ', '😐 4-6: Trung bình', '😫 7-10: Rất đau']
                 }]);
                 setStep(3);
             }
             else if (step === 3) {
-                // Bước 4: Kết luận hoặc Upsell
-                if (text.includes('8-10')) {
+                // Bước 4: Hỏi về triệu chứng đi kèm (Để kịch bản phong phú hơn)
+                setMessages(prev => [...prev, {
+                    id: Date.now().toString(),
+                    text: 'Ngoài ra, bạn có kèm theo các biểu hiện như sốt, buồn nôn hay chóng mặt không?',
+                    sender: 'bot',
+                    quickReplies: ['Có, tôi thấy sốt', 'Có, tôi chóng mặt', 'Không, chỉ triệu chứng trên']
+                }]);
+                setStep(4);
+            }
+            else if (step === 4) {
+                // Bước 5: Kết luận & Điều hướng (Upsell)
+                if (text.includes('7-10') || text.includes('sốt')) {
                     setMessages(prev => [...prev, {
                         id: Date.now().toString(),
-                        text: 'Mức độ này khá nghiêm trọng. Bạn cần được bác sĩ chuyên khoa tư vấn ngay để tránh biến chứng.',
+                        text: '⚠️ CẢNH BÁO: Triệu chứng của bạn có dấu hiệu chuyển biến phức tạp. Serena khuyên bạn nên kết nối với bác sĩ chuyên khoa ngay để được chẩn đoán xác thực.',
                         sender: 'bot',
-                        isComplexAction: true // Hiện nút Kết nối bác sĩ
+                        isComplexAction: true // Hiện nút Kết nối bác sĩ / Đặt lịch
                     }]);
                 } else {
                     setMessages(prev => [...prev, {
                         id: Date.now().toString(),
-                        text: 'Thông tin đã được ghi nhận. Triệu chứng của bạn có vẻ ổn, nhưng để an tâm bạn có muốn chat với bác sĩ không?',
+                        text: 'Dựa trên sàng lọc, tình trạng của bạn có vẻ chưa quá nguy hiểm. Bạn nên nghỉ ngơi và theo dõi thêm. Bạn có muốn nhận lời khuyên chăm sóc tại nhà không?',
                         sender: 'bot',
-                        quickReplies: ['Cần bác sĩ ngay', 'Cảm ơn Serena']
+                        quickReplies: ['Có, hãy tư vấn', 'Kết nối bác sĩ cho chắc', 'Cảm ơn Serena']
                     }]);
                 }
-                setStep(4);
+                setStep(5);
             }
         }, 1000);
     }, [step]);
-
+    const handlePaymentConfirm = () => {
+        setPaymentVisible(false);
+        setIsVerifying(true);
+        setTimeout(() => {
+            setIsVerifying(false);
+            setPhase('DOCTOR_CHAT');
+            setMessages(prev => [...prev, {
+                id: Date.now().toString(),
+                text: '✅ Thanh toán thành công! BS. Nguyễn Văn A đang tham gia cuộc hội thoại. Bạn có thể bắt đầu trao đổi.',
+                sender: 'bot',
+                isSuccess: true
+            }]);
+        }, 2500);
+    };
     //         // KỊCH BẢN 1: TRIỆU CHỨNG NHẸ (Tư vấn xong kết thúc)
     //         if (text === 'Đau đầu' || text === 'Cảm ơn Serena') {
     //             const botReply = {
@@ -142,13 +231,22 @@ export default function ConsultationScreen({ navigation }: any) {
                         <View style={[styles.avatar, { backgroundColor: phase === 'DOCTOR_CHAT' ? COLORS.primary : COLORS.secondary }]}>
                             {phase === 'DOCTOR_CHAT' ? <User size={20} color="white" /> : <Bot size={20} color="white" />}
                         </View>
+
                     )}
                     <View style={[styles.bubble, isBot ? styles.botBubble : styles.userBubble]}>
                         <Text style={{ color: isBot ? COLORS.text : 'white', ...TYPOGRAPHY.body }}>{item.text}</Text>
                     </View>
+                    {isBot && item.id !== 'disclaimer' && (
+                        <TouchableOpacity
+                            onPress={() => toggleSpeech(item.id)}
+                            style={styles.audioBtn}
+                        >
+                            <Volume2 size={16} color={playingId === item.id ? COLORS.primary : COLORS.placeholder} />
+                        </TouchableOpacity>
+                    )}
                 </View>
 
-                {/* Option "Mớm lời" đa dạng kịch bản */}
+                {/* Option đa dạng kịch bản */}
                 {item.isComplexAction && (
                     <View style={styles.actionColumn}>
                         <AppButton
@@ -160,7 +258,7 @@ export default function ConsultationScreen({ navigation }: any) {
                         <AppButton
                             title="Đặt lịch hẹn tại phòng khám"
                             variant="outline"
-                            onPress={() => navigation.navigate('Appointment')}
+                            onPress={() => navigation.navigate('MainTabs', { screen: 'Appointment' })}
                             style={styles.actionBtnWide}
                         />
                     </View>
@@ -183,10 +281,11 @@ export default function ConsultationScreen({ navigation }: any) {
 
     return (
         <MainLayout
-            title={phase === 'DOCTOR_CHAT' ? "BS. Nguyễn Văn A" : "Tư vấn Serena AI"}
-            subtitle={phase === 'DOCTOR_CHAT' ? "Đang trực tuyến" : "Sàng lọc sức khỏe ban đầu"}
+            title={phase === 'DOCTOR_CHAT' ? "BS. Nguyễn Văn A" : "Tư vấn AI"}
+            subtitle={phase === 'DOCTOR_CHAT' ? "Đang trực tuyến" : "Sàng lọc triệu chứng"}
             isScrollable={false}
             showBack={true}
+            rightElement={renderHeaderRight()}
         >
             {isVerifying && (
                 <View style={styles.loadingOverlay}>
@@ -197,23 +296,23 @@ export default function ConsultationScreen({ navigation }: any) {
 
             <FlatList
                 data={messages}
+                ref={flatListRef}
                 renderItem={renderMessage}
                 keyExtractor={item => item.id}
-                contentContainerStyle={{ padding: 0 }}
+                contentContainerStyle={{ padding: 5 }}
                 showsVerticalScrollIndicator={false}
             />
 
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={80}>
                 <View style={styles.inputBar}>
-                    <TouchableOpacity style={styles.plusBtn}><Plus size={24} color={COLORS.primary} /></TouchableOpacity>
+                    <TouchableOpacity style={styles.iconBtn}><Mic size={22} color={COLORS.secondary} /></TouchableOpacity>
                     <TextInput
-                        placeholder={placeholder} // Placeholder mớm lời rõ ràng
+                        placeholder={placeholder}
                         style={styles.input}
                         value={inputText}
                         onChangeText={setInputText}
                     />
 
-                    <TouchableOpacity style={styles.iconBtn}><Mic size={22} color={COLORS.secondary} /></TouchableOpacity>
                     <TouchableOpacity
                         style={[styles.sendBtn, { opacity: inputText.length > 0 ? 1 : 0.5 }]}
                         onPress={() => handleSend(inputText)}
@@ -227,6 +326,35 @@ export default function ConsultationScreen({ navigation }: any) {
             {/* Các Modals xác nhận & Đánh giá giữ nguyên logic Delay 600ms như đã fix */}
             <RatingModal isVisible={isRatingVisible} onClose={() => setIsRatingVisible(false)} onSubmit={() => setIsRatingVisible(false)} />
             {/* Modal thanh toán QR và ConfirmEnd */}
+            <Modal visible={isPaymentVisible} transparent animationType="slide">
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.modalHeader}>
+                            <Text style={TYPOGRAPHY.h1}>Thanh toán tư vấn</Text>
+                            <TouchableOpacity onPress={() => setPaymentVisible(false)}><X size={24} /></TouchableOpacity>
+                        </View>
+                        <Image
+                            source={{ uri: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=SerenaPayment150k' }}
+                            style={{ width: 220, height: 220, marginBottom: 20 }}
+                        />
+                        <Text style={{ textAlign: 'center', marginBottom: 20, ...TYPOGRAPHY.body }}>
+                            Vui lòng quét mã QR để thanh toán phí tư vấn trực tiếp với bác sĩ (150.000đ)
+                        </Text>
+                        <AppButton title="Xác nhận đã chuyển khoản" onPress={handlePaymentConfirm} style={{ width: '100%' }} />
+                    </View>
+                </View>
+            </Modal>
+
+            <ConfirmModal
+                isVisible={isConfirmEndVisible}
+                title="Kết thúc tư vấn?"
+                description="Bạn có muốn kết thúc và dành chút thời gian đánh giá Serena không?"
+                icon={<AlertCircle size={40} color={COLORS.warning} />}
+                confirmText="Đánh giá"
+                onConfirm={() => { setIsConfirmEndVisible(false); setTimeout(() => setIsRatingVisible(true), 600); }}
+                onCancel={() => { setIsConfirmEndVisible(false); navigation.goBack(); }}
+            />
+
         </MainLayout>
     );
 }
@@ -250,7 +378,7 @@ const styles = StyleSheet.create({
     userRow: { justifyContent: 'flex-end' },
     avatar: { width: 32, height: 32, borderRadius: 16, justifyContent: 'center', alignItems: 'center', marginRight: 8 },
     bubble: { maxWidth: '80%', padding: 14, borderRadius: 20, alignSelf: 'flex-start' },
-    botBubble: { backgroundColor: '#F0F4FF', borderBottomLeftRadius: 4 },
+    botBubble: { backgroundColor: '#F0F4FF', borderBottomLeftRadius: 4, paddingBottom: 8 },
     userBubble: { backgroundColor: COLORS.primary, borderBottomRightRadius: 4, alignSelf: 'flex-end' },
 
     // Kịch bản điều hướng
@@ -262,9 +390,35 @@ const styles = StyleSheet.create({
     chip: { borderRadius: 15, backgroundColor: COLORS.white, borderColor: COLORS.secondary, borderWidth: 1 },
 
     inputBar: { flexDirection: 'row', alignItems: 'center', padding: 8, backgroundColor: 'white', marginBottom: 40, borderRadius: 30, marginHorizontal: 10, elevation: 5 },
-    input: { flex: 1, marginHorizontal: 8, ...TYPOGRAPHY.body, fontSize: 13 },
+    input: { flex: 1, marginHorizontal: 8, ...TYPOGRAPHY.body },
     plusBtn: { padding: 5 },
     iconBtn: { padding: 8 },
     sendBtn: { backgroundColor: COLORS.primary, width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
-    loadingOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(255,255,255,0.8)', justifyContent: 'center', alignItems: 'center', zIndex: 100 }
+    loadingOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(255,255,255,0.8)', justifyContent: 'center', alignItems: 'center', zIndex: 100 },
+
+    audioBtn: {
+        alignSelf: 'flex-end',
+        marginTop: 5,
+        padding: 4,
+        backgroundColor: 'rgba(0,0,0,0.03)',
+        borderRadius: 10,
+    },
+    modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' },
+    modalContent: { width: '80%', backgroundColor: 'white', borderRadius: 20, padding: 20, alignItems: 'center' },
+    modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 20 },
+    menuOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.2)' },
+    menuContent: {
+        position: 'absolute',
+        top: Platform.OS === 'ios' ? 100 : 60,
+        right: 15,
+        backgroundColor: 'white',
+        borderRadius: 15,
+        padding: 8,
+        width: 180,
+        // Đổ bóng cho menu nổi lên
+        shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 10, elevation: 5
+    },
+    menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 10 },
+    menuItemText: { ...TYPOGRAPHY.body, fontSize: 14, fontWeight: '500' },
+    divider: { height: 1, backgroundColor: '#E2E8F0', marginHorizontal: 5 },
 });
