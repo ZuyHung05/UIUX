@@ -10,8 +10,8 @@
 }
 
 .schedule-header {
-  padding: 18px 20px 12px;
-  margin-bottom: 12px;
+  padding: 16px 18px 12px;
+  margin-bottom: 10px;
   background: #FFFFFF;
   border-bottom: 1px solid #EBF3FC;
   flex: 0 0 auto;
@@ -41,7 +41,7 @@
 }
 
 .schedule-content {
-  padding: 0 18px 16px;
+  padding: 0 16px 14px;
   flex: 1 1 0;
   min-height: 0;
   overflow: hidden;
@@ -51,8 +51,8 @@
 
 .calendar-style-layout {
   display: grid;
-  grid-template-columns: minmax(250px, 286px) minmax(0, 1fr);
-  gap: 16px;
+  grid-template-columns: minmax(236px, 278px) minmax(0, 1fr);
+  gap: 14px;
   align-items: stretch;
   flex: 1 1 0;
   min-height: 0;
@@ -78,7 +78,7 @@
 }
 
 .schedule-mini-calendar.calendar-container {
-  padding: 14px;
+  padding: 12px;
   border-radius: 16px;
   border: 1px solid #DCEBFF;
   box-shadow: none;
@@ -110,7 +110,7 @@
 
 .section-card {
   border: 1px solid #DCEBFF;
-  padding: 14px;
+  padding: 12px;
   border-radius: 16px;
   background: #FFFFFF;
   display: flex;
@@ -269,7 +269,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 12px 16px;
+  padding: 11px 14px;
   border-bottom: 1px solid #EBF3FC;
   background: #FAFDFF;
 }
@@ -302,8 +302,8 @@
 
 .week-calendar-grid {
   display: grid;
-  grid-template-columns: 56px repeat(7, minmax(112px, 1fr));
-  grid-template-rows: 66px repeat(4, 1fr) repeat(3, 18px) repeat(4, 1fr);
+  grid-template-columns: 52px repeat(7, minmax(96px, 1fr));
+  grid-template-rows: 60px repeat(4, 1fr) repeat(3, 17px) repeat(4, 1fr);
   overflow-y: auto;
   flex: 1 1 0;
   min-height: 0;
@@ -374,8 +374,8 @@
 }
 
 .week-day-header strong {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
   display: grid;
   place-items: center;
@@ -467,9 +467,9 @@
   position: absolute;
   left: 4px;
   right: 4px;
-  min-height: 28px;
+  min-height: 24px;
   border-radius: 8px;
-  padding: 4px 6px;
+  padding: 3px 6px;
   text-align: left;
   font-family: inherit;
   cursor: pointer;
@@ -543,6 +543,7 @@
 @media (max-width: 1100px) {
   .schedule-page {
     height: auto;
+    min-height: calc(100vh - 120px);
     overflow: visible;
   }
 
@@ -557,15 +558,216 @@
     overflow: visible;
   }
 
-  .week-calendar-board {
+  .schedule-sidebar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+    align-items: stretch;
     height: auto;
     overflow: visible;
   }
 
+  .shift-summary-section {
+    min-height: 100%;
+  }
+
+  .week-calendar-board {
+    height: auto;
+    overflow: hidden;
+  }
+
   .week-calendar-grid {
-    height: 520px;
+    height: 560px;
     overflow-x: auto;
     overflow-y: auto;
-    grid-template-rows: 66px repeat(4, 72px) repeat(3, 18px) repeat(4, 72px);
+    grid-template-columns: 52px repeat(7, minmax(120px, 1fr));
+    grid-template-rows: 60px repeat(4, 70px) repeat(3, 17px) repeat(4, 70px);
+  }
+}
+
+@media (max-width: 1280px) and (min-width: 1101px) {
+  .calendar-style-layout {
+    grid-template-columns: minmax(220px, 250px) minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .schedule-mini-calendar .calendar-grid-header,
+  .schedule-mini-calendar .calendar-grid {
+    gap: 5px;
+  }
+
+  .schedule-mini-calendar .calendar-day {
+    border-radius: 9px;
+    font-size: 11.5px;
+  }
+
+  .shift-summary-card {
+    padding: 10px;
+  }
+
+  .week-calendar-grid {
+    grid-template-columns: 50px repeat(7, minmax(88px, 1fr));
+  }
+
+  .week-appointment strong {
+    font-size: 10px;
+  }
+
+  .week-appointment span {
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 900px) {
+  .schedule-page {
+    margin: 8px;
+    border-radius: 20px;
+  }
+
+  .schedule-header {
+    padding: 14px 14px 10px;
+  }
+
+  .schedule-content {
+    padding: 0 12px 12px;
+  }
+
+  .schedule-sidebar {
+    grid-template-columns: 1fr;
+  }
+
+  .shift-summary-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .week-calendar-header {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 680px) {
+  .schedule-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .schedule-header .tab-titles h1 {
+    font-size: 24px;
+  }
+
+  .schedule-header .tab-titles p {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .schedule-day-summary {
+    align-self: flex-start;
+  }
+
+  .schedule-mini-calendar.calendar-container {
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  .schedule-mini-calendar .calendar-header {
+    margin-bottom: 10px;
+    gap: 10px;
+  }
+
+  .schedule-mini-calendar .calendar-header h2 {
+    font-size: 14px !important;
+  }
+
+  .schedule-mini-calendar .calendar-grid-header,
+  .schedule-mini-calendar .calendar-grid {
+    gap: 5px;
+  }
+
+  .schedule-mini-calendar .calendar-day {
+    border-radius: 9px;
+    font-size: 11px;
+    min-width: 0;
+  }
+
+  .shift-summary-list {
+    grid-template-columns: 1fr;
+  }
+
+  .week-calendar-header {
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .week-calendar-header h2 {
+    font-size: 16px;
+  }
+
+  .week-calendar-header p {
+    font-size: 12px;
+  }
+
+  .week-calendar-header > span {
+    align-self: flex-start;
+    font-size: 12px;
+  }
+
+  .week-calendar-grid {
+    height: 540px;
+    grid-template-columns: 48px repeat(7, minmax(104px, 104px));
+    grid-template-rows: 58px repeat(4, 66px) repeat(3, 16px) repeat(4, 66px);
+    width: 100%;
+  }
+
+  .week-time-corner {
+    font-size: 11px;
+    padding-right: 6px;
+  }
+
+  .week-time-label {
+    font-size: 11px;
+    padding-right: 6px;
+  }
+
+  .week-day-header strong {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .schedule-page {
+    margin: 6px;
+    border-radius: 18px;
+  }
+
+  .schedule-content {
+    padding: 0 8px 10px;
+  }
+
+  .schedule-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .shift-summary-card {
+    grid-template-columns: 1fr;
+  }
+
+  .shift-summary-count {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .week-calendar-grid {
+    grid-template-columns: 44px repeat(7, minmax(96px, 96px));
+  }
+
+  .week-appointment {
+    left: 3px;
+    right: 3px;
+    border-radius: 7px;
   }
 }

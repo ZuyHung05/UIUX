@@ -618,12 +618,7 @@
   margin-right: 4px;
 }
 
-.waiting-time-label {
-  font-size: 11px;
-  color: #EF4444;
-  font-weight: 700;
-  margin-top: 2px;
-}
+
 
 .reply-action-btn {
   display: inline-flex;
@@ -1093,6 +1088,12 @@
   }
 }
 
+@media (max-width: 1200px) {
+  .expanded-exam-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 1100px) {
   .figma-dashboard-tab {
     height: auto;
@@ -1131,6 +1132,29 @@
 @media (max-width: 768px) {
   .figma-metrics-row {
     grid-template-columns: 1fr;
+  }
+
+  .card-top-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .compact-detail-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    align-items: flex-start;
+  }
+
+  .message-summary-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .message-sent-time {
+    align-self: flex-end;
   }
 }
 
