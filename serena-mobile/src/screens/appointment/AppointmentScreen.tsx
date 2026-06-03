@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Dimensions,
+  FlatList,
   Image,
   Linking,
   Pressable,
@@ -10,31 +11,37 @@ import {
   TouchableOpacity,
   View,
   Modal,
-  Alert,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
-  Bell,
   Calendar,
   ChevronLeft,
   ChevronRight,
   Clock,
+  Edit3,
   ExternalLink,
   MapPin,
   MessageCircle,
+  MoreVertical,
   Navigation,
   Phone,
+  Plus,
+  RefreshCw,
+  Trash2,
   X,
 } from "lucide-react-native";
 import Svg, { Path, Rect, G, ClipPath, Defs } from "react-native-svg";
 
 import { COLORS, TYPOGRAPHY } from "../../utils/theme";
+import { MainLayout } from "../../components/layout/MainLayout";
 
 type DoctorCard = {
   name: string;
   specialty: string;
   highlight?: boolean;
   location?: string;
+  branch?: string;
+  address?: string;
+  distance?: string;
 };
 
 type DoctorInfo = {
@@ -52,6 +59,8 @@ type Appointment = {
   time: string;
   locationName: string;
   locationAddress: string;
+  branch?: string;
+  distance?: string;
 };
 
 type TimeSlot = {
@@ -75,7 +84,19 @@ const initialAppointments: Appointment[] = [
     schedule: "Thứ 4, 27/05/2026",
     time: "2:00 PM",
     locationName: "Phòng khám MN",
-    locationAddress: "123 Main Street, Downtown",
+    locationAddress: "123 Main Street, Downtown, TP.HCM",
+    branch: "Chi nhánh Quận 1",
+    distance: "1.2 km",
+  },
+  {
+    name: "BS. Kiều Thanh N",
+    specialty: "Khoa nội",
+    schedule: "Thứ 6, 29/05/2026",
+    time: "9:30 AM",
+    locationName: "Phòng khám MN",
+    locationAddress: "789 Nguyễn Hữu Thọ, Q.7, TP.HCM",
+    branch: "Chi nhánh Quận 7",
+    distance: "5.8 km",
   },
 ];
 
@@ -126,22 +147,40 @@ const getAvatarSource = (name: string) => {
 
 const doctors: DoctorCard[] = [
   {
+    name: "BS. Lê Minh K",
+    specialty: "Bác sĩ đa khoa",
+    highlight: true,
+    location: "Phòng khám MN",
+    branch: "Chi nhánh Quận 1",
+    address: "123 Main Street, Downtown, TP.HCM",
+    distance: "1.2 km",
+  },
+  {
     name: "BS. Nguyễn Văn M",
     specialty: "Đa khoa",
     highlight: true,
     location: "Phòng khám MN",
+    branch: "Chi nhánh Quận 3",
+    address: "456 Nguyễn Đình Chiểu, Q.3, TP.HCM",
+    distance: "3.5 km",
   },
   {
     name: "BS. Kiều Thanh N",
     specialty: "Khoa nội",
     highlight: true,
     location: "Phòng khám MN",
+    branch: "Chi nhánh Quận 7",
+    address: "789 Nguyễn Hữu Thọ, Q.7, TP.HCM",
+    distance: "5.8 km",
   },
   {
     name: "BS. Trần Văn A",
     specialty: "Khoa ngoại",
     highlight: true,
     location: "Phòng khám MN",
+    branch: "Chi nhánh Bình Thạnh",
+    address: "321 Điện Biên Phủ, Bình Thạnh, TP.HCM",
+    distance: "2.1 km",
   },
 ];
 
@@ -168,15 +207,27 @@ export default function AppointmentScreen() {
   const [addressVisible, setAddressVisible] = React.useState(false);
   const [contactVisible, setContactVisible] = React.useState(false);
   const [qrVisible, setQrVisible] = React.useState(false);
+  const [doctorListVisible, setDoctorListVisible] = React.useState(false);
+  const [cancelConfirmVisible, setCancelConfirmVisible] = React.useState(false);
   const [selectedDateIndex, setSelectedDateIndex] = React.useState(0);
   const [selectedTimeIndex, setSelectedTimeIndex] = React.useState(1);
-  const [selectedDoctor, setSelectedDoctor] = React.useState<DoctorCard | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = React.useState<DoctorCard>(doctors[0]);
+  const [tempSelectedDoctor, setTempSelectedDoctor] = React.useState<DoctorCard | null>(null);
   const [selectedInfo, setSelectedInfo] = React.useState<{ name: string; specialty: string } | null>(null);
   const [qrAppointment, setQrAppointment] = React.useState<Appointment | null>(null);
   const [upcomingAppointments, setUpcomingAppointments] = React.useState<Appointment[]>(initialAppointments);
 
-  const handleBookDoctor = (doctor: DoctorCard) => {
-    setSelectedDoctor(doctor);
+  // Edit mode state
+  const [isEditMode, setIsEditMode] = React.useState(false);
+  const [editingIndex, setEditingIndex] = React.useState<number | null>(null);
+
+  // Dropdown menu state
+  const [dropdownIndex, setDropdownIndex] = React.useState<number | null>(null);
+  const [cancelTargetIndex, setCancelTargetIndex] = React.useState<number | null>(null);
+
+  const handleOpenBooking = () => {
+    setIsEditMode(false);
+    setEditingIndex(null);
     setBookingVisible(true);
   };
 
@@ -200,6 +251,70 @@ export default function AppointmentScreen() {
     setBookingVisible(true);
   };
 
+  // Open doctor list modal from booking modal
+  const handleOpenDoctorList = () => {
+    setTempSelectedDoctor(null);
+    setBookingVisible(false);
+    setDoctorListVisible(true);
+  };
+
+  // Cancel doctor list → return to booking modal with preserved selections
+  const handleCancelDoctorList = () => {
+    setDoctorListVisible(false);
+    setTempSelectedDoctor(null);
+    setBookingVisible(true);
+  };
+
+  // Confirm doctor selection from list
+  const handleConfirmDoctorSelection = () => {
+    if (tempSelectedDoctor) {
+      setSelectedDoctor(tempSelectedDoctor);
+    }
+    setDoctorListVisible(false);
+    setTempSelectedDoctor(null);
+    setBookingVisible(true);
+  };
+
+  // Edit appointment
+  const handleEditAppointment = (idx: number) => {
+    setDropdownIndex(null);
+    const appt = upcomingAppointments[idx];
+    // Find matching doctor
+    const matchDoc = doctors.find((d) => d.name === appt.name);
+    if (matchDoc) {
+      setSelectedDoctor(matchDoc);
+    }
+    setIsEditMode(true);
+    setEditingIndex(idx);
+    setSelectedDateIndex(0);
+    setSelectedTimeIndex(1);
+    setBookingVisible(true);
+  };
+
+  // Cancel appointment
+  const handleRequestCancel = (idx: number) => {
+    setDropdownIndex(null);
+    setCancelTargetIndex(idx);
+    setCancelConfirmVisible(true);
+  };
+
+  const handleConfirmCancel = () => {
+    if (cancelTargetIndex !== null) {
+      setUpcomingAppointments((prev) => prev.filter((_, i) => i !== cancelTargetIndex));
+    }
+    setCancelConfirmVisible(false);
+    setCancelTargetIndex(null);
+  };
+
+  const formatTimeAMPM = (timeStr: string) => {
+    const [hourStr, minStr] = timeStr.split(":");
+    let hour = parseInt(hourStr, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12;
+    hour = hour ? hour : 12;
+    return `${hour}:${minStr} ${ampm}`;
+  };
+
   const handleConfirmBooking = () => {
     if (selectedDoctor) {
       const selectedDate = dateChips[selectedDateIndex];
@@ -211,27 +326,31 @@ export default function AppointmentScreen() {
       const dayName = fullDayNames[refDate.getDay()];
       const scheduleStr = `${dayName}, ${String(dateNum).padStart(2, "0")}/05/2026`;
 
-      const formatTimeAMPM = (timeStr: string) => {
-        const [hourStr, minStr] = timeStr.split(":");
-        let hour = parseInt(hourStr, 10);
-        const ampm = hour >= 12 ? 'PM' : 'AM';
-        hour = hour % 12;
-        hour = hour ? hour : 12;
-        return `${hour}:${minStr} ${ampm}`;
-      };
-
-      const newAppointment: Appointment = {
+      const updatedAppointment: Appointment = {
         name: selectedDoctor.name,
         specialty: selectedDoctor.specialty,
         schedule: scheduleStr,
         time: formatTimeAMPM(selectedTime.label),
         locationName: selectedDoctor.location ?? "Phòng khám MN",
-        locationAddress: "123 Main Street, Downtown",
+        locationAddress: selectedDoctor.address ?? "123 Main Street, Downtown",
+        branch: selectedDoctor.branch,
+        distance: selectedDoctor.distance,
       };
-      setUpcomingAppointments((prev) => [newAppointment, ...prev]);
+
+      if (isEditMode && editingIndex !== null) {
+        // Update existing appointment
+        setUpcomingAppointments((prev) =>
+          prev.map((a, i) => (i === editingIndex ? updatedAppointment : a))
+        );
+      } else {
+        // Add new appointment
+        setUpcomingAppointments((prev) => [updatedAppointment, ...prev]);
+      }
     }
     setConfirmVisible(false);
     setBookingVisible(false);
+    setIsEditMode(false);
+    setEditingIndex(null);
   };
 
   const getConfirmText = () => {
@@ -244,37 +363,28 @@ export default function AppointmentScreen() {
   const currentInfo = selectedInfo ? doctorInfoMap[selectedInfo.name] : null;
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["top"]}>
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Image
-            source={require("../../assets/SerenaIcon.png")}
-            style={styles.logo}
-          />
-          <View>
-            <Text style={styles.headerTitle}>Lịch hẹn</Text>
-            <Text style={styles.headerSubtitle}>Quản lý lịch khám của bạn</Text>
-          </View>
-        </View>
-        <Pressable
-          onPress={() => Alert.alert("Thông báo", "Chưa có thông báo mới.")}
-          hitSlop={10}
-          style={styles.bellButton}
-        >
-          <Bell size={28} color={COLORS.secondary} />
-        </Pressable>
-      </View>
-
+    <MainLayout
+      title="Lịch hẹn"
+      subtitle="Quản lý lịch khám của bạn"
+      isScrollable={false}
+    >
       <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 120 }}
+        style={{ flex: 1 }}
       >
+        {dropdownIndex !== null && (
+          <Pressable
+            style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 50, elevation: 50 }}
+            onPress={() => setDropdownIndex(null)}
+          />
+        )}
         <SectionTitle label="Lịch hẹn sắp diễn ra" />
 
         {upcomingAppointments.map((appt, idx) => (
-          <View key={`${appt.name}-${idx}`} style={styles.upcomingCard}>
-            <View style={styles.cardDoctorRow}>
+          <View key={`${appt.name}-${idx}`} style={[styles.upcomingCard, { zIndex: dropdownIndex === idx ? 100 : 1, elevation: dropdownIndex === idx ? 100 : 2 }]}>
+            {/* Doctor row with 3-dot menu */}
+            <View style={[styles.cardDoctorRow, { zIndex: dropdownIndex === idx ? 100 : 1 }]}>
               {getAvatarSource(appt.name) ? (
                 <Image source={getAvatarSource(appt.name)!} style={styles.avatarImage} />
               ) : (
@@ -284,18 +394,39 @@ export default function AppointmentScreen() {
                 <Text style={styles.doctorName}>{appt.name}</Text>
                 <Text style={styles.doctorSpecialty}>{appt.specialty}</Text>
               </View>
-              <Pressable
-                onPress={() => {
-                  setQrAppointment(appt);
-                  setQrVisible(true);
-                }}
-                hitSlop={8}
-                style={styles.qrIconBtn}
-              >
-                <QrScanIcon />
-              </Pressable>
+              <View style={{ zIndex: dropdownIndex === idx ? 100 : 1 }}>
+                <Pressable
+                  onPress={() => setDropdownIndex(dropdownIndex === idx ? null : idx)}
+                  hitSlop={8}
+                  style={styles.moreBtn}
+                >
+                  <MoreVertical size={20} color="#94A3B8" />
+                </Pressable>
+
+                {/* Dropdown menu */}
+                {dropdownIndex === idx && (
+                  <View style={styles.dropdown}>
+                    <TouchableOpacity
+                      style={styles.dropdownItem}
+                      onPress={() => handleEditAppointment(idx)}
+                    >
+                      <Edit3 size={16} color="#1E3A52" />
+                      <Text style={styles.dropdownText}>Chỉnh sửa lịch</Text>
+                    </TouchableOpacity>
+                    <View style={styles.dropdownDivider} />
+                    <TouchableOpacity
+                      style={styles.dropdownItem}
+                      onPress={() => handleRequestCancel(idx)}
+                    >
+                      <Trash2 size={16} color="#EF4444" />
+                      <Text style={[styles.dropdownText, { color: "#EF4444" }]}>Hủy lịch</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
             </View>
 
+            {/* Info panel */}
             <View style={styles.infoPanel}>
               <View style={styles.infoRow}>
                 <Calendar size={18} color="#64748B" />
@@ -311,6 +442,19 @@ export default function AppointmentScreen() {
                   <Text style={styles.infoSecondary}>{appt.locationAddress}</Text>
                 </View>
               </View>
+              {appt.branch && (
+                <View style={styles.infoRow}>
+                  <Navigation size={18} color="#64748B" />
+                  <View style={styles.infoTextBlock}>
+                    <Text style={styles.infoPrimary}>{appt.branch}</Text>
+                    {appt.distance && (
+                      <View style={styles.cardDistanceBadge}>
+                        <Text style={styles.cardDistanceBadgeText}>{appt.distance}</Text>
+                      </View>
+                    )}
+                  </View>
+                </View>
+              )}
             </View>
 
             <View style={styles.buttonRow}>
@@ -324,28 +468,33 @@ export default function AppointmentScreen() {
                 label="Liên hệ"
                 onPress={() => handleShowContact(appt.name, appt.specialty)}
               />
+              <ActionChip
+                icon={<QrScanIcon size={15} />}
+                label="QR"
+                transparent
+                onPress={() => {
+                  setQrAppointment(appt);
+                  setQrVisible(true);
+                }}
+              />
             </View>
           </View>
         ))}
 
-        <SectionTitle label="Đặt lịch với bác sĩ" />
-
-        <View style={styles.doctorList}>
-          {doctors.map((doctor) => (
-            <DoctorCardItem
-              key={doctor.name}
-              doctor={doctor}
-              onBook={() => handleBookDoctor(doctor)}
-              onAddress={() => handleShowAddress(doctor.name, doctor.specialty)}
-              onContact={() => handleShowContact(doctor.name, doctor.specialty)}
-            />
-          ))}
-        </View>
-
         <View style={styles.bottomSpacer} />
       </ScrollView>
 
+      {/* CTA Button */}
+      <TouchableOpacity
+        style={styles.floatingCta}
+        onPress={handleOpenBooking}
+        activeOpacity={0.85}
+      >
+        <Plus size={24} color="#FFFFFF" />
+        <Text style={styles.ctaText}>Đặt lịch hẹn khám</Text>
+      </TouchableOpacity>
 
+      {/* ===== BOOKING / EDIT MODAL ===== */}
       <Modal
         visible={bookingVisible}
         transparent
@@ -362,7 +511,9 @@ export default function AppointmentScreen() {
             <View style={styles.sheetHandle} />
 
             <View style={styles.sheetHeader}>
-              <Text style={styles.sheetTitle}>Đặt lịch khám</Text>
+              <Text style={styles.sheetTitle}>
+                {isEditMode ? "Chỉnh sửa lịch khám" : "Đặt lịch khám"}
+              </Text>
               <TouchableOpacity
                 onPress={() => setBookingVisible(false)}
                 style={styles.closeButton}
@@ -372,6 +523,7 @@ export default function AppointmentScreen() {
               </TouchableOpacity>
             </View>
 
+            {/* Doctor card - change button hidden in edit mode */}
             <View style={styles.selectedDoctorCard}>
               {getAvatarSource(selectedDoctor?.name ?? "") ? (
                 <Image source={getAvatarSource(selectedDoctor?.name ?? "")!} style={styles.modalAvatarImage} />
@@ -382,6 +534,16 @@ export default function AppointmentScreen() {
                 <Text style={styles.modalDoctorName}>{selectedDoctor?.name ?? "BS. Kiều Thanh N"}</Text>
                 <Text style={styles.modalDoctorSpecialty}>{selectedDoctor?.specialty ?? "Khoa Da liễu"}</Text>
               </View>
+              {!isEditMode && (
+                <TouchableOpacity
+                  style={styles.changeDoctorBtn}
+                  onPress={handleOpenDoctorList}
+                  hitSlop={8}
+                >
+                  <RefreshCw size={14} color="#5B9DFF" />
+                  <Text style={styles.changeDoctorText}>Đổi</Text>
+                </TouchableOpacity>
+              )}
             </View>
 
             <View style={styles.monthRow}>
@@ -450,12 +612,15 @@ export default function AppointmentScreen() {
               style={styles.confirmButton}
               onPress={handleRequestConfirm}
             >
-              <Text style={styles.confirmButtonText}>Đặt lịch</Text>
+              <Text style={styles.confirmButtonText}>
+                {isEditMode ? "Cập nhật lịch" : "Đặt lịch"}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
+      {/* ===== CONFIRM BOOKING / EDIT MODAL ===== */}
       <Modal
         visible={confirmVisible}
         transparent
@@ -472,16 +637,32 @@ export default function AppointmentScreen() {
               <View style={styles.confirmIconWrap}>
                 <CalendarConfirmIcon />
               </View>
-              <Text style={styles.confirmTitle}>Xác nhận đặt lịch</Text>
+              <Text style={styles.confirmTitle}>
+                {isEditMode ? "Xác nhận chỉnh sửa" : "Xác nhận đặt lịch"}
+              </Text>
             </View>
             <Text style={styles.confirmDesc}>
-              Bạn có chắc chắn muốn đặt lịch khám với{" "}
-              <Text style={styles.confirmBold}>{getConfirmText().doctorName}</Text>{" "}
-              vào lúc{" "}
-              <Text style={styles.confirmHighlight}>{getConfirmText().time}</Text>{" "}
-              ngày{" "}
-              <Text style={styles.confirmBold}>{getConfirmText().date}</Text>{" "}
-              không?
+              {isEditMode ? (
+                <>
+                  Bạn có chắc chắn muốn chỉnh sửa lịch khám với{" "}
+                  <Text style={styles.confirmBold}>{getConfirmText().doctorName}</Text>{" "}
+                  sang lúc{" "}
+                  <Text style={styles.confirmHighlight}>{getConfirmText().time}</Text>{" "}
+                  ngày{" "}
+                  <Text style={styles.confirmBold}>{getConfirmText().date}</Text>{" "}
+                  không?
+                </>
+              ) : (
+                <>
+                  Bạn có chắc chắn muốn đặt lịch khám với{" "}
+                  <Text style={styles.confirmBold}>{getConfirmText().doctorName}</Text>{" "}
+                  vào lúc{" "}
+                  <Text style={styles.confirmHighlight}>{getConfirmText().time}</Text>{" "}
+                  ngày{" "}
+                  <Text style={styles.confirmBold}>{getConfirmText().date}</Text>{" "}
+                  không?
+                </>
+              )}
             </Text>
             <View style={styles.confirmActions}>
               <TouchableOpacity
@@ -495,6 +676,147 @@ export default function AppointmentScreen() {
                 onPress={handleConfirmBooking}
               >
                 <Text style={styles.confirmAcceptText}>Xác nhận</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* ===== CANCEL CONFIRM MODAL ===== */}
+      <Modal
+        visible={cancelConfirmVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setCancelConfirmVisible(false)}
+      >
+        <View style={styles.confirmOverlay}>
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={() => setCancelConfirmVisible(false)}
+          />
+          <View style={styles.confirmCard}>
+            <View style={styles.confirmHeaderRow}>
+              <View style={[styles.confirmIconWrap, { backgroundColor: "rgba(239, 68, 68, 0.12)" }]}>
+                <Trash2 size={24} color="#EF4444" />
+              </View>
+              <Text style={[styles.confirmTitle, { color: "#EF4444" }]}>Hủy lịch hẹn</Text>
+            </View>
+            <Text style={styles.confirmDesc}>
+              Bạn có chắc chắn muốn hủy lịch hẹn này không?{"\n"}
+              Hành động này không thể hoàn tác.
+            </Text>
+            <View style={styles.confirmActions}>
+              <TouchableOpacity
+                style={styles.confirmCancelBtn}
+                onPress={() => setCancelConfirmVisible(false)}
+              >
+                <Text style={styles.confirmCancelText}>Quay lại</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.confirmAcceptBtn, { backgroundColor: "#EF4444", shadowColor: "#EF4444" }]}
+                onPress={handleConfirmCancel}
+              >
+                <Text style={styles.confirmAcceptText}>Hủy lịch</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* ===== DOCTOR LIST MODAL ===== */}
+      <Modal
+        visible={doctorListVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={handleCancelDoctorList}
+      >
+        <View style={styles.modalOverlay}>
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={handleCancelDoctorList}
+          />
+          <View style={[styles.sheet, { maxHeight: SCREEN_HEIGHT * 0.75 }]}>
+            <View style={styles.sheetHandle} />
+            <View style={styles.sheetHeader}>
+              <Text style={styles.sheetTitle}>Chọn bác sĩ</Text>
+              <TouchableOpacity
+                onPress={handleCancelDoctorList}
+                style={styles.closeButton}
+                hitSlop={10}
+              >
+                <X size={22} color="#1E293B" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              style={{ maxHeight: SCREEN_HEIGHT * 0.48 }}
+            >
+              {doctors.map((doctor) => {
+                const isSelected = tempSelectedDoctor
+                  ? tempSelectedDoctor.name === doctor.name
+                  : selectedDoctor.name === doctor.name;
+                return (
+                  <Pressable
+                    key={doctor.name}
+                    style={[
+                      styles.doctorListItem,
+                      isSelected && styles.doctorListItemSelected,
+                    ]}
+                    onPress={() => setTempSelectedDoctor(doctor)}
+                  >
+                    <View style={styles.doctorListRow}>
+                      {getAvatarSource(doctor.name) ? (
+                        <Image source={getAvatarSource(doctor.name)!} style={styles.doctorListAvatar} />
+                      ) : (
+                        <View style={[styles.doctorListAvatar, { backgroundColor: "#A3B8CE" }]} />
+                      )}
+                      <View style={styles.doctorListInfo}>
+                        <Text style={styles.doctorListName}>{doctor.name}</Text>
+                        <Text style={styles.doctorListSpecialty}>{doctor.specialty}</Text>
+                      </View>
+                      {isSelected && (
+                        <View style={styles.doctorListCheck}>
+                          <Text style={styles.doctorListCheckText}>✓</Text>
+                        </View>
+                      )}
+                    </View>
+                    <View style={styles.doctorListMeta}>
+                      <View style={styles.doctorListMetaRow}>
+                        <MapPin size={14} color="#94A3B8" />
+                        <Text style={styles.doctorListMetaText}>{doctor.branch}</Text>
+                      </View>
+                      <View style={styles.doctorListMetaRow}>
+                        <Navigation size={14} color="#94A3B8" />
+                        <Text style={styles.doctorListMetaText} numberOfLines={1}>{doctor.address}</Text>
+                      </View>
+                      <View style={styles.doctorListDistanceRow}>
+                        <View style={styles.distanceBadge}>
+                          <Text style={styles.distanceBadgeText}>{doctor.distance}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+
+            <View style={styles.doctorListActions}>
+              <TouchableOpacity
+                style={styles.doctorListCancelBtn}
+                onPress={handleCancelDoctorList}
+              >
+                <Text style={styles.doctorListCancelText}>Hủy</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.doctorListConfirmBtn,
+                  !tempSelectedDoctor && styles.doctorListConfirmBtnDisabled,
+                ]}
+                onPress={handleConfirmDoctorSelection}
+                disabled={!tempSelectedDoctor}
+              >
+                <Text style={styles.doctorListConfirmText}>Xác nhận</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -707,7 +1029,7 @@ export default function AppointmentScreen() {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </MainLayout>
   );
 }
 
@@ -715,55 +1037,14 @@ function SectionTitle({ label }: { label: string }) {
   return <Text style={styles.sectionTitle}>{label}</Text>;
 }
 
-function DoctorCardItem({ doctor, onBook, onAddress, onContact }: { doctor: DoctorCard; onBook: () => void; onAddress: () => void; onContact: () => void }) {
+function CalendarBookIcon({ size = 16, color = "#244A6B" }: { size?: number; color?: string }) {
   return (
-    <View
-      style={[
-        styles.doctorCard,
-        doctor.highlight && styles.doctorCardHighlight,
-      ]}
-    >
-      <View style={styles.cardDoctorRow}>
-        {getAvatarSource(doctor.name) ? (
-          <Image source={getAvatarSource(doctor.name)!} style={styles.avatarImage} />
-        ) : (
-          <View style={styles.avatar} />
-        )}
-        <View style={styles.doctorMeta}>
-          <Text style={styles.doctorName}>{doctor.name}</Text>
-          <Text style={styles.doctorSpecialty}>{doctor.specialty}</Text>
-        </View>
-      </View>
-
-      <View style={styles.buttonRow}>
-        <ActionChip
-          icon={<MapPin size={15} color="#244A6B" />}
-          label="Địa chỉ"
-          onPress={onAddress}
-        />
-        <ActionChip
-          icon={<Phone size={15} color="#244A6B" />}
-          label="Liên hệ"
-          onPress={onContact}
-        />
-        <ActionChip
-          icon={<CalendarBookIcon />}
-          label="Đặt lịch"
-          onPress={onBook}
-        />
-      </View>
-    </View>
-  );
-}
-
-function CalendarBookIcon() {
-  return (
-    <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
+    <Svg width={size} height={size} viewBox="0 0 16 16" fill="none">
       <G clipPath="url(#clip0_1309_591)">
-        <Path d="M5.30322 1.32422V3.97589" stroke="#244A6B" strokeWidth={1.999} strokeLinecap="round" strokeLinejoin="round" />
-        <Path d="M10.6064 1.32422V3.97589" stroke="#244A6B" strokeWidth={1.999} strokeLinecap="round" strokeLinejoin="round" />
-        <Path d="M12.5954 2.65234H3.3146C2.58237 2.65234 1.98877 3.24594 1.98877 3.97818V13.259C1.98877 13.9912 2.58237 14.5848 3.3146 14.5848H12.5954C13.3277 14.5848 13.9213 13.9912 13.9213 13.259V3.97818C13.9213 3.24594 13.3277 2.65234 12.5954 2.65234Z" stroke="#244A6B" strokeWidth={1.999} strokeLinecap="round" strokeLinejoin="round" />
-        <Path d="M1.98877 6.62891H13.9213" stroke="#244A6B" strokeWidth={1.999} strokeLinecap="round" strokeLinejoin="round" />
+        <Path d="M5.30322 1.32422V3.97589" stroke={color} strokeWidth={1.999} strokeLinecap="round" strokeLinejoin="round" />
+        <Path d="M10.6064 1.32422V3.97589" stroke={color} strokeWidth={1.999} strokeLinecap="round" strokeLinejoin="round" />
+        <Path d="M12.5954 2.65234H3.3146C2.58237 2.65234 1.98877 3.24594 1.98877 3.97818V13.259C1.98877 13.9912 2.58237 14.5848 3.3146 14.5848H12.5954C13.3277 14.5848 13.9213 13.9912 13.9213 13.259V3.97818C13.9213 3.24594 13.3277 2.65234 12.5954 2.65234Z" stroke={color} strokeWidth={1.999} strokeLinecap="round" strokeLinejoin="round" />
+        <Path d="M1.98877 6.62891H13.9213" stroke={color} strokeWidth={1.999} strokeLinecap="round" strokeLinejoin="round" />
       </G>
       <Defs>
         <ClipPath id="clip0_1309_591">
@@ -792,11 +1073,15 @@ function CalendarConfirmIcon() {
   );
 }
 
-function ActionChip({ icon, label, onPress }: { icon: React.ReactNode; label: string; onPress?: () => void }) {
+function ActionChip({ icon, label, onPress, transparent }: { icon: React.ReactNode; label: string; onPress?: () => void; transparent?: boolean }) {
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.chip, pressed && styles.chipPressed]}
+      style={({ pressed }) => [
+        styles.chip,
+        transparent && { backgroundColor: "transparent" },
+        pressed && styles.chipPressed
+      ]}
     >
       {icon}
       <Text style={styles.chipText}>{label}</Text>
@@ -878,56 +1163,6 @@ function QrCodePattern({ data }: { data: string }) {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 16,
-    backgroundColor: COLORS.white,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#E5E7EB",
-  },
-  headerLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  logo: {
-    width: 52,
-    height: 52,
-    resizeMode: "contain",
-  },
-  headerTitle: {
-    ...TYPOGRAPHY.h1,
-    color: COLORS.accent,
-    lineHeight: 34,
-  },
-  headerSubtitle: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.subtext,
-    marginTop: 2,
-  },
-  bellButton: {
-    width: 44,
-    height: 44,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  scroll: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  scrollContent: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 40,
-  },
   sectionTitle: {
     ...TYPOGRAPHY.h2,
     color: "#5B9DFF",
@@ -947,24 +1182,6 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
-  },
-  doctorCard: {
-    backgroundColor: COLORS.white,
-    borderLeftWidth: 3,
-    borderLeftColor: "#91C3FF",
-    borderRadius: 18,
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 12,
-    marginBottom: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
-  },
-  doctorCardHighlight: {
-    borderLeftColor: "#8DC1FF",
   },
   cardDoctorRow: {
     flexDirection: "row",
@@ -996,6 +1213,49 @@ const styles = StyleSheet.create({
     color: COLORS.subtext,
     marginTop: 4,
   },
+  moreBtn: {
+    width: 32,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 16,
+  },
+  /* ===== DROPDOWN ===== */
+  dropdown: {
+    position: "absolute",
+    top: 36,
+    right: 0,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 14,
+    paddingVertical: 6,
+    minWidth: 180,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 10,
+    zIndex: 100,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
+  },
+  dropdownItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  dropdownText: {
+    ...TYPOGRAPHY.body,
+    color: "#1E3A52",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  dropdownDivider: {
+    height: 1,
+    backgroundColor: "#F1F5F9",
+    marginHorizontal: 12,
+  },
   infoPanel: {
     backgroundColor: "#F9FAFB",
     borderRadius: 18,
@@ -1021,6 +1281,20 @@ const styles = StyleSheet.create({
     color: COLORS.subtext,
     lineHeight: 22,
   },
+  cardDistanceBadge: {
+    alignSelf: "flex-start",
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    borderRadius: 12,
+    backgroundColor: "rgba(91, 157, 255, 0.12)",
+    marginTop: 4,
+  },
+  cardDistanceBadgeText: {
+    ...TYPOGRAPHY.caption,
+    color: "#5B9DFF",
+    fontWeight: "600",
+    fontSize: 11,
+  },
   buttonRow: {
     flexDirection: "row",
     gap: 10,
@@ -1045,13 +1319,38 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 18,
   },
-  doctorList: {
-    gap: 0,
-  },
   bottomSpacer: {
     height: 8,
   },
 
+  /* ===== CTA BUTTON ===== */
+  floatingCta: {
+    position: "absolute",
+    bottom: 24,
+    alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 12,
+    height: 56,
+    paddingHorizontal: 32,
+    borderRadius: 999,
+    backgroundColor: "#3F83F8",
+    shadowColor: "#3F83F8",
+    shadowOpacity: 0.4,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 10,
+    zIndex: 20,
+  },
+  ctaText: {
+    ...TYPOGRAPHY.button,
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+
+  /* ===== MODALS ===== */
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -1059,12 +1358,10 @@ const styles = StyleSheet.create({
   },
   sheet: {
     backgroundColor: "#FFFFFF",
-    borderTopLeftRadius: 20, // Chỉ bo góc trên
+    borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    // borderBottomLeftRadius: 0,  // Đảm bảo góc dưới vuông
-    // borderBottomRightRadius: 0,
-    padding: 20, // Hoặc padding theo thiết kế của bạn
-    marginBottom: 0, // QUAN TRỌNG: Đảm bảo không có margin dưới
+    padding: 20,
+    marginBottom: 0,
     width: "100%",
   },
   sheetHandle: {
@@ -1125,6 +1422,23 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.caption,
     color: COLORS.subtext,
     marginTop: 2,
+  },
+  changeDoctorBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: "rgba(91, 157, 255, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(91, 157, 255, 0.3)",
+  },
+  changeDoctorText: {
+    ...TYPOGRAPHY.caption,
+    color: "#5B9DFF",
+    fontWeight: "600",
+    fontSize: 13,
   },
   monthRow: {
     flexDirection: "row",
@@ -1190,19 +1504,18 @@ const styles = StyleSheet.create({
   slotGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 12, // Dùng gap thay vì space-between để tạo khoảng cách đều nhau
+    gap: 12,
     marginTop: 10,
   },
 
   slotChip: {
-    width: "22%", // Giảm % xuống một chút (khoảng 22 - 23%) để chừa chỗ cho 3 cái gap ở giữa
+    width: "22%",
     height: 40,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#E2E8F0",
-    // marginBottom: 12,     // XÓA dòng này đi, vì thẻ cha đã có "gap" lo luôn cả khoảng cách trên dưới rồi
     backgroundColor: "#FFFFFF",
   },
   slotChipSelected: {
@@ -1339,6 +1652,133 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 
+  /* ===== DOCTOR LIST MODAL ===== */
+  doctorListItem: {
+    padding: 14,
+    borderRadius: 16,
+    backgroundColor: "#F8FAFC",
+    borderWidth: 1.5,
+    borderColor: "#E5E7EB",
+    marginBottom: 10,
+  },
+  doctorListItemSelected: {
+    borderColor: "#5B9DFF",
+    backgroundColor: "rgba(91, 157, 255, 0.06)",
+  },
+  doctorListRow: {
+    flexDirection: "row" as const,
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 10,
+  },
+  doctorListAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 14,
+  },
+  doctorListInfo: {
+    flex: 1,
+  },
+  doctorListName: {
+    ...TYPOGRAPHY.title,
+    color: "#111827",
+    fontSize: 15,
+  },
+  doctorListSpecialty: {
+    ...TYPOGRAPHY.caption,
+    color: COLORS.subtext,
+    marginTop: 2,
+    fontSize: 12,
+  },
+  doctorListCheck: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#5B9DFF",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+  },
+  doctorListCheckText: {
+    color: "#FFFFFF",
+    fontWeight: "700" as const,
+    fontSize: 14,
+  },
+  doctorListMeta: {
+    paddingLeft: 62,
+    gap: 4,
+  },
+  doctorListMetaRow: {
+    flexDirection: "row" as const,
+    alignItems: "center",
+    gap: 6,
+  },
+  doctorListMetaText: {
+    ...TYPOGRAPHY.caption,
+    color: "#64748B",
+    fontSize: 12,
+    flex: 1,
+  },
+  doctorListDistanceRow: {
+    flexDirection: "row" as const,
+    alignItems: "center",
+    marginTop: 4,
+  },
+  distanceBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 12,
+    backgroundColor: "rgba(91, 157, 255, 0.12)",
+  },
+  distanceBadgeText: {
+    ...TYPOGRAPHY.caption,
+    color: "#5B9DFF",
+    fontWeight: "600" as const,
+    fontSize: 11,
+  },
+  doctorListActions: {
+    flexDirection: "row" as const,
+    gap: 12,
+    marginTop: 16,
+  },
+  doctorListCancelBtn: {
+    flex: 1,
+    height: 48,
+    borderRadius: 18,
+    borderWidth: 1.5,
+    borderColor: "#D1D5DB",
+    backgroundColor: "#FFFFFF",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+  },
+  doctorListCancelText: {
+    ...TYPOGRAPHY.button,
+    color: "#4B5563",
+    fontSize: 16,
+  },
+  doctorListConfirmBtn: {
+    flex: 1,
+    height: 48,
+    borderRadius: 18,
+    backgroundColor: "#5B9DFF",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    shadowColor: "#5B9DFF",
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 4,
+  },
+  doctorListConfirmBtnDisabled: {
+    backgroundColor: "#94A3B8",
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  doctorListConfirmText: {
+    ...TYPOGRAPHY.button,
+    color: "#FFFFFF",
+    fontSize: 16,
+  },
+
   /* ===== ADDRESS MODAL ===== */
   addressDoctorRow: {
     flexDirection: "row" as const,
@@ -1445,8 +1885,6 @@ const styles = StyleSheet.create({
   qrIconBtn: {
     width: 24,
     height: 24,
-
-    
     alignItems: "center",
     justifyContent: "center",
   },
