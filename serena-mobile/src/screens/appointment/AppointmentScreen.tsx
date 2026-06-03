@@ -190,13 +190,24 @@ const doctors: DoctorCard[] = [
   },
 ];
 
-const dateChips: DateChip[] = [
-  { dayLabel: "Th 2", date: "15", selected: true },
-  { dayLabel: "Th 3", date: "16" },
-  { dayLabel: "Th 4", date: "17" },
-  { dayLabel: "Th 5", date: "18" },
-  { dayLabel: "Th 6", date: "19" },
-];
+const monthNames = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+
+const generateDateChips = (weekOffset: number): (DateChip & { fullDate: Date })[] => {
+  const today = new Date();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay() + 1 + weekOffset * 7); // Monday
+  const chips: (DateChip & { fullDate: Date })[] = [];
+  for (let i = 0; i < 5; i++) {
+    const d = new Date(startOfWeek);
+    d.setDate(startOfWeek.getDate() + i);
+    chips.push({
+      dayLabel: dayNames[d.getDay()],
+      date: String(d.getDate()),
+      fullDate: d,
+    });
+  }
+  return chips;
+};
 
 const timeSlots: TimeSlot[] = [
   { label: "08:00" },
@@ -218,6 +229,8 @@ export default function AppointmentScreen() {
   const [cancelConfirmVisible, setCancelConfirmVisible] = React.useState(false);
   const [selectedDateIndex, setSelectedDateIndex] = React.useState(0);
   const [selectedTimeIndex, setSelectedTimeIndex] = React.useState(1);
+  const [weekOffset, setWeekOffset] = React.useState(0);
+  const dateChips = React.useMemo(() => generateDateChips(weekOffset), [weekOffset]);
   const [selectedDoctor, setSelectedDoctor] = React.useState<DoctorCard | null>(null);
   const [tempSelectedDoctor, setTempSelectedDoctor] = React.useState<DoctorCard | null>(null);
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -356,12 +369,14 @@ export default function AppointmentScreen() {
     if (selectedDoctor) {
       const selectedDate = dateChips[selectedDateIndex];
       const selectedTime = timeSlots[selectedTimeIndex];
-      const dateNum = parseInt(selectedDate.date, 10);
-      const refDate = new Date(2026, 4, dateNum);
+      const realDate = selectedDate.fullDate;
 
       const fullDayNames = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
-      const dayName = fullDayNames[refDate.getDay()];
-      const scheduleStr = `${dayName}, ${String(dateNum).padStart(2, "0")}/05/2026`;
+      const dayName = fullDayNames[realDate.getDay()];
+      const mm = String(realDate.getMonth() + 1).padStart(2, "0");
+      const dd = String(realDate.getDate()).padStart(2, "0");
+      const yyyy = realDate.getFullYear();
+      const scheduleStr = `${dayName}, ${dd}/${mm}/${yyyy}`;
 
       const updatedAppointment: Appointment = {
         name: selectedDoctor.name,
@@ -393,8 +408,10 @@ export default function AppointmentScreen() {
   const getConfirmText = () => {
     const doctorName = selectedDoctor?.name ?? "";
     const time = timeSlots[selectedTimeIndex]?.label ?? "";
-    const date = dateChips[selectedDateIndex]?.date ?? "";
-    return { doctorName, time, date: `${date}/05/2026` };
+    const chip = dateChips[selectedDateIndex];
+    const d = chip?.fullDate;
+    const dateStr = d ? `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}` : "";
+    return { doctorName, time, date: dateStr };
   };
 
   const currentInfo = selectedInfo ? doctorInfoMap[selectedInfo.name] : null;
@@ -582,11 +599,16 @@ export default function AppointmentScreen() {
 
             <View style={{ opacity: selectedDoctor ? 1 : 0.4 }} pointerEvents={selectedDoctor ? "auto" : "none"}>
               <View style={styles.monthRow}>
-                <TouchableOpacity style={styles.monthNav} hitSlop={8}>
+                <TouchableOpacity style={styles.monthNav} hitSlop={8} onPress={() => { setWeekOffset(w => w - 1); setSelectedDateIndex(0); }}>
                   <ChevronLeft size={18} color="#1E3A52" />
                 </TouchableOpacity>
-                <Text style={styles.monthLabel}>Tháng 5, 2026</Text>
-                <TouchableOpacity style={styles.monthNav} hitSlop={8}>
+                <Text style={styles.monthLabel}>
+                  {(() => {
+                    const d = dateChips[0]?.fullDate;
+                    return d ? `${monthNames[d.getMonth()]}, ${d.getFullYear()}` : "";
+                  })()}
+                </Text>
+                <TouchableOpacity style={styles.monthNav} hitSlop={8} onPress={() => { setWeekOffset(w => w + 1); setSelectedDateIndex(0); }}>
                   <ChevronRight size={18} color="#1E3A52" />
                 </TouchableOpacity>
               </View>
