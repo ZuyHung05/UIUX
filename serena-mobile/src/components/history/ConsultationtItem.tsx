@@ -1,9 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import { ChevronDown, ChevronRight } from 'lucide-react-native';
 import { useState } from 'react';
-import { Image, LayoutAnimation, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { LayoutAnimation, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 import { AppButton } from '../common/AppButton';
+import { SereneHeartLogo } from '../brand/SereneHeartLogo';
 
 const ConsultationItem = ({ item, onOpenRating }: { item: any; onOpenRating: () => void }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -20,7 +21,7 @@ const ConsultationItem = ({ item, onOpenRating }: { item: any; onOpenRating: () 
             activeOpacity={0.9}>
             <View style={styles.mainRow}>
                 <View style={styles.iconCircle}>
-                    <Image source={require('../../assets/SerenaIcon.png')} style={{ width: 24, height: 24 }} />
+                    <SereneHeartLogo size={24} />
                 </View>
                 <View style={{ flex: 1, marginLeft: 12, ...(item.isNew && { fontWeight: 'bold' }) }}>
                     <Text style={[styles.itemTitle]}>{item.title}</Text>

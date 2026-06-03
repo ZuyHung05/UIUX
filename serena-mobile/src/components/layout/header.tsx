@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { Bell, ChevronLeft, MoreVertical } from 'lucide-react-native';
-import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SereneHeartLogo } from '../brand/SereneHeartLogo';
 import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 
 
@@ -33,7 +34,9 @@ export const AppHeader = ({ title, subtitle, showBack = false, showRightIcon = f
                         <ChevronLeft size={28} color={COLORS.secondary} />
                     </TouchableOpacity>
                 ) : (
-                    <Image source={require('../../assets/SerenaIcon.png')} style={styles.logo} />
+                    <View style={styles.logo}>
+                        <SereneHeartLogo size={50} />
+                    </View>
                 )}
                 <View>
                     <Text style={styles.brandName}>{title}</Text>
@@ -71,7 +74,7 @@ const styles = StyleSheet.create({
         borderBottomColor: COLORS.border,
     },
     headerLeft: { flexDirection: 'row', alignItems: 'center' },
-    logo: { width: 45, height: 45, marginRight: 12 },
+    logo: { width: 50, height: 50, marginRight: 12, transform: [{ translateY: 2 }] },
     brandName: { ...TYPOGRAPHY.h1, color: COLORS.accent },
     brandSub: { ...TYPOGRAPHY.caption, color: COLORS.subtext, marginTop: 2 },
     notificationBtn: { padding: 5, position: 'relative' },

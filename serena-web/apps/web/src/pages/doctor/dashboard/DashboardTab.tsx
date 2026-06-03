@@ -160,7 +160,7 @@ const messages = [
     name: 'Lê Văn Khang',
     text: 'Bác sĩ cho tôi hỏi lịch khám sức khỏe tổng quát tuần này với ạ, tôi muốn đăng ký...',
     sentAt: '07:30',
-    unread: false,
+    unread: true,
     severity: 'low',
     waitingTime: '45 phút',
     aiExtract: {
@@ -205,6 +205,18 @@ export function DashboardTab({
   const patientTimelineEntry = todayTimeline.find(t => t.patientId === activePatient.id)
   const isCurrentlyExamining = patientTimelineEntry?.status === 'Đang khám'
 
+  const getNextTimelinePatient = (currentPatientId: string) => {
+    const currentIndex = todayTimeline.findIndex(item => item.patientId === currentPatientId)
+    if (currentIndex === -1) {
+      return todayTimeline.find(item => item.status === 'Đang chờ') || todayTimeline[0]
+    }
+
+    const nextItem = todayTimeline.slice(currentIndex + 1).find(item => item.status !== 'Đã khám')
+    if (nextItem) return nextItem
+
+    return todayTimeline.find(item => item.status === 'Đang chờ') || todayTimeline[0]
+  }
+
   const triggerToast = (msg: string) => {
     setToastMessage(msg)
     setTimeout(() => setToastMessage(null), 2500)
@@ -215,12 +227,21 @@ export function DashboardTab({
       triggerToast('⚠️ Vui lòng nhập mô tả bệnh và chẩn đoán cuối cùng trước khi lưu!')
       return
     }
-    triggerToast(`✓ Đã lưu hồ sơ khám & kê đơn thuốc cho bệnh nhân ${activePatient.name} thành công!`)
+    const nextPatient = getNextTimelinePatient(activePatient.id)
+    triggerToast(`✓ Đã hoàn thành ca khám của ${activePatient.name}. Chuyển sang bệnh nhân tiếp theo: ${nextPatient.name}.`)
     setShowExamModal(false)
     setExamModalMode('record')
     setSymptoms('')
     setDiagnosis('')
     setPrescription('')
+    setActivePatientId(nextPatient.patientId)
+  }
+
+  const handleApplyAiSuggestion = () => {
+    setSymptoms(symptoms.trim() || activePatient.reason)
+    setDiagnosis('Theo dõi bệnh lý thần kinh ngoại biên; cần loại trừ thiếu vitamin nhóm B, rối loạn chuyển hóa hoặc chèn ép thần kinh do tư thế/lao động lặp lại.')
+    setPrescription('Hỏi thêm về yếu cơ, mất cảm giác nhanh hoặc đau tăng dần. Có thể cân nhắc vitamin nhóm B sau ăn, thuốc giảm đau phù hợp nếu đau nhiều; hẹn tái khám hoặc làm xét nghiệm theo đánh giá của bác sĩ.')
+    setExamModalMode('record')
   }
 
   const resetExamDraft = () => {
@@ -451,10 +472,10 @@ export function DashboardTab({
 
           {/* Action buttons at bottom right */}
           <div className="emr-buttons-group">
-            <button className="emr-btn-outline" type="button" onClick={() => triggerToast(`Đang kết nối máy in để in đơn thuốc của bệnh nhân ${p.name}...`)}>
+            <button className="emr-btn-outline emr-action-green" type="button" onClick={() => triggerToast(`Đang kết nối máy in để in đơn thuốc của bệnh nhân ${p.name}...`)}>
               In đơn thuốc
             </button>
-            <button className="emr-btn-filled" type="button" onClick={() => triggerToast(`Đang xuất file bệnh án EMR (PDF) của bệnh nhân ${p.name}...`)}>
+            <button className="emr-btn-filled emr-action-green" type="button" onClick={() => triggerToast(`Đang xuất file bệnh án EMR (PDF) của bệnh nhân ${p.name}...`)}>
               Xuất file bệnh án (PDF)
             </button>
           </div>
@@ -612,7 +633,7 @@ export function DashboardTab({
                 const isExpanded = expandedMessageId === m.id;
                 return (
                   <div
-                    className={`slender-message-row ${m.unread ? 'unread' : ''} ${isExpanded ? 'expanded' : ''}`}
+                    className={`slender-message-row ${isExpanded ? 'expanded' : ''}`}
                     key={idx}
                     onClick={() => setExpandedMessageId(isExpanded ? null : m.id)}
                   >
@@ -626,14 +647,11 @@ export function DashboardTab({
                             <strong className={m.unread ? 'unread-bold' : ''}>{m.name}</strong>
                             {m.unread && <span className="unread-dot-indicator"></span>}
                           </div>
-                          {m.waitingTime && (
-                            <span className="waiting-time-label" style={{ fontSize: '11px', color: '#EF4444', fontWeight: 600 }}>
-                              | Thời gian chờ phản hồi: {m.waitingTime}
-                            </span>
-                          )}
+
                         </div>
                         <span className="message-sent-time">{m.sentAt}</span>
                       </div>
+
                       <p className={`slender-preview ${m.unread ? 'unread-bold' : ''}`} style={isExpanded ? { whiteSpace: 'normal', overflow: 'visible', textOverflow: 'clip', marginBottom: '8px' } : undefined}>
                         {m.text}
                       </p>
@@ -774,11 +792,20 @@ export function DashboardTab({
             </div>
             <div className="emr-modal-footer">
               {examModalMode === 'ai' ? (
-                <button className="emr-btn-outline" onClick={() => setExamModalMode('record')}>Quay lại nhập bệnh án</button>
+                <>
+                  <button className="emr-btn-outline" onClick={() => setExamModalMode('record')}>
+                    Quay lại nhập bệnh án
+                  </button>
+                  <button className="emr-btn-filled" onClick={handleApplyAiSuggestion}>
+                    Áp dụng gợi ý AI
+                  </button>
+                </>
               ) : (
-                <button className="emr-btn-outline" onClick={() => setShowExamModal(false)}>Hủy</button>
+                <>
+                  <button className="emr-btn-outline" onClick={() => setShowExamModal(false)}>Hủy</button>
+                  <button className="emr-btn-filled" onClick={handleSaveExamination}>Lưu kết luận & đơn thuốc</button>
+                </>
               )}
-              <button className="emr-btn-filled" onClick={handleSaveExamination}>Lưu kết luận & đơn thuốc</button>
             </div>
           </div>
         </div>

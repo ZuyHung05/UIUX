@@ -90,40 +90,13 @@ export function DoctorFormSections({ values, errors, includeAccountSection, onCh
         <h2>Thông tin chuyên môn</h2>
         <div className="doctor-form-grid">
           <SelectField label="Chuyên khoa" value={values.specialty} error={errors.specialty} options={specialties} onChange={(value) => onChange('specialty', value)} />
+          <SelectField label="Chi nhánh" value={values.branch} error={errors.branch} options={branches} onChange={(value) => onChange('branch', value)} />
           <TextField label="Bằng cấp" value={values.degree} error={errors.degree} onChange={(value) => onChange('degree', value)} />
           <TextField label="Số năm kinh nghiệm" type="number" value={values.yearsExperience} error={errors.yearsExperience} onChange={(value) => onChange('yearsExperience', value)} />
-          <TextField label="Giá tư vấn" type="number" value={values.consultationFee} error={errors.consultationFee} onChange={(value) => onChange('consultationFee', value)} />
-          <TextField label="Giá khám" type="number" value={values.examinationFee} error={errors.examinationFee} onChange={(value) => onChange('examinationFee', value)} />
           <label className="doctor-form-field doctor-form-field-wide">
             <span>Mô tả ngắn</span>
             <textarea value={values.shortBio} onChange={(event) => onChange('shortBio', event.target.value)} />
             <FieldError message={errors.shortBio} />
-          </label>
-        </div>
-      </section>
-
-      <section className="doctor-form-section" id="doctor-work">
-        <h2>Thông tin làm việc</h2>
-        <div className="doctor-form-grid">
-          <SelectField label="Chi nhánh làm việc" value={values.branch} error={errors.branch} options={branches} onChange={(value) => onChange('branch', value)} />
-          <label className="doctor-form-field">
-            <span>Trạng thái</span>
-            <select
-              value={values.hasCurrentShift ? (values.hasActiveAppointment ? 'busy' : 'online') : 'offline'}
-              onChange={(event) => {
-                onChange('hasCurrentShift', event.target.value !== 'offline')
-                onChange('hasActiveAppointment', event.target.value === 'busy')
-              }}
-            >
-              <option value="online">Đang hoạt động</option>
-              <option value="busy">Đang khám</option>
-              <option value="offline">Đang ngoại tuyến</option>
-            </select>
-          </label>
-          <label className="doctor-form-field doctor-form-field-wide">
-            <span>Lịch làm việc cơ bản</span>
-            <textarea value={values.scheduleText} onChange={(event) => onChange('scheduleText', event.target.value)} />
-            <FieldError message={errors.scheduleText} />
           </label>
         </div>
       </section>

@@ -10,8 +10,8 @@
 }
 
 .detail-modal {
-  width: min(560px, 100%);
-  max-height: min(720px, calc(100vh - 48px));
+  width: min(640px, 100%);
+  height: min(680px, calc(100vh - 48px));
   display: flex;
   flex-direction: column;
   border: 1px solid #dcebff;
@@ -75,6 +75,8 @@
 }
 
 .detail-modal-body {
+  flex: 1;
+  min-height: 0;
   overflow: auto;
   padding: 24px;
 }

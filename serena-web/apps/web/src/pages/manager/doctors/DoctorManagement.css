@@ -7,9 +7,9 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: clamp(14px, 1.6vh, 18px);
+  gap: clamp(16px, 2.8vh, 32px);
   min-height: 0;
-  padding: clamp(14px, 1.8vh, 18px) clamp(14px, 1.7vw, 22px) clamp(10px, 1.2vh, 14px);
+  padding: clamp(16px, 2vh, 22px) clamp(14px, 1.7vw, 22px) clamp(14px, 1.8vh, 20px);
   color: #244a6b;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow: hidden;
@@ -444,7 +444,7 @@
   gap: 22px;
   border: 1px solid #dcecff;
   border-radius: 32px;
-  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  background: #ffffff;
   padding: clamp(22px, 2.6vw, 32px);
 }
 
@@ -715,7 +715,7 @@
   position: relative;
   border: 1px solid #dcecff;
   border-radius: 32px;
-  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  background: #ffffff;
   color: #244a6b;
   padding: clamp(24px, 2.8vw, 34px);
   animation: fade-slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1101,8 +1101,8 @@
   min-width: 0;
   border: 2px solid #f1f5f9;
   border-radius: 24px;
-  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-  box-shadow: 0 14px 36px rgba(74, 147, 255, 0.08);
+  background: #ffffff;
+  box-shadow: none;
 }
 
 .doctor-detail-profile-card {
@@ -1113,9 +1113,7 @@
   gap: clamp(10px, 1.2vh, 14px);
   overflow: auto;
   padding: clamp(14px, 1.5vw, 20px);
-  background:
-    radial-gradient(circle at top right, rgba(216, 248, 223, 0.68), transparent 34%),
-    linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+  background: #f7fbff;
 }
 
 .doctor-detail-profile-top {
@@ -1128,7 +1126,7 @@
   width: clamp(70px, 6.4vw, 88px);
   height: clamp(70px, 6.4vw, 88px);
   border-radius: 24px;
-  box-shadow: inset 0 0 0 8px rgba(255, 255, 255, 0.45);
+  box-shadow: none;
 }
 
 .doctor-detail-profile-copy {
@@ -2481,5 +2479,436 @@
   .doctor-form-field textarea {
     min-height: 38px;
   }
+}
+
+.doctor-management-page .metric-card,
+.doctor-management-page .data-table-wrap,
+.doctor-management-page .confirm-dialog,
+.doctor-management-page .doctor-detail-panel,
+.doctor-management-page .doctor-detail-profile-card {
+  box-shadow: none;
+  background-image: none;
+}
+
+.doctor-management-main:not(.doctor-detail-main) .doctor-page-content {
+  gap: clamp(14px, 2.1vh, 22px);
+  padding-bottom: clamp(12px, 1.4vh, 16px);
+}
+
+.doctor-management-main:not(.doctor-detail-main) .doctor-metrics-grid {
+  gap: clamp(12px, 1.2vw, 18px);
+}
+
+.doctor-management-main:not(.doctor-detail-main) .doctor-toolbar,
+.doctor-management-main:not(.doctor-detail-main) .doctor-table-controls {
+  margin: 0;
+}
+
+.doctor-management-page .metric-card {
+  border-color: #e2ecf6;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+.doctor-management-page .metric-card:hover {
+  border-color: #c9ddf1;
+  background: #f7fbff;
+  transform: none;
+}
+
+.doctor-management-page .data-table th {
+  height: 40px;
+  background: #eaf3fb;
+}
+
+.doctor-management-page .data-table td {
+  height: 58px;
+}
+
+.doctor-management-page .data-table tbody tr:nth-child(even) {
+  background: #f7fbf9;
+}
+
+.doctor-management-page .data-table tbody tr:hover {
+  background: #edf6ff;
+}
+
+.doctor-management-page .table-actions {
+  gap: 7px;
+}
+
+.doctor-management-page .ui-icon-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: #e8f3ff;
+  color: #336b9f;
+}
+
+.doctor-management-page .ui-icon-button:hover {
+  border-color: #b9d7f1;
+  background: #dcecff;
+}
+
+.doctor-management-page .ui-icon-button.ui-button-danger,
+.doctor-management-page .ui-icon-button[aria-label*='Xóa'] {
+  background: #ffe8ee;
+  color: #a7465c;
+}
+
+.doctor-upsert-main .doctor-page-content {
+  gap: clamp(6px, 0.8vh, 10px);
+  padding: clamp(6px, 1vh, 10px) clamp(8px, 1.2vw, 14px);
+}
+
+.doctor-upsert-main .dp-shell,
+.doctor-detail-main .dp-shell {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.doctor-upsert-main .dp-body {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(8px, 0.9vw, 12px);
+  align-items: stretch;
+}
+
+.doctor-upsert-main .dp-upsert-body > .dp-col {
+  min-height: 0;
+}
+
+.doctor-upsert-main .dp-upsert-body > .dp-col:first-child {
+  grid-column: 1 / -1;
+}
+
+.doctor-upsert-main .dp-personal-panel {
+  flex: 0 0 auto;
+}
+
+.doctor-upsert-main .dp-panel {
+  border-radius: 18px;
+  padding: clamp(7px, 0.75vw, 10px);
+  overflow: visible;
+}
+
+.doctor-upsert-main .dp-panel-head {
+  margin-bottom: 6px;
+}
+
+.doctor-upsert-main .dp-panel-title {
+  gap: 7px;
+  font-size: clamp(13px, 0.95vw, 14px);
+}
+
+.doctor-upsert-main .dp-panel-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 9px;
+}
+
+.doctor-upsert-main .dp-panel-icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.doctor-upsert-main .dp-field-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.doctor-upsert-main .dp-personal-panel .dp-field-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.doctor-upsert-main .dp-personal-panel .dp-field-wide {
+  grid-column: span 2;
+}
+
+.doctor-upsert-main .dp-inline-identity {
+  margin-bottom: 7px;
+}
+
+.doctor-upsert-main .dp-inline-identity .dp-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border-width: 2px;
+}
+
+.doctor-upsert-main .dp-input {
+  min-height: 36px;
+  border-radius: 12px;
+  font-size: 13px;
+  padding: 0 11px;
+}
+
+.doctor-upsert-main .dp-textarea {
+  min-height: 52px;
+  padding: 8px 11px;
+  line-height: 1.34;
+}
+
+.doctor-upsert-main .dp-field-label {
+  font-size: 11.6px;
+}
+
+.doctor-upsert-main .dp-field-editable {
+  gap: 6px;
+}
+
+.doctor-upsert-main .dp-field-error {
+  font-size: 10.5px;
+  line-height: 1.15;
+}
+
+.doctor-upsert-main .dp-shell {
+  gap: clamp(6px, 0.8vh, 9px);
+}
+
+.doctor-upsert-main .dp-hero-name-input {
+  min-height: 38px;
+  font-size: clamp(16px, 1.2vw, 18px);
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-shell {
+  gap: clamp(7px, 0.9vh, 10px);
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-hero {
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  align-items: center;
+  border-radius: 20px;
+  padding: clamp(8px, 0.9vw, 12px) clamp(10px, 1.2vw, 14px);
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-avatar {
+  width: clamp(48px, 4.1vw, 58px);
+  height: clamp(48px, 4.1vw, 58px);
+  border-radius: 18px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-hero-name {
+  font-size: clamp(18px, 1.45vw, 22px);
+  line-height: 1.12;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-hero-code {
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-hero-tags {
+  margin-top: 7px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-chip {
+  min-height: 26px;
+  font-size: 11.5px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-hero-kpis {
+  gap: 8px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-hero-kpis .metric-card {
+  min-height: 54px;
+  padding: 7px 9px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-hero-kpis .metric-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 11px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-hero-kpis .metric-card p {
+  font-size: 11px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-hero-kpis .metric-card strong {
+  font-size: clamp(15px, 1.15vw, 18px);
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-body {
+  gap: clamp(8px, 0.9vw, 12px);
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-view-body {
+  grid-template-columns: minmax(0, 0.94fr) minmax(340px, 1.06fr);
+  align-items: stretch;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-profile-col {
+  grid-column: 1;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-specialty-col {
+  grid-column: 1;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-review-col {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-review-col .dp-review-panel {
+  height: 100%;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-panel {
+  border-radius: 18px;
+  padding: clamp(8px, 0.85vw, 12px);
+  overflow: visible;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-col {
+  gap: clamp(8px, 0.9vw, 11px);
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-panel-head {
+  margin-bottom: 7px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-panel-title {
+  gap: 7px;
+  font-size: clamp(13px, 0.95vw, 14px);
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-panel-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 9px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-panel-icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-field-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-field {
+  min-height: 0;
+  border-radius: 13px;
+  gap: 3px;
+  padding: 7px 9px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-field-label {
+  font-size: 10.8px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-field-value {
+  font-size: 12.4px;
+  line-height: 1.22;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-review-panel {
+  justify-content: stretch;
+  overflow: hidden;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-review-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 9px;
+  overflow: hidden;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-review-item {
+  aspect-ratio: auto;
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-review-item strong {
+  font-size: 12.2px;
+  line-height: 1.2;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-review-item span {
+  font-size: 11.5px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-review-item span .doctor-star-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.doctor-detail-main:not(.doctor-upsert-main) .dp-review-item p {
+  flex: 1 1 auto;
+  margin-top: 7px;
+  font-size: 11.6px;
+  line-height: 1.35;
+  -webkit-line-clamp: 5;
+}
+
+@media (max-height: 780px) {
+  .doctor-management-main:not(.doctor-detail-main) .doctor-page-content {
+    gap: 13px;
+  }
+
+  .doctor-management-page .data-table th {
+    height: 38px;
+  }
+
+  .doctor-management-page .data-table td {
+    height: 54px;
+  }
+
+  .doctor-upsert-main .dp-textarea {
+    min-height: 46px;
+  }
+
+  .doctor-detail-main:not(.doctor-upsert-main) .dp-field,
+  .doctor-upsert-main .dp-panel {
+    padding: 7px 9px;
+  }
+
+  .doctor-detail-main:not(.doctor-upsert-main) .dp-hero-kpis .metric-card {
+    min-height: 48px;
+  }
+
+  .doctor-detail-main:not(.doctor-upsert-main) .dp-hero-kpis .metric-icon {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (max-width: 900px) {
+  .doctor-upsert-main .dp-body,
+  .doctor-detail-main:not(.doctor-upsert-main) .dp-hero,
+  .doctor-detail-main:not(.doctor-upsert-main) .dp-view-body {
+    grid-template-columns: 1fr;
+  }
+
+  .doctor-upsert-main .dp-field-grid,
+  .doctor-detail-main:not(.doctor-upsert-main) .dp-field-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .doctor-upsert-main .dp-upsert-body > .dp-col:first-child {
+    grid-column: auto;
+  }
+
+  .doctor-upsert-main .dp-personal-panel .dp-field-wide {
+    grid-column: span 2;
+  }
+
+  .doctor-detail-main:not(.doctor-upsert-main) .dp-profile-col,
+  .doctor-detail-main:not(.doctor-upsert-main) .dp-specialty-col,
+  .doctor-detail-main:not(.doctor-upsert-main) .dp-review-col {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
 }
 

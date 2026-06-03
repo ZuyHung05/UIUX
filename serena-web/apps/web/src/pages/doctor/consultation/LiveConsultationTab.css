@@ -1,7 +1,8 @@
 .live-consultation-container {
   display: grid;
   grid-template-columns: 280px 1fr 340px;
-  height: 100%;
+  min-height: calc(100vh - 92px);
+  overflow: visible;
   background: #ffffff;
 }
 
@@ -11,7 +12,8 @@
   background: #f8fafc;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 0;
+  overflow: visible;
 }
 
 .sidebar-header {
@@ -41,6 +43,7 @@
   gap: 10px;
   overflow-y: auto;
   flex: 1;
+  min-height: 0;
 }
 
 .case-queue-card {
@@ -100,7 +103,8 @@
 .chat-panel {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 0;
+  overflow: visible;
   border-right: 1px solid #f1f5f9;
 }
 
@@ -184,6 +188,7 @@
 
 .chat-messages-container {
   flex: 1;
+  min-height: 0;
   padding: 20px;
   overflow-y: auto;
   background: #f8fafc;
@@ -331,16 +336,16 @@
 .consultation-tab-outer {
   display: flex;
   flex-direction: column;
-  height: 100%;
   width: 100%;
   min-height: 0;
+  overflow: visible;
 }
 
 .consultation-tab-container {
   display: flex;
-  height: 100%;
   min-height: 0;
   width: 100%;
+  overflow: visible;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   margin: 0;
   padding: 0;
@@ -352,6 +357,8 @@
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  min-height: 0;
+  overflow: visible;
   background: #F7F8FA;
   /* Subtle gray background as per Figma */
   padding: 24px;
@@ -367,7 +374,10 @@
 .consultation-list {
   display: flex;
   flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
   gap: 12px;
+  overflow-y: auto;
 }
 
 .consultation-card {
@@ -477,6 +487,9 @@
 /* --- Right Pane: Main Area --- */
 .consultation-main-pane {
   flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
   background: #FFFFFF;
   display: flex;
   flex-direction: column;
@@ -575,6 +588,7 @@
 /* Chat Messages */
 .chat-messages-area {
   flex: 1;
+  min-height: 0;
   padding: 24px 20px;
   overflow-y: auto;
   display: flex;
@@ -810,6 +824,7 @@
   flex-direction: column;
   gap: 12px;
   flex-shrink: 0;
+  min-height: 0;
   overflow-y: auto;
 }
 
@@ -1442,13 +1457,22 @@
 }
 
 .workspace-accordion-section.chatbot-summary-section {
-  background: #e7f7ee;
-  border-color: #adecbb;
+  background: #F8FAFC;
+  border-color: #E2E8F0;
 }
 
 .workspace-accordion-section.chatbot-summary-section:hover {
-  background: #d6f2e1;
-  border-color: #8be0a3;
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+}
+
+.workspace-accordion-section.chatbot-summary-section .workspace-accordion-header {
+  min-height: 28px;
+}
+
+.workspace-accordion-section.chatbot-summary-section .summary-open-icon {
+  color: #64748B;
+  transform: none;
 }
 
 .chatbot-summary-card {
@@ -1527,7 +1551,7 @@
 .chatbot-summary-modal-card {
   background: #FFFFFF;
   border-radius: 24px;
-  width: 760px;
+  width: 820px;
   max-width: 90vw;
   max-height: 85vh;
   box-shadow: none;
@@ -1586,7 +1610,7 @@
 }
 
 .chatbot-modal-body {
-  padding: 24px;
+  padding: 18px 24px 22px;
   overflow-y: auto;
   flex: 1;
   background: #FFFFFF;
@@ -1595,7 +1619,11 @@
 .chatbot-modal-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: 14px;
+}
+
+.triage-summary-grid {
+  margin-top: 14px;
 }
 
 @media (max-width: 640px) {
@@ -1608,10 +1636,10 @@
   background: #F8FAFC;
   border: 1px solid #E2E8F0;
   border-radius: 16px;
-  padding: 18px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .chatbot-modal-panel.symp-panel {
@@ -1635,7 +1663,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding-bottom: 10px;
+  padding-bottom: 8px;
   border-bottom: 1px dashed #E2E8F0;
 }
 
@@ -1668,17 +1696,115 @@
 .panel-content {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   font-size: 13px;
   line-height: 1.5;
   color: #334155;
   flex: 1;
 }
 
+.chatbot-handoff-panel {
+  border: 1px solid #BFDBFE;
+  background: #EFF6FF;
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chatbot-handoff-panel.urgent {
+  border-color: #FECACA;
+  background: #FEF2F2;
+}
+
+.chatbot-handoff-panel.warning {
+  border-color: #FDE68A;
+  background: #FFF8E1;
+}
+
+.handoff-main-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.handoff-kicker {
+  display: block;
+  font-size: 12px;
+  color: #64748B;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  margin-bottom: 4px;
+}
+
+.handoff-reason {
+  margin: 0;
+  color: #244A6B;
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.handoff-severity-badge {
+  flex-shrink: 0;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 850;
+  border: 1px solid #BFDBFE;
+  color: #3B82F6;
+  background: #FFFFFF;
+}
+
+.handoff-severity-badge.urgent {
+  color: #EF4444;
+  border-color: #FCA5A5;
+  background: #FFFFFF;
+}
+
+.handoff-severity-badge.warning {
+  color: #E65100;
+  border-color: #FFE0B2;
+  background: #FFFFFF;
+}
+
+.handoff-severity-badge.normal {
+  color: #64748B;
+  border-color: #E2E8F0;
+  background: #FFFFFF;
+}
+
+.handoff-diagnosis-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-top: 1px dashed rgba(148, 163, 184, 0.45);
+  padding-top: 10px;
+  color: #64748B;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.handoff-diagnosis-line strong {
+  color: #244A6B;
+  font-weight: 850;
+}
+
+.handoff-disclaimer {
+  margin: 0;
+  font-size: 12px;
+  color: #718096;
+  line-height: 1.4;
+}
+
 .clinical-text {
   margin: 0;
-  font-style: italic;
   color: #475569;
+  font-weight: 650;
 }
 
 .clinical-timestamp-badge {
@@ -1689,6 +1815,23 @@
   padding: 4px 8px;
   border-radius: 6px;
   align-self: flex-start;
+}
+
+.vitals-inline-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.vitals-inline-row span {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 7px 8px;
+  color: #244A6B;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
 }
 
 /* Vitals pills */
@@ -1745,6 +1888,10 @@
   gap: 10px;
 }
 
+.history-info-list.compact {
+  gap: 8px;
+}
+
 .history-info-row {
   display: flex;
   flex-direction: column;
@@ -1760,6 +1907,33 @@
 .row-value {
   font-size: 13px;
   color: #1E293B;
+  font-weight: 700;
+}
+
+.followup-question-list {
+  margin: 0;
+  padding-left: 18px;
+  color: #334155;
+  font-size: 13px;
+  line-height: 1.55;
+  font-weight: 650;
+}
+
+.followup-question-list li + li {
+  margin-top: 6px;
+}
+
+.chatbot-modal-panel.action-panel {
+  background: #FFFFFF;
+}
+
+.chatbot-summary-note {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 8px 10px;
+  color: #64748B;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -1844,11 +2018,12 @@
   border-top: 1px solid #F1F5F9;
   display: flex;
   justify-content: flex-end;
+  gap: 12px;
   background: #FFFFFF;
 }
 
 .chatbot-close-action-btn {
-  background: #10B981;
+  background: #3B82F6;
   color: #FFFFFF;
   border: none;
   padding: 10px 24px;
@@ -1860,6 +2035,33 @@
 }
 
 .chatbot-close-action-btn:hover {
-  background: #059669;
+  background: #2563EB;
 }
 
+.chatbot-close-action-btn.secondary {
+  background: #FFFFFF;
+  color: #3B82F6;
+  border: 1px solid #3B82F6;
+}
+
+.chatbot-close-action-btn.secondary:hover {
+  background: #EFF6FF;
+}
+
+@media (max-width: 1280px) and (min-width: 901px) {
+  .consultation-tab-container {
+    grid-template-columns: minmax(286px, 0.9fr) minmax(0, 1.1fr);
+  }
+
+  .consultation-sidebar-pane {
+    width: 306px;
+  }
+
+  .clinical-workspace-sidebar {
+    width: 306px;
+  }
+
+  .live-consultation-container {
+    grid-template-columns: 252px minmax(0, 1fr) 306px;
+  }
+}

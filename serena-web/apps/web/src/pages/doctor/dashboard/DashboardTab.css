@@ -3,9 +3,9 @@
   flex-direction: column;
   padding: 12px 16px 12px;
   background: #FAFAFA;
-  height: 100%;
+  min-height: 100%;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .figma-dashboard-tab .patient-tab-header {
@@ -80,9 +80,9 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   align-items: stretch;
-  flex: 1 1 0;
+  flex: 0 0 auto;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .grid-column-left,
@@ -91,9 +91,8 @@
   flex-direction: column;
   gap: 20px;
   min-width: 0;
-  height: 100%;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .waiting-messages-card {
@@ -618,12 +617,7 @@
   margin-right: 4px;
 }
 
-.waiting-time-label {
-  font-size: 11px;
-  color: #EF4444;
-  font-weight: 700;
-  margin-top: 2px;
-}
+
 
 .reply-action-btn {
   display: inline-flex;
@@ -1093,6 +1087,12 @@
   }
 }
 
+@media (max-width: 1200px) {
+  .expanded-exam-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 1100px) {
   .figma-dashboard-tab {
     height: auto;
@@ -1131,6 +1131,29 @@
 @media (max-width: 768px) {
   .figma-metrics-row {
     grid-template-columns: 1fr;
+  }
+
+  .card-top-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .compact-detail-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    align-items: flex-start;
+  }
+
+  .message-summary-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .message-sent-time {
+    align-self: flex-end;
   }
 }
 
@@ -1507,6 +1530,28 @@
 .emr-btn-filled:hover {
   background: #2563EB;
   border-color: #2563EB;
+}
+
+.emr-btn-outline.emr-action-green {
+  background: #F0FDF4;
+  border-color: #22C55E;
+  color: #15803D;
+}
+
+.emr-btn-outline.emr-action-green:hover {
+  background: #DCFCE7;
+  border-color: #16A34A;
+  color: #166534;
+}
+
+.emr-btn-filled.emr-action-green {
+  background: #22C55E;
+  border-color: #22C55E;
+}
+
+.emr-btn-filled.emr-action-green:hover {
+  background: #16A34A;
+  border-color: #16A34A;
 }
 
 @keyframes modal-fade-in {
