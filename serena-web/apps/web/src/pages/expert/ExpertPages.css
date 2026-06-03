@@ -9,8 +9,10 @@
 
 .expert-page {
   min-width: 1100px;
-  min-height: 100%;
+  height: 100%;
+  min-height: 0;
   padding: clamp(10px, 1.8vh, 10px) clamp(10px, 1.6vw, 18px);
+  box-sizing: border-box;
   animation: expertPageReveal 0.44s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
@@ -30,6 +32,29 @@
   height: 100%;
   min-height: 0;
   overflow: hidden;
+}
+
+.expert-list-page,
+.expert-history-page,
+.expert-review-detail-page,
+.expert-error-detail-page,
+.expert-history-detail-page,
+.expert-knowledge-form-page,
+.expert-training-form-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.expert-list-page .expert-page-header,
+.expert-history-page .expert-page-header,
+.expert-review-detail-page .expert-page-header,
+.expert-error-detail-page .expert-page-header,
+.expert-history-detail-page .expert-page-header,
+.expert-knowledge-form-page .expert-page-header,
+.expert-training-form-page .expert-page-header {
+  flex: 0 0 auto;
 }
 
 .expert-conversation-page .expert-page-header {
@@ -200,7 +225,9 @@
   align-items: stretch;
   gap: 14px;
   margin-top: 10px;
-  min-height: calc(100vh - 178px);
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .expert-dashboard-layout {
@@ -617,12 +644,32 @@
 
 .expert-paginated-table {
   display: flex;
+  flex: 1 1 0;
   flex-direction: column;
   min-height: 0;
 }
 
 .expert-paginated-table .expert-table-wrap {
   max-height: min(392px, calc(100vh - 370px));
+}
+
+.expert-list-page .expert-toolbar,
+.expert-history-page .expert-toolbar,
+.expert-list-page .expert-paginated-table,
+.expert-history-page .expert-paginated-table {
+  min-height: 0;
+}
+
+.expert-list-page .expert-toolbar,
+.expert-history-page .expert-toolbar {
+  flex: 0 0 auto;
+}
+
+.expert-list-page .expert-paginated-table .expert-table-wrap,
+.expert-history-page .expert-paginated-table .expert-table-wrap {
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: none;
 }
 
 .expert-paginated-table .expert-table thead th {
@@ -948,9 +995,11 @@
   grid-template-columns: minmax(0, 1fr) minmax(380px, 0.9fr);
   align-items: stretch;
   gap: 14px;
-  height: calc(100vh - 156px);
+  flex: 1 1 0;
+  height: auto;
   min-height: 0;
   margin-top: 10px;
+  overflow: hidden;
 }
 
 .expert-history-detail-grid .expert-card {
@@ -1102,7 +1151,7 @@
 .expert-knowledge-form-page {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 92px);
+  height: 100%;
   min-height: 0;
   overflow: hidden;
 }
@@ -1147,7 +1196,7 @@
 .expert-training-form-page {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 92px);
+  height: 100%;
   min-height: 0;
   overflow: hidden;
 }
@@ -1192,7 +1241,7 @@
 .expert-review-chat-card,
 .expert-review-work-card {
   height: 100%;
-  max-height: calc(100vh - 178px);
+  max-height: none;
   padding: 12px 16px;
 }
 
@@ -1298,9 +1347,11 @@
   grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
   align-items: stretch;
   gap: 14px;
-  height: calc(100vh - 156px);
+  flex: 1 1 0;
+  height: auto;
   min-height: 0;
   margin-top: 10px;
+  overflow: hidden;
 }
 
 .expert-error-left-column {
@@ -1943,11 +1994,109 @@
 
 @media (max-height: 780px) {
   .expert-error-detail-grid {
-    height: calc(100vh - 144px);
+    height: auto;
+  }
+
+  .expert-page {
+    padding: 8px 12px 2px;
+  }
+
+  .expert-page-header {
+    margin-bottom: 8px;
+  }
+
+  .expert-page-header h1 {
+    font-size: 20px;
+  }
+
+  .expert-page-header p {
+    margin-top: 3px;
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .expert-stats {
+    gap: 10px;
+    margin-bottom: 8px;
   }
 
   .expert-error-detail-grid .expert-card {
     padding: 10px 14px;
+  }
+
+  .expert-list-page .expert-toolbar,
+  .expert-history-page .expert-toolbar,
+  .expert-conversation-page .expert-toolbar {
+    margin-bottom: 8px;
+  }
+
+  .expert-table th,
+  .expert-table td {
+    padding: 9px 12px;
+  }
+
+  .expert-table {
+    font-size: 13px;
+  }
+
+  .expert-pagination-row {
+    margin-top: 8px;
+  }
+
+  .expert-page-size select,
+  .expert-pagination-row button {
+    min-height: 30px;
+  }
+
+  .expert-priority-review {
+    margin-bottom: 8px;
+    padding: 10px 14px;
+  }
+
+  .expert-priority-row {
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .expert-priority-item {
+    min-height: 64px;
+    padding: 8px 10px;
+  }
+
+  .expert-review-detail-grid,
+  .expert-error-detail-grid,
+  .expert-history-detail-grid {
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .expert-review-chat-card,
+  .expert-review-work-card {
+    padding: 10px 12px;
+  }
+
+  .expert-review-work-columns {
+    gap: 10px;
+  }
+
+  .expert-review-note-column .expert-field:last-child .expert-textarea,
+  .expert-other-review-panel .expert-field:nth-child(2) .expert-textarea {
+    min-height: 150px;
+  }
+
+  .expert-review-work-card .expert-review-checklist label {
+    min-height: 42px;
+    padding: 8px 10px;
+  }
+
+  .expert-review-actions {
+    gap: 8px;
+  }
+
+  .expert-review-actions .expert-button {
+    min-height: 34px;
+    padding: 0 12px;
+    font-size: 12px;
   }
 
   .expert-resolution-checks {
@@ -1961,6 +2110,34 @@
 
   .expert-resolution-textarea {
     min-height: 96px;
+  }
+
+  .expert-knowledge-form-card,
+  .expert-training-form-card {
+    padding: 10px 14px;
+  }
+
+  .expert-knowledge-form-card .expert-form-grid,
+  .expert-training-form-card .expert-form-grid {
+    gap: 8px 12px;
+  }
+
+  .expert-knowledge-form-card .expert-input,
+  .expert-knowledge-form-card .expert-select,
+  .expert-training-form-card .expert-input,
+  .expert-training-form-card .expert-select {
+    height: 34px;
+  }
+
+  .expert-knowledge-form-card .expert-textarea,
+  .expert-training-form-card .expert-textarea {
+    min-height: 58px;
+    max-height: 88px;
+  }
+
+  .expert-knowledge-form-card .expert-form-actions,
+  .expert-training-form-card .expert-form-actions {
+    margin-top: 8px;
   }
 
   .expert-dashboard-page-content .expert-stat-card {

@@ -1413,7 +1413,7 @@ export function ConversationReviewDetailPage() {
 
   return (
     <ExpertLayout activeLabel="Rà soát hội thoại">
-      <section className="expert-page">
+      <section className="expert-page expert-review-detail-page">
         <PageHeader
           title={isViewMode ? 'Xem lại rà soát hội thoại' : 'Chi tiết rà soát hội thoại'}
           description={
@@ -1610,7 +1610,7 @@ export function FlaggedErrorsPage() {
 
   return (
     <ExpertLayout activeLabel="Lỗi đã đánh dấu">
-      <section className="expert-page">
+      <section className="expert-page expert-list-page">
         <PageHeader title="Lỗi đã đánh dấu" description="Theo dõi các lỗi đã được ghi nhận và trạng thái xử lý." />
         <StatsGrid
           stats={[
@@ -1739,7 +1739,7 @@ export function ErrorDetailPage() {
 
   return (
     <ExpertLayout activeLabel="Lỗi đã đánh dấu">
-      <section className="expert-page">
+      <section className="expert-page expert-error-detail-page">
         <PageHeader
           title="Chi tiết lỗi & xử lý lỗi"
           description={`Mã lỗi ${id}`}
@@ -2060,7 +2060,7 @@ export function KnowledgeBasePage() {
 
   return (
     <ExpertLayout activeLabel="Kho tri thức y khoa">
-      <section className="expert-page">
+      <section className="expert-page expert-list-page">
         <PageHeader
           title="Kho tri thức y khoa"
           description="Quản lý nguồn tri thức và quy tắc an toàn y tế cho chatbot."
@@ -2158,7 +2158,7 @@ export function TrainingDataPage() {
 
   return (
     <ExpertLayout activeLabel="Dữ liệu train chatbot">
-      <section className="expert-page">
+      <section className="expert-page expert-list-page">
         <PageHeader
           title="Dữ liệu train chatbot"
           description="Quản lý mẫu hội thoại dùng để huấn luyện và cải thiện chatbot."

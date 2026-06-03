@@ -472,10 +472,10 @@ export function DashboardTab({
 
           {/* Action buttons at bottom right */}
           <div className="emr-buttons-group">
-            <button className="emr-btn-outline" type="button" onClick={() => triggerToast(`Đang kết nối máy in để in đơn thuốc của bệnh nhân ${p.name}...`)}>
+            <button className="emr-btn-outline emr-action-green" type="button" onClick={() => triggerToast(`Đang kết nối máy in để in đơn thuốc của bệnh nhân ${p.name}...`)}>
               In đơn thuốc
             </button>
-            <button className="emr-btn-filled" type="button" onClick={() => triggerToast(`Đang xuất file bệnh án EMR (PDF) của bệnh nhân ${p.name}...`)}>
+            <button className="emr-btn-filled emr-action-green" type="button" onClick={() => triggerToast(`Đang xuất file bệnh án EMR (PDF) của bệnh nhân ${p.name}...`)}>
               Xuất file bệnh án (PDF)
             </button>
           </div>
