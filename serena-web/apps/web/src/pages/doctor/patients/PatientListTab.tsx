@@ -7,7 +7,8 @@ import { ClockMetricIcon, PulseMetricIcon, UsersMetricIcon, CalendarMetricIcon, 
 import { SearchInput } from '../../../components/ui/SearchInput'
 import { Pagination } from '../../../components/ui/Pagination'
 import { PageSizeSelect } from '../../../components/ui/PageSizeSelect'
-import { StatusBadge } from '../../../components/ui/StatusBadge'
+import { StatusBadge, type StatusBadgeTone } from '../../../components/ui/StatusBadge'
+import { useToast } from '../../../components/ui/Toast'
 import '../../manager/doctors/DoctorManagement.css'
 import './PatientListTab.css'
 
@@ -1492,10 +1493,13 @@ const upcomingAppointments = {
   }
 }
 
-function PatientAvatar({ name }: { name: string }) {
+function PatientAvatar() {
   return (
-    <div className="doctor-avatar doctor-detail-default-avatar" aria-hidden="true" style={{ background: '#E6EFFE', display: 'grid', placeItems: 'center', fontSize: '20px', fontWeight: 800, color: '#244a6b' }}>
-      {name.split(' ').pop()?.[0]}
+    <div className="doctor-avatar doctor-detail-default-avatar" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="4" />
+        <path d="M5 21a7 7 0 0 1 14 0v1H5v-1Z" />
+      </svg>
     </div>
   )
 }
@@ -1507,34 +1511,6 @@ function IdCardIcon() {
       <circle cx="9" cy="10" r="2" />
       <path d="M7 15c.6-1.4 1.6-2.1 3-2.1S12.4 13.6 13 15" />
       <path d="M14.5 10h3M14.5 14h3" />
-    </svg>
-  )
-}
-
-function BriefcaseIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M9 7V5.8c0-.7.6-1.3 1.3-1.3h3.4c.7 0 1.3.6 1.3 1.3V7" />
-      <path d="M5 7.5h14A2.5 2.5 0 0 1 21.5 10v8A2.5 2.5 0 0 1 19 20.5H5A2.5 2.5 0 0 1 2.5 18v-8A2.5 2.5 0 0 1 5 7.5Z" />
-      <path d="M9 13h6" />
-    </svg>
-  )
-}
-
-function LocationIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M12 21s7-5.3 7-12a7 7 0 0 0-14 0c0 6.7 7 12 7 12Z" />
-      <circle cx="12" cy="9" r="2.5" />
-    </svg>
-  )
-}
-
-function ContactIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M6.5 5.5h11A1.5 1.5 0 0 1 19 7v10a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 17V7a1.5 1.5 0 0 1 1.5-1.5Z" />
-      <path d="m6 8 6 4.5L18 8" />
     </svg>
   )
 }
@@ -1580,10 +1556,11 @@ function getPatientStatusLabel(status: string, service?: string) {
   return status
 }
 
-function getPatientBadgeStatus(statusLabel: string): 'online' | 'busy' | 'completed' {
-  if (statusLabel === 'Đang tư vấn' || statusLabel === 'Đang xử lý') return 'busy'
+function getPatientBadgeStatus(statusLabel: string): StatusBadgeTone {
+  if (statusLabel === 'Đang tư vấn') return 'busy'
+  if (statusLabel === 'Đang xử lý') return 'in-progress'
   if (statusLabel === 'Đã hoàn thành') return 'completed'
-  return 'online'
+  return 'waiting'
 }
 
 export function PatientListTab({
@@ -1601,13 +1578,14 @@ export function PatientListTab({
   onBackToReferrer?: () => void
   referrerTabName?: string
 }) {
+  const { showToast } = useToast()
   const [patients, setPatients] = useState(initialPatients)
   const [activePatientId, setActivePatientId] = useState<string | null>(initialActivePatientId || null)
   const [selectedEncounterIdx, setSelectedEncounterIdx] = useState<number>(0)
   const [searchTerm, setSearchTerm] = useState('')
   const [serviceFilter, setServiceFilter] = useState<PatientServiceFilter>('Tất cả')
   const [statusFilter, setStatusFilter] = useState<PatientStatusFilter>('Tất cả')
-  const [toastMessage, setToastMessage] = useState<string | null>(null)
+  const [showEncounterHistory, setShowEncounterHistory] = useState(false)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [pageSize, setPageSize] = useState<number>(5)
 
@@ -1633,14 +1611,6 @@ export function PatientListTab({
 
   // Find active patient details
   const activePatient = patients.find(p => p.id === activePatientId)
-
-  // Handler for toast messages
-  const triggerToast = (msg: string) => {
-    setToastMessage(msg)
-    setTimeout(() => {
-      setToastMessage(null)
-    }, 3000)
-  }
 
   const patientStatusLabels = patients.map((patient) => getPatientStatusLabel(patient.status, patient.appointmentType))
   const stats = {
@@ -1686,8 +1656,6 @@ export function PatientListTab({
     return (
       <div className="doctor-detail-main doctor-patient-detail-main" style={{ minHeight: '100%', overflow: 'visible', display: 'flex', flexDirection: 'column', padding: '0px' }}>
         <section className="doctor-page-content" style={{ minHeight: '100%', padding: 0, display: 'flex', flexDirection: 'column', gap: '10px', overflow: 'visible' }}>
-          {toastMessage && <div className="emr-toast">{toastMessage}</div>}
-
           <div className="doctor-detail-actions" style={{ flex: '0 0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
             <PrimaryButton variant="secondary" onClick={() => {
               if (onBackToReferrer) {
@@ -1706,15 +1674,13 @@ export function PatientListTab({
             <div style={{ display: 'flex', gap: '8px' }}>
               <PrimaryButton
                 variant="secondary"
-                style={{ background: '#F0FDF4', borderColor: '#22C55E', color: '#15803D' }}
-                onClick={() => triggerToast(`Đang kết nối máy in để in đơn thuốc của bệnh nhân ${p.name}...`)}
+                onClick={() => showToast(`Đang kết nối máy in để in đơn thuốc của bệnh nhân ${p.name}.`, 'info')}
               >
                 In đơn thuốc
               </PrimaryButton>
               <PrimaryButton
                 variant="primary"
-                style={{ background: '#22C55E', borderColor: '#22C55E', color: '#FFFFFF' }}
-                onClick={() => triggerToast(`Đang xuất file bệnh án EMR (PDF) của bệnh nhân ${p.name}...`)}
+                onClick={() => showToast(`Đang xuất file bệnh án EMR (PDF) của bệnh nhân ${p.name}.`, 'success')}
               >
                 Xuất file bệnh án (PDF)
               </PrimaryButton>
@@ -1723,36 +1689,15 @@ export function PatientListTab({
 
           <section className="doctor-detail-dashboard" style={{ flex: '1 1 auto', minHeight: 0, overflow: 'visible', display: 'grid', gridTemplateColumns: 'minmax(282px, 0.74fr) minmax(0, 1.26fr)', gap: '12px' }}>
             <aside className="doctor-detail-left-column" style={{ display: 'flex', flexDirection: 'column', gap: '12px', minHeight: 0 }}>
-              {/* Panel 1: Profile */}
               <article className="doctor-detail-panel doctor-detail-profile-panel" style={{ flex: '0 0 auto' }}>
                 <div className="doctor-detail-profile-head">
-                  <PatientAvatar name={p.name} />
+                  <PatientAvatar />
                   <div className="doctor-detail-profile-copy">
                     <h1>{p.name}</h1>
                   </div>
                 </div>
                 <div className="doctor-detail-info-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '8px' }}>
                   <InfoItem label="Mã bệnh nhân" value={p.code} icon={<IdCardIcon />} />
-                  <InfoItem label="Dịch vụ hiện tại" value={getPatientServiceLabel(p.appointmentType)} icon={<BriefcaseIcon />} />
-                  <InfoItem label="Phân loại khám" value={p.triage} icon={<LocationIcon />} />
-                  <InfoItem
-                    label="Trạng thái hoạt động"
-                    value={
-                      <StatusBadge
-                        status={getPatientBadgeStatus(getPatientStatusLabel(p.status, p.appointmentType))}
-                        label={getPatientStatusLabel(p.status, p.appointmentType)}
-                      />
-                    }
-                    icon={<ClockMetricIcon />}
-                    className="doctor-profile-status-item"
-                  />
-                </div>
-              </article>
-
-              {/* Panel 2: Personal Info */}
-              <article className="doctor-detail-panel" style={{ flex: '0 0 auto' }}>
-                <SectionHeading icon={<ContactIcon />} title="Thông tin hành chính" />
-                <div className="doctor-detail-info-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '8px' }}>
                   <InfoItem label="Giới tính" value={p.gender} />
                   <InfoItem label="Tuổi" value={`${p.age} tuổi`} />
                   <InfoItem label="Số điện thoại" value={p.phone} />
@@ -1827,9 +1772,15 @@ export function PatientListTab({
               <article className="doctor-detail-panel doctor-detail-review-panel" style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column' }}>
                 <div className="doctor-detail-panel-title-row" style={{ flex: '0 0 auto', marginBottom: '8px' }}>
                   <SectionHeading icon={<CalendarMetricIcon />} title="Lịch sử lượt khám gần đây" />
+                  <div className="patient-history-summary">
+                    <span>{p.pastEncounters.length} lần đã khám</span>
+                    <button type="button" onClick={() => setShowEncounterHistory(true)}>
+                      Xem chi tiết
+                    </button>
+                  </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', overflowY: 'auto', maxHeight: '180px', paddingRight: '4px' }}>
-                  {p.pastEncounters.map((item, idx) => (
+                  {p.pastEncounters.slice(0, 3).map((item, idx) => (
                     <div
                       key={idx}
                       className={`doctor-detail-review-item ${selectedEncounterIdx === idx ? 'active' : ''}`}
@@ -1917,6 +1868,35 @@ export function PatientListTab({
           </section>
 
         </section>
+        {showEncounterHistory ? (
+          <div className="confirm-overlay patient-history-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="patient-history-title">
+            <div className="confirm-dialog patient-history-modal">
+              <div className="detail-modal-header">
+                <h2 id="patient-history-title">Lịch sử lượt khám</h2>
+                <PrimaryButton variant="ghost" onClick={() => setShowEncounterHistory(false)}>
+                  Đóng
+                </PrimaryButton>
+              </div>
+              <div className="doctor-review-modal-list patient-history-modal-list">
+                {p.pastEncounters.map((item, idx) => (
+                  <button
+                    type="button"
+                    key={`${item.date}-${idx}`}
+                    className={`doctor-detail-review-item ${selectedEncounterIdx === idx ? 'active' : ''}`}
+                    onClick={() => {
+                      setSelectedEncounterIdx(idx)
+                      setShowEncounterHistory(false)
+                    }}
+                  >
+                    <span>{item.date} · {item.doctor}</span>
+                    <strong>{item.diagnosis}</strong>
+                    <p>{item.symptoms}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
     )
   }
@@ -2005,8 +1985,6 @@ export function PatientListTab({
   // Dashboard / Table View Render (Perfect Wireframe representation + Clinically Valued Fields)
   return (
     <div className="doctor-page-content doctor-management-page patient-page-content patient-management-page">
-      {toastMessage && <div className="emr-toast">{toastMessage}</div>}
-
       {/* Wireframe Metric Stats Summary Bar */}
       <header className="doctor-heading-row patient-tab-header">
         <div className="tab-titles">
@@ -2033,7 +2011,7 @@ export function PatientListTab({
           label="Đang xử lý"
           value={stats.processing}
           icon={<PulseMetricIcon />}
-          iconClassName="metric-icon-green"
+          iconClassName="metric-icon-purple"
         />
         <MetricCard
           label="Đã hoàn thành"

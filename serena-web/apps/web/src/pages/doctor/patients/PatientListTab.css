@@ -1816,6 +1816,272 @@
   background: #dcecff;
 }
 
+.patient-management-page .status-badge-waiting,
+.doctor-patient-detail-main .status-badge-waiting {
+  background: #fff6d7;
+  color: #8a5a00;
+}
+
+.patient-management-page .status-badge-busy,
+.doctor-patient-detail-main .status-badge-busy {
+  background: #e8f3ff;
+  color: #336b9f;
+}
+
+.patient-management-page .status-badge-in-progress,
+.doctor-patient-detail-main .status-badge-in-progress {
+  background: #f0eaff;
+  color: #6d58b6;
+}
+
+.patient-management-page .status-badge-completed,
+.doctor-patient-detail-main .status-badge-completed {
+  background: #e0f7ee;
+  color: #25785f;
+}
+
+.doctor-patient-detail-main.doctor-detail-main {
+  height: 100%;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+}
+
+.doctor-patient-detail-main.doctor-detail-main > .doctor-page-content {
+  height: 100%;
+  min-height: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.4vh, 14px) !important;
+  overflow: hidden !important;
+  padding: clamp(16px, 2vh, 22px) clamp(14px, 1.7vw, 22px) clamp(12px, 1.4vh, 16px) !important;
+  background: #ffffff;
+}
+
+.doctor-patient-detail-main .doctor-detail-actions {
+  min-height: 34px;
+  margin-bottom: 0 !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-actions .ui-button {
+  min-height: 32px;
+  padding: 0 14px;
+  font-size: 12.5px;
+}
+
+.doctor-patient-detail-main .doctor-detail-dashboard {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(270px, 0.72fr) minmax(0, 1.28fr) !important;
+  gap: clamp(10px, 1vw, 12px) !important;
+  overflow: hidden !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-left-column,
+.doctor-patient-detail-main .doctor-detail-right-column {
+  min-height: 0 !important;
+  gap: clamp(9px, 1vh, 12px) !important;
+  overflow: hidden !important;
+  padding-right: 0 !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-panel {
+  min-height: 0;
+  border-radius: 18px !important;
+  padding: clamp(10px, 1vw, 14px) !important;
+  overflow: hidden !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-profile-panel {
+  flex: 0 0 auto !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-profile-head {
+  min-height: 52px !important;
+  gap: 10px !important;
+  margin-bottom: 8px !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-default-avatar {
+  width: 48px !important;
+  height: 48px !important;
+  font-size: 16px !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-profile-copy h1 {
+  font-size: clamp(17px, 1.35vw, 20px) !important;
+  line-height: 1.15 !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-info-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  min-height: 0;
+}
+
+.doctor-patient-detail-main .doctor-info-item {
+  min-height: 50px !important;
+  height: auto !important;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  border-radius: 13px !important;
+  padding: 8px 9px !important;
+  overflow: hidden;
+}
+
+.doctor-patient-detail-main .doctor-info-icon {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 10px !important;
+}
+
+.doctor-patient-detail-main .doctor-info-icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.doctor-patient-detail-main .doctor-info-item span:not(.doctor-info-icon) {
+  font-size: 10.8px !important;
+  line-height: 1.2 !important;
+}
+
+.doctor-patient-detail-main .doctor-info-item strong {
+  min-width: 0;
+  margin-top: 2px !important;
+  overflow: hidden;
+  color: #244a6b;
+  font-size: 12.2px !important;
+  line-height: 1.25 !important;
+  text-overflow: ellipsis;
+}
+
+.doctor-patient-detail-main .doctor-detail-section-heading {
+  gap: 7px;
+  margin: 0 0 8px !important;
+  font-size: 13px !important;
+  line-height: 1.2;
+}
+
+.doctor-patient-detail-main .doctor-detail-section-icon {
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 9px !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-section-icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.doctor-patient-detail-main .doctor-detail-stats-grid {
+  flex: 0 0 auto !important;
+  gap: 8px !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-stats-grid .metric-card {
+  min-height: 52px !important;
+  padding: 7px 9px !important;
+  border-radius: 14px;
+}
+
+.doctor-patient-detail-main .doctor-detail-stats-grid .metric-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+}
+
+.doctor-patient-detail-main .doctor-detail-stats-grid .metric-card p {
+  font-size: 10.5px;
+}
+
+.doctor-patient-detail-main .doctor-detail-stats-grid .metric-card strong {
+  font-size: clamp(14px, 1.05vw, 17px);
+}
+
+.doctor-patient-detail-main .doctor-detail-history-panel,
+.doctor-patient-detail-main .doctor-detail-review-panel,
+.doctor-patient-detail-main .doctor-detail-activity-panel {
+  flex: 1 1 0 !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-history-panel > div:last-child,
+.doctor-patient-detail-main .doctor-detail-review-panel > div:last-child,
+.doctor-patient-detail-main .doctor-detail-activity-panel > div:last-child {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-review-item {
+  gap: 4px !important;
+  border-radius: 13px !important;
+  padding: 8px 10px !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-review-item strong {
+  font-size: 12.4px !important;
+  line-height: 1.2 !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-review-item span,
+.doctor-patient-detail-main .doctor-detail-review-item p,
+.doctor-patient-detail-main .history-bullets,
+.doctor-patient-detail-main li {
+  font-size: 11.8px !important;
+  line-height: 1.35 !important;
+}
+
+.doctor-patient-detail-main .status-badge {
+  width: min(128px, 100%);
+  height: 28px;
+  gap: 6px;
+  padding: 0 9px;
+  font-size: 11.2px;
+}
+
+@media (max-height: 780px) {
+  .doctor-patient-detail-main.doctor-detail-main > .doctor-page-content {
+    gap: 9px !important;
+    padding: 12px 14px 8px !important;
+  }
+
+  .doctor-patient-detail-main .doctor-detail-panel {
+    padding: 8px 10px !important;
+  }
+
+  .doctor-patient-detail-main .doctor-info-item {
+    min-height: 44px !important;
+    padding: 7px 8px !important;
+  }
+
+  .doctor-patient-detail-main .doctor-detail-stats-grid .metric-card {
+    min-height: 46px !important;
+  }
+
+  .doctor-patient-detail-main .doctor-detail-review-item p,
+  .doctor-patient-detail-main .history-bullets {
+    line-height: 1.28 !important;
+  }
+}
+
+@media (max-width: 1020px) {
+  .doctor-patient-detail-main .doctor-detail-dashboard {
+    grid-template-columns: 1fr !important;
+    overflow-y: auto !important;
+  }
+
+  .doctor-patient-detail-main .doctor-detail-left-column,
+  .doctor-patient-detail-main .doctor-detail-right-column {
+    overflow: visible !important;
+  }
+}
+
 @media (max-height: 780px) {
   .patient-management-page {
     gap: 13px;
@@ -1883,5 +2149,204 @@
 
   .patient-management-page .patient-toolbar-filters {
     flex-wrap: wrap;
+  }
+}
+
+/* Patient detail final polish: manager palette, compact typography, and contained panels. */
+.doctor-patient-detail-main .doctor-detail-dashboard {
+  grid-template-columns: minmax(300px, 0.76fr) minmax(0, 1.24fr) !important;
+}
+
+.doctor-patient-detail-main .doctor-info-item {
+  min-height: 46px !important;
+}
+
+.doctor-patient-detail-main .doctor-info-item strong,
+.doctor-patient-detail-main .doctor-detail-review-item strong,
+.doctor-patient-detail-main .doctor-detail-history-panel strong,
+.doctor-patient-detail-main .doctor-detail-activity-panel strong {
+  font-weight: 600 !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-profile-panel .doctor-detail-info-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-profile-panel .doctor-detail-info-list .doctor-info-item:first-child {
+  grid-column: 1 / -1;
+}
+
+.doctor-patient-detail-main .doctor-detail-profile-panel .doctor-info-item {
+  grid-template-columns: 28px minmax(0, 1fr);
+}
+
+.doctor-patient-detail-main .doctor-detail-profile-panel .doctor-info-item:not(:has(.doctor-info-icon)) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.doctor-patient-detail-main .doctor-detail-profile-panel .doctor-info-item > div {
+  min-width: 0;
+}
+
+.doctor-patient-detail-main .doctor-detail-profile-panel .doctor-info-item span:not(.doctor-info-icon),
+.doctor-patient-detail-main .doctor-detail-profile-panel .doctor-info-item strong {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  line-height: 1.2 !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doctor-patient-detail-main .doctor-detail-history-panel {
+  flex-grow: 1.45 !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-review-panel {
+  flex: 0 0 auto !important;
+  max-height: 238px !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-activity-panel {
+  flex-grow: 1.8 !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-review-item {
+  width: 100%;
+  border: 1px solid #dcecff !important;
+  background: #ffffff !important;
+  color: #244a6b !important;
+  text-align: left;
+}
+
+.doctor-patient-detail-main .doctor-detail-review-item.active {
+  border-color: #b9d7f1 !important;
+  background: #f8fbff !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-panel,
+.doctor-patient-detail-main .doctor-info-item,
+.doctor-patient-detail-main .doctor-detail-activity-panel [style*='border'],
+.doctor-patient-detail-main .doctor-detail-history-panel [style*='border'] {
+  border-color: #dcecff !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-activity-panel [style*='background'],
+.doctor-patient-detail-main .doctor-detail-history-panel [style*='background'] {
+  background: #f8fbff !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-activity-panel [style*='color'],
+.doctor-patient-detail-main .doctor-detail-history-panel [style*='color'],
+.doctor-patient-detail-main .doctor-detail-review-item [style*='color'] {
+  color: #244a6b !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-history-panel [style*='text-transform'],
+.doctor-patient-detail-main .doctor-detail-activity-panel [style*='text-transform'] {
+  color: #718096 !important;
+  font-size: 10.8px !important;
+  font-weight: 650 !important;
+}
+
+.doctor-patient-detail-main .doctor-detail-actions > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.doctor-patient-detail-main .doctor-detail-actions .ui-button-primary,
+.doctor-patient-detail-main .doctor-detail-actions .ui-button-secondary {
+  border-color: #dcebff;
+  background: #dcebff;
+  color: #244a6b;
+}
+
+.patient-history-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  color: #718096;
+  font-size: 11.6px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.patient-history-summary button {
+  min-height: 28px;
+  border: 1px solid #dcebff;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #244a6b;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 11.6px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.patient-history-summary button:hover {
+  background: #f3f6ff;
+  border-color: #b9d7f1;
+}
+
+.patient-history-modal {
+  width: min(680px, calc(100vw - 36px));
+  max-height: min(680px, calc(100vh - 56px));
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-radius: 22px;
+  padding: 18px;
+}
+
+.patient-history-modal .detail-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.patient-history-modal .detail-modal-header h2 {
+  margin: 0;
+  color: #244a6b;
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.patient-history-modal-list {
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.patient-history-modal-list .doctor-detail-review-item {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.patient-history-modal-list .doctor-detail-review-item span {
+  color: #718096 !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+}
+
+@media (max-height: 780px) {
+  .doctor-patient-detail-main .doctor-info-item {
+    min-height: 42px !important;
+  }
+
+  .doctor-patient-detail-main .doctor-detail-review-panel {
+    max-height: 220px !important;
+  }
+}
+
+@media (max-width: 1020px) {
+  .doctor-patient-detail-main .doctor-detail-dashboard {
+    grid-template-columns: 1fr !important;
   }
 }
