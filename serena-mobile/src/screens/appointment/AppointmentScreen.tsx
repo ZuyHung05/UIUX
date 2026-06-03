@@ -372,13 +372,9 @@ export default function AppointmentScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
         style={{ flex: 1 }}
+        onScroll={() => { if (dropdownIndex !== null) setDropdownIndex(null); }}
+        scrollEventThrottle={16}
       >
-        {dropdownIndex !== null && (
-          <Pressable
-            style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 50, elevation: 50 }}
-            onPress={() => setDropdownIndex(null)}
-          />
-        )}
         <SectionTitle label="Lịch hẹn sắp diễn ra" />
 
         {upcomingAppointments.map((appt, idx) => (
@@ -1084,7 +1080,7 @@ function ActionChip({ icon, label, onPress, transparent }: { icon: React.ReactNo
       ]}
     >
       {icon}
-      <Text style={styles.chipText}>{label}</Text>
+      <Text style={[styles.chipText, transparent && { color: "#6A7282" }]}>{label}</Text>
     </Pressable>
   );
 }
