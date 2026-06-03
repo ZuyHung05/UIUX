@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 import { DataTable, type DataTableColumn } from '../../../components/ui/DataTable'
 import { FilterSelect } from '../../../components/ui/FilterSelect'
-import { IconButton } from '../../../components/ui/ActionButton'
+import { IconButton, PrimaryButton } from '../../../components/ui/ActionButton'
 import { MetricCard } from '../../../components/ui/MetricCard'
-import { ClockMetricIcon, MessageMetricIcon, PulseMetricIcon, UsersMetricIcon, StarMetricIcon } from '../../../components/ui/metricIcons'
+import { ClockMetricIcon, MessageMetricIcon, PulseMetricIcon, UsersMetricIcon, StarMetricIcon, CalendarMetricIcon, CheckMetricIcon } from '../../../components/ui/metricIcons'
 import { SearchInput } from '../../../components/ui/SearchInput'
 import { ReturnButton } from '../../../components/ui/ReturnButton'
 import { Pagination } from '../../../components/ui/Pagination'
 import { StatusBadge } from '../../../components/ui/StatusBadge'
+import '../../manager/doctors/DoctorManagement.css'
 import './PatientListTab.css'
+
 
 // Clinical-grade patient mock data with EMR elements matching the wireframe exactly
 export const initialPatients = [
@@ -1490,6 +1492,80 @@ const upcomingAppointments = {
   }
 }
 
+function PatientAvatar({ name }: { name: string }) {
+  return (
+    <div className="doctor-avatar doctor-detail-default-avatar" aria-hidden="true" style={{ background: '#E6EFFE', display: 'grid', placeItems: 'center', fontSize: '20px', fontWeight: 800, color: '#244a6b' }}>
+      {name.split(' ').pop()?.[0]}
+    </div>
+  )
+}
+
+function IdCardIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="4" y="5" width="16" height="14" rx="2" />
+      <circle cx="9" cy="10" r="2" />
+      <path d="M7 15c.6-1.4 1.6-2.1 3-2.1S12.4 13.6 13 15" />
+      <path d="M14.5 10h3M14.5 14h3" />
+    </svg>
+  )
+}
+
+function BriefcaseIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M9 7V5.8c0-.7.6-1.3 1.3-1.3h3.4c.7 0 1.3.6 1.3 1.3V7" />
+      <path d="M5 7.5h14A2.5 2.5 0 0 1 21.5 10v8A2.5 2.5 0 0 1 19 20.5H5A2.5 2.5 0 0 1 2.5 18v-8A2.5 2.5 0 0 1 5 7.5Z" />
+      <path d="M9 13h6" />
+    </svg>
+  )
+}
+
+function LocationIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 21s7-5.3 7-12a7 7 0 0 0-14 0c0 6.7 7 12 7 12Z" />
+      <circle cx="12" cy="9" r="2.5" />
+    </svg>
+  )
+}
+
+function ContactIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M6.5 5.5h11A1.5 1.5 0 0 1 19 7v10a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 17V7a1.5 1.5 0 0 1 1.5-1.5Z" />
+      <path d="m6 8 6 4.5L18 8" />
+    </svg>
+  )
+}
+
+function SectionHeading({ icon, title }: { icon: React.ReactNode; title: string }) {
+  return (
+    <h3 className="doctor-detail-section-heading">
+      <span className="doctor-detail-section-icon" aria-hidden="true">
+        {icon}
+      </span>
+      {title}
+    </h3>
+  )
+}
+
+function InfoItem({ label, value, icon, className }: { label: string; value: React.ReactNode; icon?: React.ReactNode; className?: string }) {
+  return (
+    <div className={`doctor-info-item ${className || ''}`}>
+      {icon ? (
+        <span className="doctor-info-icon" aria-hidden="true">
+          {icon}
+        </span>
+      ) : null}
+      <div>
+        <span>{label}</span>
+        <strong>{value}</strong>
+      </div>
+    </div>
+  )
+}
+
 export function PatientListTab({
   onBackToDashboard,
   initialActivePatientId,
@@ -1593,170 +1669,228 @@ export function PatientListTab({
   if (activePatientId && activePatient) {
     const p = activePatient
     const enc = p.pastEncounters[selectedEncounterIdx] || p.pastEncounters[0]
-    const appt = upcomingAppointments[p.id as keyof typeof upcomingAppointments]
 
     return (
-      <div className="emr-view-container">
-        {toastMessage && <div className="emr-toast">{toastMessage}</div>}
+      <div className="doctor-detail-main doctor-patient-detail-main" style={{ height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column', padding: '0px' }}>
+        <section className="doctor-page-content" style={{ height: '100%', minHeight: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '10px', overflow: 'hidden' }}>
+          {toastMessage && <div className="emr-toast">{toastMessage}</div>}
 
-        {/* Return Button at top left */}
-        <ReturnButton
-          onClick={() => {
-            if (onBackToReferrer) {
-              onBackToReferrer()
-            } else {
-              setActivePatientId(null)
-              setSelectedEncounterIdx(0)
-              onClearActivePatient?.()
-            }
-          }}
-          title={
-            onBackToReferrer
-              ? (referrerTabName === 'Tư vấn trực tiếp'
-                  ? "Quay lại màn nhắn tin"
-                  : referrerTabName === 'Dashboard'
-                  ? "Quay lại Dashboard"
-                  : referrerTabName === 'Ca khám'
-                  ? "Quay lại ca khám"
-                  : `Quay lại ${referrerTabName}`)
-              : "Quay lại danh sách"
-          }
-          style={{ marginBottom: '16px' }}
-        />
-
-        {/* EMR Top Title Header */}
-        <div className="emr-view-header-block">
-          <h1 className="emr-view-title">HỒ SƠ BỆNH ÁN CHI TIẾT</h1>
-        </div>
-
-        {/* Profile Card Section */}
-        <section className="emr-profile-section">
-          <div className="emr-avatar-circle">
-            {p.name.split(' ').pop()?.[0]}
-          </div>
-
-          <div className="emr-profile-box">
-            <div className="profile-detail-item">
-              <span className="detail-label">Mã bệnh nhân:</span>
-              <strong className="detail-value">{p.code}</strong>
-            </div>
-            <div className="profile-detail-item">
-              <span className="detail-label">Họ tên & Tuổi:</span>
-              <strong className="detail-value">{p.name} ({p.age} tuổi)</strong>
-            </div>
-            <div className="profile-detail-item">
-              <span className="detail-label">Giới tính & Nhóm máu:</span>
-              <strong className="detail-value">{p.gender} • Nhóm máu {p.bloodType}</strong>
-            </div>
-            <div className="profile-detail-item">
-              <span className="detail-label">Số điện thoại:</span>
-              <strong className="detail-value">{p.phone}</strong>
+          <div className="doctor-detail-actions" style={{ flex: '0 0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+            <PrimaryButton variant="secondary" onClick={() => {
+              if (onBackToReferrer) {
+                onBackToReferrer()
+              } else {
+                setActivePatientId(null)
+                setSelectedEncounterIdx(0)
+                onClearActivePatient?.()
+              }
+            }}>
+              <svg viewBox="0 0 24 24" aria-hidden="true" style={{ width: '16px', height: '16px', fill: 'none', stroke: 'currentColor', strokeWidth: '2', marginRight: '6px' }}>
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+              Quay lại
+            </PrimaryButton>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <PrimaryButton variant="secondary" onClick={() => triggerToast(`Đang kết nối máy in để in đơn thuốc của bệnh nhân ${p.name}...`)}>
+                In đơn thuốc
+              </PrimaryButton>
+              <PrimaryButton variant="primary" onClick={() => triggerToast(`Đang xuất file bệnh án EMR (PDF) của bệnh nhân ${p.name}...`)}>
+                Xuất file bệnh án (PDF)
+              </PrimaryButton>
             </div>
           </div>
-        </section>
 
-        <hr className="emr-divider" />
-
-        {/* Two-Column Info Cards (Visit History in Left Column, Medical History & Allergies in Right Column) */}
-        <div className="emr-two-columns">
-          {/* Column 1: Lịch sử lượt khám gần đây (Left) */}
-          <div className="emr-col-left">
-            <article className="emr-column-card" style={{ height: '100%' }}>
-              <h3 className="emr-column-title">Lịch sử lượt khám gần đây</h3>
-              <div className="encounter-history-list">
-                {p.pastEncounters.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className={`encounter-history-item ${selectedEncounterIdx === idx ? 'active' : ''}`}
-                    onClick={() => {
-                      setSelectedEncounterIdx(idx)
-                    }}
-                  >
-                    <div className="history-item-meta">
-                      <span className="visit-meta">{item.date} • {item.doctor}</span>
-                      {selectedEncounterIdx === idx && <span className="active-badge">Đang chọn</span>}
-                    </div>
-                    <div className="history-item-diag">{item.diagnosis}</div>
+          <section className="doctor-detail-dashboard" style={{ flex: '1 1 auto', minHeight: 0, overflow: 'hidden', display: 'grid', gridTemplateColumns: 'minmax(282px, 0.74fr) minmax(0, 1.26fr)', gap: '12px' }}>
+            <aside className="doctor-detail-left-column" style={{ display: 'flex', flexDirection: 'column', gap: '12px', height: '100%', minHeight: 0 }}>
+              {/* Panel 1: Profile */}
+              <article className="doctor-detail-panel doctor-detail-profile-panel" style={{ flex: '0 0 auto' }}>
+                <div className="doctor-detail-profile-head">
+                  <PatientAvatar name={p.name} />
+                  <div className="doctor-detail-profile-copy">
+                    <h1>{p.name}</h1>
                   </div>
-                ))}
-              </div>
-            </article>
-          </div>
-
-          {/* Column 2: Tiền sử & Cảnh báo dị ứng (Right) */}
-          <div className="emr-col-right">
-            <article className="emr-column-card" style={{ height: '100%' }}>
-              <h3 className="emr-column-title">Tiền sử & Cảnh báo dị ứng</h3>
-              <div className="emr-history-allergy-content">
-                <div className="allergy-warn-box">
-                  <span className="warn-label">Dị ứng ghi nhận:</span>
-                  <strong className={`warn-val ${p.allergies.length > 0 ? 'alert-red' : ''}`}>
-                    {p.allergies.length > 0 ? p.allergies.join(', ') : 'Chưa ghi nhận dị ứng'}
-                  </strong>
                 </div>
-
-                <div className="history-box-section">
-                  <span className="warn-label">Tiền sử bệnh lý:</span>
-                  <ul className="history-bullets">
-                    {p.history.map((item, idx) => (
-                      <li key={idx}>{item}</li>
-                    ))}
-                  </ul>
+                <div className="doctor-detail-info-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '8px' }}>
+                  <InfoItem label="Mã bệnh nhân" value={p.code} icon={<IdCardIcon />} />
+                  <InfoItem label="Dịch vụ hiện tại" value={p.appointmentType} icon={<BriefcaseIcon />} />
+                  <InfoItem label="Phân loại khám" value={p.triage} icon={<LocationIcon />} />
+                  <InfoItem
+                    label="Trạng thái hoạt động"
+                    value={<StatusBadge status={p.status === 'Đang khám' ? 'busy' : p.status === 'Đang chờ' ? 'online' : 'completed'} label={p.status} />}
+                    icon={<ClockMetricIcon />}
+                    className="doctor-profile-status-item"
+                  />
                 </div>
-              </div>
-            </article>
-          </div>
-        </div>
+              </article>
 
-        {/* Vertical Records List Section (Displays detailed info of selected encounter) */}
-        {enc && (
-          <section className="emr-records-section">
-            <div className="emr-encounter-block">
-              {/* Row 1: Triệu chứng & Khám lâm sàng */}
-              <div className="emr-records-row">
-                <span className="emr-records-label">Triệu chứng & Lâm sàng</span>
-                <div className="emr-records-value-box">
-                  <strong style={{ display: 'block', marginBottom: '6px' }}>Khám ngày: {enc.date} (Đảm nhận: {enc.doctor})</strong>
-                  <p style={{ margin: 0 }}>{enc.symptoms}</p>
+              {/* Panel 2: Personal Info */}
+              <article className="doctor-detail-panel" style={{ flex: '0 0 auto' }}>
+                <SectionHeading icon={<ContactIcon />} title="Thông tin hành chính" />
+                <div className="doctor-detail-info-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '8px' }}>
+                  <InfoItem label="Giới tính" value={p.gender} />
+                  <InfoItem label="Tuổi" value={`${p.age} tuổi`} />
+                  <InfoItem label="Số điện thoại" value={p.phone} />
+                  <InfoItem label="Nhóm máu" value={p.bloodType} />
                 </div>
-              </div>
+              </article>
 
-              {/* Row 2: Chẩn đoán y khoa */}
-              <div className="emr-records-row">
-                <span className="emr-records-label">Chẩn đoán y khoa</span>
-                <div className="emr-records-value-box">
-                  <strong style={{ color: '#2563EB', fontWeight: 700 }}>{enc.diagnosis}</strong>
-                </div>
-              </div>
-
-              {/* Row 3: Đơn thuốc chỉ định */}
-              <div className="emr-records-row">
-                <span className="emr-records-label">Đơn thuốc kê chi tiết</span>
-                <div className="emr-records-value-box">
-                  {enc.prescription.length > 0 ? (
-                    <ul style={{ margin: 0, paddingLeft: '18px' }}>
-                      {enc.prescription.map((drug, dIdx) => (
-                        <li key={dIdx} style={{ fontWeight: 600 }}>{drug}</li>
+              {/* Panel 3: Medical History & Allergies */}
+              <article className="doctor-detail-panel doctor-detail-history-panel" style={{ flex: '0 0 auto', minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                <SectionHeading icon={<PulseMetricIcon />} title="Tiền sử & Cảnh báo dị ứng" />
+                <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', paddingRight: '2px' }}>
+                  <div style={{ padding: '10px 14px', borderRadius: '12px', background: p.allergies.length > 0 ? '#FEF2F2' : '#F0FDF4', border: '1px solid', borderColor: p.allergies.length > 0 ? '#FCA5A5' : '#86EFAC' }}>
+                    <span style={{ display: 'block', fontSize: '12px', fontWeight: 800, textTransform: 'uppercase', color: p.allergies.length > 0 ? '#DC2626' : '#16A34A', marginBottom: '4px' }}>Dị ứng ghi nhận</span>
+                    <strong style={{ fontSize: '14px', color: p.allergies.length > 0 ? '#991B1B' : '#14532D' }}>
+                      {p.allergies.length > 0 ? p.allergies.join(', ') : 'Chưa ghi nhận dị ứng'}
+                    </strong>
+                  </div>
+                  <div>
+                    <span style={{ display: 'block', fontSize: '12px', fontWeight: 800, textTransform: 'uppercase', color: '#7f91a4', marginBottom: '6px' }}>Tiền sử bệnh lý</span>
+                    <ul className="history-bullets" style={{ margin: 0, paddingLeft: '18px', color: '#244a6b', fontSize: '14px', lineHeight: 1.5 }}>
+                      {p.history.map((item, idx) => (
+                        <li key={idx} style={{ marginBottom: '4px' }}>{item}</li>
                       ))}
                     </ul>
+                  </div>
+                </div>
+              </article>
+            </aside>
+
+            <section className="doctor-detail-right-column" style={{ display: 'flex', flexDirection: 'column', gap: '12px', height: '100%', minHeight: 0 }}>
+              {/* Vitals Stats Grid */}
+              <div className="metrics-grid doctor-detail-stats-grid" style={{ flex: '0 0 auto' }}>
+                <MetricCard
+                  label="Huyết áp (BP)"
+                  value={p.vitals.bp}
+                  icon={<PulseMetricIcon />}
+                  iconClassName="metric-icon-blue"
+                />
+                <MetricCard
+                  label="Nhịp tim"
+                  value={`${p.vitals.hr} bpm`}
+                  icon={
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '18px', height: '18px' }}>
+                      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                    </svg>
+                  }
+                  iconClassName="metric-icon-yellow"
+                />
+                <MetricCard
+                  label="Nhiệt độ"
+                  value={`${p.vitals.temp} °C`}
+                  icon={
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '18px', height: '18px' }}>
+                      <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" />
+                    </svg>
+                  }
+                  iconClassName="metric-icon-green"
+                />
+                <MetricCard
+                  label="Chỉ số SpO2"
+                  value={`${p.vitals.spo2}%`}
+                  icon={
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '18px', height: '18px' }}>
+                      <path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-11-7-11S5 10.7 5 15a7 7 0 0 0 7 7Z" />
+                    </svg>
+                  }
+                  iconClassName="metric-icon-purple"
+                />
+              </div>
+
+              {/* Panel 4: Encounters History List */}
+              <article className="doctor-detail-panel doctor-detail-review-panel" style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column' }}>
+                <div className="doctor-detail-panel-title-row" style={{ flex: '0 0 auto', marginBottom: '8px' }}>
+                  <SectionHeading icon={<CalendarMetricIcon />} title="Lịch sử lượt khám gần đây" />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', overflowY: 'auto', maxHeight: '180px', paddingRight: '4px' }}>
+                  {p.pastEncounters.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className={`doctor-detail-review-item ${selectedEncounterIdx === idx ? 'active' : ''}`}
+                      style={{
+                        cursor: 'pointer',
+                        borderColor: selectedEncounterIdx === idx ? '#3B82F6' : undefined,
+                        background: selectedEncounterIdx === idx ? '#E6EFFE' : undefined,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '4px',
+                        padding: '10px 14px',
+                        borderRadius: '16px',
+                        border: '1px solid #e4f0ff',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onClick={() => setSelectedEncounterIdx(idx)}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifySpace: 'between', justifyContent: 'space-between', width: '100%' }}>
+                        <strong style={{ fontSize: '14px', color: '#1a365d', fontWeight: 800 }}>{item.doctor}</strong>
+                        <span style={{ color: selectedEncounterIdx === idx ? '#3B82F6' : '#718096', fontSize: '12px', fontWeight: 800 }}>
+                          {item.date} {selectedEncounterIdx === idx && ' • ĐANG CHỌN'}
+                        </span>
+                      </div>
+                      <p style={{ margin: 0, fontSize: '13px', color: '#4a5568', lineHeight: 1.45 }}>{item.diagnosis}</p>
+                    </div>
+                  ))}
+                </div>
+              </article>
+
+              {/* Panel 5: Selected Encounter Details */}
+              <article className="doctor-detail-panel doctor-detail-activity-panel" style={{ flex: '0 0 auto', minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                <div style={{ flex: '0 0 auto' }}>
+                  <SectionHeading icon={<ClockMetricIcon />} title="Chi tiết lượt khám được chọn" />
+                </div>
+                <div style={{ flex: '0 1 auto', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', minHeight: 0, paddingRight: '4px' }}>
+                  {enc ? (
+                    <>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', borderRadius: '16px', background: '#E6EFFE', border: '1px solid #DCEBFF' }}>
+                        <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#fff', border: '1px solid #DCEBFF', display: 'grid', placeItems: 'center', flexShrink: 0 }}>
+                          <svg viewBox="0 0 24 24" style={{ width: '16px', height: '16px', fill: '#3B82F6' }}>
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                          </svg>
+                        </div>
+                        <div>
+                          <span style={{ display: 'block', fontSize: '12px', fontWeight: 800, color: '#3B82F6', textTransform: 'uppercase' }}>Bác sĩ phụ trách</span>
+                          <strong style={{ display: 'block', color: '#244a6b', fontSize: '14px', fontWeight: 800 }}>{enc.doctor}</strong>
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                        <div style={{ padding: '10px 12px', borderRadius: '16px', background: '#E6EFFE', border: '1px solid #DCEBFF' }}>
+                          <span style={{ display: 'block', fontSize: '12px', fontWeight: 800, color: '#3B82F6', textTransform: 'uppercase', marginBottom: '2px' }}>Khám ngày</span>
+                          <strong style={{ color: '#244a6b', fontSize: '14px', fontWeight: 700 }}>{enc.date}</strong>
+                        </div>
+                        <div style={{ padding: '10px 12px', borderRadius: '16px', background: '#FFF8E1', border: '1px solid #FFE0B2' }}>
+                          <span style={{ display: 'block', fontSize: '12px', fontWeight: 800, color: '#E65100', textTransform: 'uppercase', marginBottom: '2px' }}>Chẩn đoán y khoa</span>
+                          <strong style={{ color: '#E65100', fontSize: '14px', fontWeight: 800 }}>{enc.diagnosis}</strong>
+                        </div>
+                      </div>
+
+                      <div style={{ padding: '10px 12px', borderRadius: '16px', background: '#fcfdff', border: '1px solid #dcecff' }}>
+                        <span style={{ display: 'block', fontSize: '12px', fontWeight: 800, color: '#7f91a4', textTransform: 'uppercase', marginBottom: '4px' }}>Triệu chứng & Lâm sàng</span>
+                        <p style={{ margin: 0, color: '#4a5568', fontSize: '13px', lineHeight: 1.5 }}>{enc.symptoms}</p>
+                      </div>
+
+                      <div style={{ padding: '10px 12px', borderRadius: '16px', background: '#fcfdff', border: '1px solid #dcecff' }}>
+                        <span style={{ display: 'block', fontSize: '12px', fontWeight: 800, color: '#7f91a4', textTransform: 'uppercase', marginBottom: '4px' }}>Đơn thuốc kê chi tiết</span>
+                        {enc.prescription.length > 0 ? (
+                          <ul style={{ margin: 0, paddingLeft: '16px', color: '#244a6b', fontSize: '13px', lineHeight: 1.5 }}>
+                            {enc.prescription.map((drug, dIdx) => (
+                              <li key={dIdx} style={{ fontWeight: 600, marginBottom: '2px' }}>{drug}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <span style={{ color: '#a0aec0', fontSize: '13px', fontStyle: 'italic' }}>Không kê đơn thuốc</span>
+                        )}
+                      </div>
+                    </>
                   ) : (
-                    <span className="emr-no-notes">Không kê đơn thuốc</span>
+                    <p className="doctor-detail-empty-note">Không có chi tiết lượt khám được chọn.</p>
                   )}
                 </div>
-              </div>
-            </div>
+              </article>
+            </section>
           </section>
-        )}
 
-        {/* Function Actions Buttons at bottom right */}
-        <div className="emr-buttons-group">
-          <button className="emr-btn-outline" type="button" onClick={() => triggerToast(`Đang kết nối máy in để in đơn thuốc của bệnh nhân ${p.name}...`)}>
-            In đơn thuốc
-          </button>
-          <button className="emr-btn-filled" type="button" onClick={() => triggerToast(`Đang xuất file bệnh án EMR (PDF) của bệnh nhân ${p.name}...`)}>
-            Xuất file bệnh án (PDF)
-          </button>
-        </div>
+        </section>
       </div>
     )
   }
@@ -1765,14 +1899,14 @@ export function PatientListTab({
     {
       key: 'index',
       header: 'STT',
-      width: '60px',
+      width: '50px',
       align: 'center',
       render: (_item, index) => (currentPage - 1) * pageSize + index + 1,
     },
     {
       key: 'patient',
       header: 'Bệnh nhân',
-      width: '240px',
+      width: '220px',
       render: (item) => (
         <div className="doctor-cell">
           <div className="doctor-avatar" aria-hidden="true" style={{ background: '#E6EFFE' }}>
@@ -1826,8 +1960,8 @@ export function PatientListTab({
     {
       key: 'actions',
       header: 'Hành động',
-      width: '120px',
-      align: 'left',
+      width: '118px',
+      align: 'center',
       render: (item) => (
         <div className="table-actions">
           <IconButton
@@ -1855,7 +1989,7 @@ export function PatientListTab({
       {/* Wireframe Metric Stats Summary Bar */}
       <header className="patient-tab-header">
         <div className="tab-titles">
-          <h1>Danh sách bệnh nhân</h1>
+          <h1>Quản lý Bệnh nhân</h1>
           <p>Trang quản lý hồ sơ bệnh nhân trong chuỗi phòng khám.</p>
         </div>
         <div className="header-right-filter">
@@ -1872,32 +2006,28 @@ export function PatientListTab({
       </header>
 
       {/* Summary metric cards row */}
-      <div className="metrics-grid doctor-metrics-grid" style={{ marginTop: '18px' }}>
+      <div className="metrics-grid doctor-metrics-grid">
         <MetricCard
           label="Tổng số bệnh nhân"
           value={stats.total}
-          delta={getDeltaText("+2.4%")}
           icon={<UsersMetricIcon />}
           iconClassName="metric-icon-blue"
         />
         <MetricCard
           label="Đang chờ"
           value={stats.waiting}
-          delta={getDeltaText("-2")}
           icon={<ClockMetricIcon />}
           iconClassName="metric-icon-yellow"
         />
         <MetricCard
           label="Đang khám"
           value={stats.processing}
-          delta={getDeltaText("+1")}
           icon={<PulseMetricIcon />}
           iconClassName="metric-icon-green"
         />
         <MetricCard
           label="Ưu tiên cao"
           value={stats.urgent}
-          delta={getDeltaText("+12%")}
           icon={<MessageMetricIcon />}
           iconClassName="metric-icon-yellow"
         />
@@ -1959,14 +2089,12 @@ export function PatientListTab({
       </div>
 
       {/* Upgraded Table Layout of Patients */}
-      <div className="patient-table-frame">
-        <DataTable
-          rows={paginatedPatients}
-          columns={columns}
-          getRowKey={(p) => p.id}
-          emptyState="Không tìm thấy bệnh nhân nào phù hợp."
-        />
-      </div>
+      <DataTable
+        rows={paginatedPatients}
+        columns={columns}
+        getRowKey={(p) => p.id}
+        emptyState="Không tìm thấy bệnh nhân nào phù hợp."
+      />
     </div>
   )
 }
