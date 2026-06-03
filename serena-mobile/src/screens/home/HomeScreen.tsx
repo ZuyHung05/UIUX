@@ -23,7 +23,9 @@ export default function HomeScreen() {
     const navigation = useNavigation<any>();
     return (
         <MainLayout title="Serena Health" subtitle="Serena - Trợ lý y tế thông minh" isScrollable={true}>
-            <TouchableOpacity style={styles.appointmentCard}>
+            <TouchableOpacity style={styles.appointmentCard}
+                onPress={() => navigation.navigate('Appointment')}
+            >
                 <View style={styles.cardHeader}>
                     <View>
                         <Text style={styles.appointmentTitle}>Bạn có lịch khám lúc 10:00 hôm nay</Text>
