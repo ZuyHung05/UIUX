@@ -4,10 +4,11 @@
 }
 
 .manager-report-content {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  min-height: 100%;
+  gap: clamp(6px, 0.8vh, 8px);
+  min-height: 0;
   padding: clamp(10px, 1.8vh, 10px) clamp(10px, 1.6vw, 18px);
   color: #244a6b;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -184,10 +185,11 @@
 .report-metrics-grid {
   flex: 0 0 auto;
   gap: clamp(8px, 0.9vw, 14px);
+  overflow: hidden;
 }
 
 .manager-report-page .metric-card {
-  min-height: clamp(58px, 7vh, 72px);
+  min-height: clamp(54px, 6.5vh, 68px);
   border-radius: 18px;
   animation-duration: 0.45s;
 }
@@ -206,6 +208,7 @@
   gap: clamp(8px, 0.9vw, 12px);
   flex: 1 1 0;
   min-height: 0;
+  overflow: hidden;
 }
 
 .report-side-stack {
@@ -222,6 +225,7 @@
   gap: clamp(8px, 0.9vw, 12px);
   flex: 1 1 0;
   min-height: 0;
+  overflow: hidden;
 }
 
 .branch-report-grid {
@@ -231,6 +235,7 @@
   gap: clamp(8px, 0.9vw, 12px);
   flex: 1 1 0;
   min-height: 0;
+  overflow: hidden;
 }
 
 .branch-revenue-trend-card {

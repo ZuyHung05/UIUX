@@ -8,6 +8,7 @@ import { IconButton } from '../../../components/ui/ActionButton'
 import { MetricCard } from '../../../components/ui/MetricCard'
 import { CheckMetricIcon, ClockMetricIcon, UsersMetricIcon, PulseMetricIcon } from '../../../components/ui/metricIcons'
 import { Pagination } from '../../../components/ui/Pagination'
+import { PageSizeSelect } from '../../../components/ui/PageSizeSelect'
 import { SearchInput } from '../../../components/ui/SearchInput'
 import { ReturnButton } from '../../../components/ui/ReturnButton'
 import { StatusBadge } from '../../../components/ui/StatusBadge'
@@ -388,20 +389,12 @@ export function ManagerPatientListPage() {
           </div>
 
           <div className="doctor-table-controls">
-            <label className="doctor-page-size">
-              <span>Hiển thị</span>
-              <select
-                value={patientsPerPage}
-                onChange={(event) => setPatientsPerPage(Number(event.target.value))}
-              >
-                {pageSizeOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              <span>dòng</span>
-            </label>
+            <PageSizeSelect
+              value={patientsPerPage}
+              options={pageSizeOptions}
+              suffix="dòng"
+              onChange={setPatientsPerPage}
+            />
 
             <Pagination
               currentPage={currentPage}

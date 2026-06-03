@@ -7,6 +7,7 @@ import { MetricCard } from '../../../components/ui/MetricCard'
 import { CalendarMetricIcon, CheckMetricIcon, ClockMetricIcon, PulseMetricIcon } from '../../../components/ui/metricIcons'
 import { FilterSelect } from '../../../components/ui/FilterSelect'
 import { Pagination } from '../../../components/ui/Pagination'
+import { PageSizeSelect } from '../../../components/ui/PageSizeSelect'
 import { SearchInput } from '../../../components/ui/SearchInput'
 import { SegmentedTabs } from '../../../components/ui/SegmentedTabs'
 import { useToast } from '../../../components/ui/Toast'
@@ -30,9 +31,9 @@ type ScheduleSummary = {
 const pageSizeOptions = [5, 10, 15]
 
 const monthOptions = [
-  { value: '2026-06', label: 'Tháng 6/2026' },
-  { value: '2026-07', label: 'Tháng 7/2026' },
-  { value: '2026-09', label: 'Tháng 9/2026' },
+  { value: '2026-06', label: 'Tháng 6' },
+  { value: '2026-07', label: 'Tháng 7' },
+  { value: '2026-09', label: 'Tháng 9' },
 ]
 
 const viewOptions = [
@@ -146,6 +147,7 @@ export function ManagerScheduleAssignmentPage() {
   const [overrides, setOverrides] = useState<Record<string, ShiftType[]>>({})
   const [openShiftPicker, setOpenShiftPicker] = useState<string | null>(null)
   const [expandedDate, setExpandedDate] = useState<Date | null>(null)
+  const [showConfig, setShowConfig] = useState(true)
 
   const activeBranch = branchMockData.find((branch) => branch.id === activeBranchId) ?? branchMockData[0]
   const weeks = useMemo(() => getWeeksForMonth(selectedMonth), [selectedMonth])
@@ -187,7 +189,7 @@ export function ManagerScheduleAssignmentPage() {
     const currentShifts = getShiftsForCell(doctor, date)
 
     if (currentShifts.includes(shiftType) || currentShifts.length >= 2) {
-      showToast('Mỗi ngày chỉ có tối đa 2 ca: sáng và chiều.', 'info')
+      showToast('Mỗi ngày chỉ có tối đa 2 ca: sáng và chiều.', 'warning')
       return
     }
 
@@ -209,9 +211,27 @@ export function ManagerScheduleAssignmentPage() {
     setOpenShiftPicker(null)
   }
 
+  const handleCopyPreviousWeek = () => {
+    const nextOverrides: Record<string, ShiftType[]> = {}
+
+    selectedWeek.forEach((date) => {
+      const previousWeekDate = addDays(date, -7)
+      branchDoctors.forEach((doctor) => {
+        const previousShifts = sortShifts(getSeededShifts(doctor, previousWeekDate))
+        if (previousShifts.length > 0) {
+          nextOverrides[getAssignmentKey(activeBranch.id, doctor.id, date)] = previousShifts
+        }
+      })
+    })
+
+    setOverrides((current) => ({ ...current, ...nextOverrides }))
+    setOpenShiftPicker(null)
+    showToast('Đã sao chép lịch tuần trước vào tuần đang chọn.', 'success')
+  }
+
   const weekOptions = weeks.map((week, index) => ({
     value: String(index),
-    label: `${formatDayMonth(week[0])} - ${formatDayMonth(week[6])}`,
+    label: `Tuần ${index + 1} (${formatDayMonth(week[0])} - ${formatDayMonth(week[6])})`,
   }))
 
   const monthGridDays = weeks.flat()
@@ -226,7 +246,7 @@ export function ManagerScheduleAssignmentPage() {
       <Sidebar config={managerSidebarConfig} />
       <Header profileRole={managerSidebarConfig.profileRole} />
       <main className="desktop-shell-main manager-schedule-main" aria-label="Phân công lịch làm việc">
-        <section className="schedule-assignment-content">
+        <section className={`schedule-assignment-content${showConfig ? '' : ' config-hidden'}`}>
           <div className="schedule-heading-row">
             <div>
               <h1>Phân công lịch làm việc</h1>
@@ -246,6 +266,8 @@ export function ManagerScheduleAssignmentPage() {
             }}
           />
 
+          {showConfig ? (
+          <>
           <div className="metrics-grid schedule-metrics-grid">
             <MetricCard
               label="Bác sĩ đã phân công"
@@ -319,7 +341,7 @@ export function ManagerScheduleAssignmentPage() {
               ariaLabel="Tìm kiếm bác sĩ"
             />
             <div className="schedule-toolbar-actions">
-              <PrimaryButton variant="ghost" onClick={() => showToast('Đã tải file mẫu phân công lịch.', 'info')}>
+              <PrimaryButton variant="ghost" onClick={() => showToast('Đã tải file mẫu phân công lịch.', 'success')}>
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M12 4v11" />
                   <path d="m8 11 4 4 4-4" />
@@ -337,26 +359,41 @@ export function ManagerScheduleAssignmentPage() {
               </PrimaryButton>
             </div>
           </div>
+          </>
+          ) : null}
 
           <div className="schedule-table-controls">
-            <label className="schedule-page-size">
-              <span>Hiển thị</span>
-              <select
-                value={rowsPerPage}
-                onChange={(event) => {
-                  setRowsPerPage(Number(event.target.value))
-                  setCurrentPage(1)
-                }}
-              >
-                {pageSizeOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              <span>dòng / trang</span>
-            </label>
+            <PageSizeSelect
+              value={rowsPerPage}
+              options={pageSizeOptions}
+              onChange={(value) => {
+                setRowsPerPage(value)
+                setCurrentPage(1)
+              }}
+            />
             <Pagination currentPage={safeCurrentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+            <button
+              type="button"
+              className="schedule-config-toggle"
+              aria-pressed={!showConfig}
+              onClick={() => setShowConfig((current) => !current)}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                {showConfig ? (
+                  <>
+                    <path d="M3 3l18 18" />
+                    <path d="M10.6 5.1A9.8 9.8 0 0 1 12 5c5 0 9 4.5 9 7-.4 1-1.2 2-2.3 2.9M6.3 6.3C3.9 7.6 2.4 9.8 2 12c0 2.5 4 7 9 7 1.6 0 3-.4 4.3-1.1" />
+                    <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+                  </>
+                ) : (
+                  <>
+                    <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </>
+                )}
+              </svg>
+              <span>{showConfig ? 'Ẩn cấu hình' : 'Hiện cấu hình'}</span>
+            </button>
           </div>
 
           {viewMode === 'week' ? (
@@ -367,18 +404,19 @@ export function ManagerScheduleAssignmentPage() {
                   <span>{weekOptions[safeWeekIndex]?.label}</span>
                 </div>
                 <div className="schedule-board-actions">
-                  <PrimaryButton variant="ghost" onClick={() => showToast('Đã sao chép lịch tuần trước vào bản nháp.', 'info')}>
+                  <PrimaryButton variant="ghost" onClick={handleCopyPreviousWeek}>
                     Sao chép lịch tuần trước
                   </PrimaryButton>
-                  <PrimaryButton variant="secondary" onClick={() => showToast('Đã lưu nháp lịch làm việc.', 'info')}>
+                  <PrimaryButton variant="secondary" onClick={() => showToast('Đã lưu nháp lịch làm việc.', 'success')}>
                     Lưu nháp
                   </PrimaryButton>
-                  <PrimaryButton onClick={() => showToast('Đã chốt và phát hành lịch làm việc.', 'info')}>
+                  <PrimaryButton onClick={() => showToast('Đã chốt và phát hành lịch làm việc.', 'success')}>
                     Chốt & Phát hành lịch
                   </PrimaryButton>
                 </div>
               </div>
 
+              <div className="matrix-scroll soft-scrollbar">
               <div className="weekly-matrix" role="table" aria-label="Ma trận ca trực theo bác sĩ và ngày">
                 <div className="matrix-row matrix-head-row" role="row">
                   <div className="matrix-doctor-head" role="columnheader">
@@ -467,6 +505,7 @@ export function ManagerScheduleAssignmentPage() {
                   </div>
                 ))}
               </div>
+              </div>
             </section>
           ) : (
             <section className="schedule-board-panel month-board-panel" aria-label="Lịch phân công theo tháng">
@@ -503,8 +542,7 @@ export function ManagerScheduleAssignmentPage() {
                             {doctor.fullName.replace(/^BS\.\s*/, '')}
                           </span>
                         ))}
-                        {hiddenCount > 0 ? <span className="month-more-chip">+ {hiddenCount} bác sĩ khác</span> : null}
-                      </span>
+                        {hiddenCount > 0 ? <span className="month-more-chip">+ {hiddenCount} bác sĩ khác</span> : null}                      </span>
                     </button>
                   )
                 })}

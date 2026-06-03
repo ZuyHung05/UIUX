@@ -14,40 +14,195 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 18px;
+  gap: 12px;
   padding-right: clamp(20px, 2.4vw, 30px);
 }
 
+.notification-menu {
+  position: relative;
+  display: inline-flex;
+}
+
 .notification-button {
-  width: 24px;
-  height: 24px;
+  position: relative;
+  width: 34px;
+  height: 34px;
   display: inline-grid;
   place-items: center;
-  border: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
   background: transparent;
-  color: #000;
+  color: #244a6b;
   cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.notification-button:hover,
+.notification-button[aria-expanded='true'] {
+  border-color: #dcebff;
+  background: #ffffff;
+  color: #1f5f98;
+}
+
+.notification-button.has-unread::after {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #f3f6ff;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.08);
+  content: '';
 }
 
 .notification-button svg {
-  width: 20px;
-  height: 20px;
+  width: 19px;
+  height: 19px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.7;
+  stroke-width: 1.65;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
+.notification-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 50;
+  width: 336px;
+  max-width: calc(100vw - 24px);
+  border: 1px solid #dcebff;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 18px 40px rgba(36, 74, 107, 0.14);
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+}
+
+.notification-dropdown-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid #edf4fb;
+  background: #f8fbff;
+}
+
+.notification-dropdown-head strong {
+  display: block;
+  color: #244a6b;
+  font-size: 15px;
+  font-weight: 780;
+  line-height: 1.2;
+}
+
+.notification-dropdown-head span {
+  display: block;
+  margin-top: 3px;
+  color: #718096;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 308px;
+  overflow: auto;
+  padding: 8px;
+}
+
+.notification-item {
+  width: 100%;
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr);
+  gap: 10px;
+  border: 0;
+  border-radius: 18px;
+  background: transparent;
+  color: #244a6b;
+  padding: 10px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.notification-item:hover {
+  background: #f3f8ff;
+}
+
+.notification-item.is-unread {
+  background: #fbfdff;
+}
+
+.notification-item-dot {
+  width: 8px;
+  height: 8px;
+  margin-top: 7px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.notification-item.is-unread .notification-item-dot {
+  background: #ef4444;
+}
+
+.notification-item-copy {
+  min-width: 0;
+}
+
+.notification-item-copy strong {
+  display: block;
+  overflow: hidden;
+  color: #244a6b;
+  font-size: 13px;
+  font-weight: 760;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notification-item-copy span {
+  display: -webkit-box;
+  margin-top: 4px;
+  overflow: hidden;
+  color: #5f7288;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.notification-item-copy time {
+  display: block;
+  margin-top: 6px;
+  color: #8aa3bb;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
 .profile-text {
-  min-width: 98px;
+  min-width: 116px;
+  text-align: right;
 }
 
 .profile-text strong {
   display: block;
-  color: #000;
-  font-size: 14px;
-  font-weight: 500;
+  color: #244a6b;
+  font-size: 15px;
+  font-weight: 750;
   line-height: 1.2;
 }
 
@@ -55,9 +210,10 @@
   display: block;
   margin-top: 2px;
   color: #718096;
-  font-size: 10px;
-  font-weight: 400;
+  font-size: 11px;
+  font-weight: 500;
   line-height: 1.2;
+  white-space: nowrap;
 }
 
 .profile-avatar {
@@ -66,13 +222,15 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #d7e3f2;
-  color: #718096;
+  border: 1px solid rgba(36, 74, 107, 0.12);
+  background: #dcebff;
+  color: #244a6b;
 }
 
 .profile-avatar svg {
-  width: 21px;
-  height: 21px;
+  width: 62%;
+  height: 62%;
   fill: currentColor;
+  stroke: none;
 }
 

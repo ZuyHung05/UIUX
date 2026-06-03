@@ -4,15 +4,21 @@
 }
 
 .schedule-assignment-content {
+  --matrix-offset: 470px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 100%;
+  min-height: 0;
   padding: clamp(10px, 1.8vh, 10px) clamp(10px, 1.6vw, 18px);
   color: #244a6b;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  overflow: hidden;
-  padding-bottom: 2px;
+  padding-bottom: 8px;
+}
+
+.schedule-assignment-content.config-hidden {
+  --matrix-offset: 300px;
+  gap: 8px;
 }
 
 .schedule-heading-row,
@@ -113,8 +119,7 @@
 }
 
 .schedule-toolbar .search-input {
-  width: min(360px, 44vw);
-  background: rgba(255, 255, 255, 0.82);
+  width: 280px;
 }
 
 .schedule-toolbar-actions,
@@ -128,11 +133,53 @@
   justify-content: flex-start;
   gap: 12px;
   min-height: 32px;
+  flex-wrap: wrap;
 }
 
 .schedule-table-controls .ui-pagination {
   width: auto;
   justify-content: flex-start;
+}
+
+.schedule-config-toggle {
+  height: 32px;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #dcebff;
+  border-radius: 999px;
+  background: rgba(243, 246, 255, 0.92);
+  color: #244a6b;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.schedule-config-toggle:hover {
+  background: #eef6ff;
+  border-color: #91c3ff;
+}
+
+.schedule-config-toggle[aria-pressed='true'] {
+  background: #eaf3ff;
+  border-color: #91c3ff;
+  color: #1f5f98;
+}
+
+.schedule-config-toggle svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .schedule-page-size {
@@ -159,6 +206,8 @@
 }
 
 .schedule-board-panel {
+  flex: 1 1 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -185,12 +234,19 @@
   font-weight: 500;
 }
 
+.matrix-scroll {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+  border: 1px solid #e7f0fb;
+  border-radius: 18px;
+  background: #fafdff;
+}
+
 .weekly-matrix {
   display: flex;
   flex-direction: column;
-  overflow: visible;
-  border: 1px solid #e7f0fb;
-  border-radius: 18px;
+  min-width: 0;
   background: #fafdff;
 }
 
@@ -208,7 +264,11 @@
 .matrix-head-row {
   position: sticky;
   top: 0;
-  z-index: 3;
+  z-index: 5;
+  background: #f3f8ff;
+}
+
+.matrix-head-row .matrix-doctor-head {
   background: #f3f8ff;
 }
 
@@ -370,9 +430,9 @@
 }
 
 .shift-chip-morning {
-  border-color: #cfdced;
-  background: #edf4fb;
-  color: #315b7a;
+  border-color: #d6ead9;
+  background: #eef8f0;
+  color: #3f7a56;
 }
 
 .shift-chip-afternoon {
@@ -465,14 +525,18 @@
 }
 
 .month-board-panel {
-  overflow: visible;
+  overflow: hidden;
 }
 
 .month-calendar-grid {
+  flex: 1 1 0;
+  min-height: 0;
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  grid-auto-rows: minmax(112px, auto);
+  grid-template-rows: 28px repeat(5, minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr);
   gap: 7px;
+  overflow: hidden;
 }
 
 .month-weekday {
@@ -501,6 +565,63 @@
   text-align: left;
   cursor: pointer;
   transition: border-color 160ms ease, transform 160ms ease, background 160ms ease;
+}
+
+@media (max-height: 780px) {
+  .schedule-assignment-content {
+    gap: 6px;
+    padding: 8px 12px 6px;
+  }
+
+  .manager-schedule-page .metric-card {
+    min-height: 52px;
+    padding: 8px 10px;
+  }
+
+  .schedule-filter-row,
+  .schedule-toolbar,
+  .schedule-table-controls {
+    gap: 7px;
+  }
+
+  .schedule-board-panel {
+    gap: 6px;
+    border-radius: 20px;
+    padding: 9px;
+  }
+
+  .matrix-doctor-head,
+  .matrix-day-head {
+    min-height: 36px;
+  }
+
+  .matrix-doctor-cell,
+  .matrix-shift-cell {
+    min-height: 78px;
+  }
+
+  .shift-chip,
+  .shift-add-card {
+    min-height: 29px;
+    padding: 5px 6px;
+  }
+
+  .month-calendar-grid {
+    grid-template-rows: 24px repeat(5, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .month-day-cell {
+    gap: 3px;
+    border-radius: 13px;
+    padding: 6px;
+  }
+
+  .month-doctor-chip,
+  .month-more-chip {
+    padding: 2px 6px;
+    font-size: 10px;
+  }
 }
 
 .month-day-cell:hover {
