@@ -11,18 +11,21 @@ interface StatusModalProps {
 }
 
 
-export const StatusModal = ({ isVisible, title, description, onClose }: StatusModalProps) => (
-    <Modal visible={isVisible} transparent animationType="fade">
-        <View style={styles.overlay}>
-            <View style={styles.content}>
-                <CheckCircle2 size={80} color={COLORS.green} style={{ marginBottom: 20 }} />
-                <Text style={styles.title}>{title}</Text>
-                <Text style={[styles.description, { marginBottom: 25 }]}>{description}</Text>
-                <AppButton title="Hoàn thành" onPress={onClose} style={{ width: '100%' }} />
+export const StatusModal = ({ isVisible, title, description, onClose }: StatusModalProps) => {
+    if (!isVisible) return null;
+    return (
+        <Modal visible={isVisible} transparent animationType="fade">
+            <View style={styles.overlay}>
+                <View style={styles.content}>
+                    <CheckCircle2 size={80} color={COLORS.green} style={{ marginBottom: 20 }} />
+                    <Text style={styles.title}>{title}</Text>
+                    <Text style={[styles.description, { marginBottom: 25 }]}>{description}</Text>
+                    <AppButton title="Hoàn thành" onPress={onClose} style={{ width: '100%' }} />
+                </View>
             </View>
-        </View>
-    </Modal>
-);
+        </Modal>
+    );
+};
 
 const styles = StyleSheet.create({
     overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' },

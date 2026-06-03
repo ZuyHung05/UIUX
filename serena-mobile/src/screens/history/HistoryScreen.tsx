@@ -24,24 +24,21 @@ export const HistoryScreen = () => {
         setIsRatingVisible(true);
     };
     const handleRatingSubmit = (rating: number, comment: string) => {
-        console.log(`Đã đánh giá ${rating} sao với nội dung: ${comment}`);
         setRatingData({ rating, comment });
+        setIsRatingVisible(false);
         setTimeout(() => {
             setIsConfirmVisible(true);
-        }, 400);
+        }, 600);
     };
     const handleConfirmSend = () => {
-        setIsRatingVisible(false);
+        console.log(`Đã đánh giá ${ratingData.rating} sao với nội dung: ${ratingData.comment}`);
         setIsConfirmVisible(false);
-        // Giả lập gửi API lên server...
         setTimeout(() => {
             setIsStatusVisible(true);
-        }, 400);
+        }, 600);
     };
     const handleCloseAll = () => {
         setIsStatusVisible(false);
-        setIsRatingVisible(false);
-        setIsConfirmVisible(false);
         setSelectedItem(null);
     };
 

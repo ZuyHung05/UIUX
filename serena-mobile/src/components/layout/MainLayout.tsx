@@ -12,7 +12,7 @@ interface MainLayoutProps {
     subtitle?: string;
     isScrollable?: boolean;
     backgroundColor?: string;
-    padding?: number;         // Padding mặc định cho nội dung
+    padding?: number;
     showBack?: boolean;
     showRightIcon?: boolean;
 }
@@ -27,22 +27,38 @@ export const MainLayout = ({
     showBack = false,
     showRightIcon = false
 }: MainLayoutProps) => {
-
+    const commonPaddingStyles = {
+        paddingHorizontal: padding,
+        paddingTop: 20,
+    };
     const ContentWrapper = isScrollable ? ScrollView : View;
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: COLORS.background }]} edges={['top']}>
             <StatusBar style="dark" />
             <AppHeader title={title} subtitle={subtitle} showBack={showBack} showRightIcon={showRightIcon} />
-            <ContentWrapper
-                style={[styles.content, { backgroundColor }]}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={[isScrollable ? { paddingBottom: 100 } : undefined,
-                { paddingHorizontal: padding },
-                { paddingTop: 22 }]}
-            >
-                {children}
-            </ContentWrapper>
+            {isScrollable ? (
+                <ScrollView
+                    style={[styles.content, { backgroundColor }]}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={[
+                        commonPaddingStyles,
+                        { paddingBottom: 90 }
+                    ]}
+                >
+                    {children}
+                </ScrollView>
+            ) : (
+                <View
+                    style={[
+                        styles.content,
+                        { backgroundColor },
+                        commonPaddingStyles
+                    ]}
+                >
+                    {children}
+                </View>
+            )}
         </SafeAreaView>
     );
 };
