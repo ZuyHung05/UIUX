@@ -1,5 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import ConsultationScreen from "../screens/chat/ChatScreen";
 import ConsultationDetailScreen from "../screens/chat/ConsultationDetailScreen";
 import NotificationScreen from "../screens/notifications/NotificationScreen";
 import BottomTabNavigator from "./BottomTabNavigator";
@@ -25,6 +26,7 @@ export default function AppNavigator() {
           name="Notification"
           component={NotificationScreen}
         />
+        <Stack.Screen name="Consultation" component={ConsultationScreen} />
         <Stack.Screen name="ConsultationDetail" component={ConsultationDetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>

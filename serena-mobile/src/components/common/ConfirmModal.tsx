@@ -18,6 +18,8 @@ export const ConfirmModal = ({
     isVisible, title, description, icon,
     confirmText, onConfirm, onCancel, type = 'primary'
 }: ConfirmModalProps) => {
+    if (!isVisible) return null;
+
     return (
         <Modal visible={isVisible} transparent animationType="fade">
             <View style={styles.overlay}>
