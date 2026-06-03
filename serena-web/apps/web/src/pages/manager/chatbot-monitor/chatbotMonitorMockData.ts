@@ -367,3 +367,33 @@ chatbotMonitorConversations.push(
     ],
   },
 )
+
+const chatbotFeedbackSamples = [
+  'Chatbot đặt câu hỏi sàng lọc rõ ràng và giúp tôi hiểu bước xử lý tiếp theo.',
+  'Chatbot phản hồi nhanh, nhưng tôi vẫn muốn phần cảnh báo nguy cơ được nhấn mạnh hơn.',
+  'Phần hướng dẫn của chatbot dễ làm theo và có gợi ý khi nào cần đặt lịch.',
+  'Chatbot phân luồng hợp lý trước khi chuyển sang bác sĩ tiếp nhận.',
+]
+
+const doctorFeedbackSamples = [
+  'Bác sĩ tiếp nhận nhanh, giải thích rõ và đưa ra hướng xử lý phù hợp.',
+  'Bác sĩ hỏi đúng thông tin cần thiết, giúp tôi yên tâm hơn sau phiên tư vấn.',
+  'Phản hồi của bác sĩ rõ ràng, có dặn dò cụ thể cho bước theo dõi tiếp theo.',
+  'Bác sĩ hỗ trợ tốt sau khi chatbot chuyển ca, lịch khám được gợi ý hợp lý.',
+]
+
+chatbotMonitorConversations.forEach((conversation, index) => {
+  const baseRating = conversation.rating ?? 3
+
+  if (conversation.handlerType === 'bot') {
+    conversation.chatbotRating = conversation.chatbotRating ?? baseRating
+    conversation.chatbotFeedback = conversation.chatbotFeedback ?? conversation.feedback ?? chatbotFeedbackSamples[index % chatbotFeedbackSamples.length]
+    return
+  }
+
+  conversation.chatbotRating =
+    conversation.chatbotRating ?? Math.max(1, Math.min(5, baseRating - (index % 2 === 0 ? 1 : 0)))
+  conversation.chatbotFeedback = conversation.chatbotFeedback ?? chatbotFeedbackSamples[index % chatbotFeedbackSamples.length]
+  conversation.doctorRating = conversation.doctorRating ?? baseRating
+  conversation.doctorFeedback = conversation.doctorFeedback ?? conversation.feedback ?? doctorFeedbackSamples[index % doctorFeedbackSamples.length]
+})

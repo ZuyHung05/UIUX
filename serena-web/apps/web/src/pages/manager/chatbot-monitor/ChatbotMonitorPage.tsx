@@ -131,20 +131,12 @@ function getRatingLabel(rating?: number) {
   return typeof rating === 'number' ? `${rating}/5` : 'Chưa đánh giá'
 }
 
-function getFeedbackText(conversation: ChatConversation) {
-  if (conversation.feedback) {
-    return readableText(conversation.feedback)
-  }
+function getChatbotFeedbackText(conversation: ChatConversation) {
+  return readableText(conversation.chatbotFeedback ?? conversation.feedback ?? 'Chưa có phản hồi riêng cho chatbot.')
+}
 
-  if (!conversation.rating) {
-    return 'Phiên tư vấn này chưa có phản hồi từ người dùng.'
-  }
-
-  if (conversation.rating <= 2) {
-    return 'Người dùng chưa hài lòng với câu trả lời và cần hỗ trợ rõ hơn.'
-  }
-
-  return 'Người dùng đánh giá phiên tư vấn rõ ràng và phù hợp với nhu cầu.'
+function getDoctorFeedbackText(conversation: ChatConversation) {
+  return readableText(conversation.doctorFeedback ?? 'Chưa có phản hồi riêng cho bác sĩ.')
 }
 
 function getFirstDoctorReply(messages: ChatMessage[]) {
@@ -442,11 +434,20 @@ export function ChatbotMonitorPage() {
                       <span>Đánh giá người dùng</span>
                       <h3>Phản hồi sau phiên</h3>
                     </div>
-                    <div className="chatbot-rating-score">
-                      <span>★</span>
-                      <strong>{getRatingLabel(activeConversation.rating)}</strong>
+                    <div className="chatbot-rating-breakdown">
+                      <div>
+                        <span>Chatbot</span>
+                        <strong>{getRatingLabel(activeConversation.chatbotRating ?? activeConversation.rating)}</strong>
+                        <p>{getChatbotFeedbackText(activeConversation)}</p>
+                      </div>
+                      {activeConversation.handlerType === 'doctor' ? (
+                        <div>
+                          <span>Bác sĩ</span>
+                          <strong>{getRatingLabel(activeConversation.doctorRating ?? activeConversation.rating)}</strong>
+                          <p>{getDoctorFeedbackText(activeConversation)}</p>
+                        </div>
+                      ) : null}
                     </div>
-                    <p>{getFeedbackText(activeConversation)}</p>
                   </article>
                 </div>
               </section>
