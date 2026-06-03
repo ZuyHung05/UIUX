@@ -202,7 +202,7 @@ function AuthField({
 function SerenaMark() {
     return (
         <View style={styles.logo}>
-            <SereneHeartLogo size={132} />
+            <SereneHeartLogo size={90} />
         </View>
     );
 }
@@ -222,10 +222,10 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
     },
     registerContent: {
-        paddingTop: 96,
+        paddingTop: 54,
     },
     loginContent: {
-        paddingTop: 100,
+        paddingTop: 72,
     },
     hero: {
         alignItems: 'center',
@@ -233,9 +233,9 @@ const styles = StyleSheet.create({
         maxWidth: 417,
     },
     logo: {
-        width: 132,
-        height: 132,
-        marginBottom: 16,
+        width: 90,
+        height: 90,
+        marginBottom: 12,
         transform: [{ translateY: 3 }],
     },
     title: {
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 20,
         textAlign: 'center',
-        marginTop: 8,
+        marginTop: 6,
     },
     formPanel: {
         width: '100%',
@@ -259,34 +259,34 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.white,
         borderRadius: 28,
         paddingHorizontal: 32,
-        marginTop: 32,
+        marginTop: 28,
         borderWidth: 1,
         borderColor: 'rgba(36, 74, 107, 0.08)',
     },
     registerPanel: {
-        minHeight: 674,
-        paddingTop: 24,
-        paddingBottom: 32,
+        minHeight: 480,
+        paddingTop: 20,
+        paddingBottom: 24,
     },
     loginPanel: {
-        minHeight: 491,
-        paddingTop: 32,
-        paddingBottom: 32,
+        minHeight: 320,
+        paddingTop: 24,
+        paddingBottom: 24,
     },
     fieldGroup: {
         width: '100%',
-        marginBottom: 20,
+        marginBottom: 12,
     },
     label: {
         color: COLORS.accent,
         fontSize: 16,
         lineHeight: 24,
         fontWeight: '500',
-        marginBottom: 12,
+        marginBottom: 8,
     },
     inputShell: {
         width: '100%',
-        height: 69,
+        height: 54,
         borderRadius: 28,
         backgroundColor: COLORS.white,
         borderWidth: 1,
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 1,
         backgroundColor: '#D9E0E8',
-        marginTop: 28,
+        marginTop: 16,
     },
     switchRow: {
         flexDirection: 'row',
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         columnGap: 6,
         rowGap: 4,
-        marginTop: 28,
+        marginTop: 16,
     },
     switchMuted: {
         color: '#64748B',

@@ -1,5 +1,5 @@
 import { CheckCircle2 } from 'lucide-react-native';
-import { Modal, StyleSheet, Text, View } from 'react-native';
+import { Modal, Platform, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 import { AppButton } from './AppButton';
 
@@ -12,11 +12,14 @@ interface StatusModalProps {
 
 
 export const StatusModal = ({ isVisible, title, description, onClose }: StatusModalProps) => {
+    const { width } = useWindowDimensions();
+    const isDesktopWeb = Platform.OS === 'web' && width > 480;
+
     if (!isVisible) return null;
     return (
         <Modal visible={isVisible} transparent animationType="fade">
-            <View style={styles.overlay}>
-                <View style={styles.content}>
+            <View style={[styles.overlay, isDesktopWeb && styles.webOverlay]}>
+                <View style={[styles.content, isDesktopWeb && styles.webContent]}>
                     <CheckCircle2 size={80} color={COLORS.green} style={{ marginBottom: 20 }} />
                     <Text style={styles.title}>{title}</Text>
                     <Text style={[styles.description, { marginBottom: 25 }]}>{description}</Text>
@@ -29,7 +32,21 @@ export const StatusModal = ({ isVisible, title, description, onClose }: StatusMo
 
 const styles = StyleSheet.create({
     overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' },
+    webOverlay: {
+        width: 390,
+        maxWidth: '100%',
+        height: 844,
+        maxHeight: '100%',
+        alignSelf: 'center',
+        overflow: 'hidden',
+    },
     content: { width: '85%', backgroundColor: 'white', borderRadius: 30, padding: 25, alignItems: 'center' },
+    webContent: {
+        width: 342,
+        maxWidth: '88%',
+        borderRadius: 24,
+        padding: 18,
+    },
     iconCircle: { width: 80, height: 80, borderRadius: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
     title: { ...TYPOGRAPHY.h1, color: COLORS.secondary, marginBottom: 15 },
     descContainer: { marginBottom: 30 },

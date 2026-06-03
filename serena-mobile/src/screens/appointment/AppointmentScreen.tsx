@@ -5,6 +5,7 @@ import {
   Image,
   Linking,
   Pressable,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -80,7 +81,7 @@ type DateChip = {
   selected?: boolean;
 };
 
-const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const initialAppointments: Appointment[] = [
   {
@@ -207,6 +208,7 @@ const timeSlots: TimeSlot[] = [
 ];
 
 export default function AppointmentScreen() {
+  const isDesktopWeb = Platform.OS === "web" && SCREEN_WIDTH > 480;
   const [bookingVisible, setBookingVisible] = React.useState(false);
   const [paymentVisible, setPaymentVisible] = React.useState(false);
   const [addressVisible, setAddressVisible] = React.useState(false);
@@ -524,13 +526,13 @@ export default function AppointmentScreen() {
         animationType="fade"
         onRequestClose={() => setBookingVisible(false)}
       >
-        <View style={styles.modalOverlay}>
+        <View style={[styles.modalOverlay, isDesktopWeb && styles.webBottomSheetFrame]}>
           <Pressable
             style={StyleSheet.absoluteFill}
             onPress={() => setBookingVisible(false)}
           />
 
-          <View style={styles.sheet}>
+          <View style={[styles.sheet, isDesktopWeb && styles.webSheet]}>
             <View style={styles.sheetHandle} />
 
             <View style={styles.sheetHeader}>
@@ -660,7 +662,7 @@ export default function AppointmentScreen() {
         animationType="fade"
         onRequestClose={handleCancelPayment}
       >
-        <View style={styles.confirmOverlay}>
+        <View style={[styles.confirmOverlay, isDesktopWeb && styles.webModalFrame]}>
           <Pressable
             style={StyleSheet.absoluteFill}
             onPress={handleCancelPayment}
@@ -698,7 +700,7 @@ export default function AppointmentScreen() {
         animationType="fade"
         onRequestClose={() => setCancelConfirmVisible(false)}
       >
-        <View style={styles.confirmOverlay}>
+        <View style={[styles.confirmOverlay, isDesktopWeb && styles.webModalFrame]}>
           <Pressable
             style={StyleSheet.absoluteFill}
             onPress={() => setCancelConfirmVisible(false)}
@@ -736,10 +738,12 @@ export default function AppointmentScreen() {
       <Modal
         visible={doctorListVisible}
         animationType="slide"
+        transparent={isDesktopWeb}
         onRequestClose={handleCancelDoctorList}
       >
-        <View style={styles.fullScreenModal}>
-          <View style={styles.fullScreenHeader}>
+        <View style={isDesktopWeb ? styles.webFullScreenBackdrop : styles.fullScreenModal}>
+          <View style={[styles.fullScreenModal, isDesktopWeb && styles.webFullScreenModal]}>
+          <View style={[styles.fullScreenHeader, isDesktopWeb && styles.webFullScreenHeader]}>
             <TouchableOpacity onPress={handleCancelDoctorList} hitSlop={10} style={styles.closeButton}>
               <ChevronLeft size={24} color="#1E3A52" />
             </TouchableOpacity>
@@ -841,6 +845,7 @@ export default function AppointmentScreen() {
               <Text style={styles.doctorListConfirmText}>Xác nhận</Text>
             </TouchableOpacity>
           </View>
+          </View>
         </View>
       </Modal>
 
@@ -851,12 +856,12 @@ export default function AppointmentScreen() {
         animationType="slide"
         onRequestClose={() => setAddressVisible(false)}
       >
-        <View style={styles.modalOverlay}>
+        <View style={[styles.modalOverlay, isDesktopWeb && styles.webBottomSheetFrame]}>
           <Pressable
             style={StyleSheet.absoluteFill}
             onPress={() => setAddressVisible(false)}
           />
-          <View style={styles.sheet}>
+          <View style={[styles.sheet, isDesktopWeb && styles.webSheet]}>
             <View style={styles.sheetHandle} />
             <View style={styles.sheetHeader}>
               <Text style={styles.sheetTitle}>Địa chỉ phòng khám</Text>
@@ -927,12 +932,12 @@ export default function AppointmentScreen() {
         animationType="slide"
         onRequestClose={() => setContactVisible(false)}
       >
-        <View style={styles.modalOverlay}>
+        <View style={[styles.modalOverlay, isDesktopWeb && styles.webBottomSheetFrame]}>
           <Pressable
             style={StyleSheet.absoluteFill}
             onPress={() => setContactVisible(false)}
           />
-          <View style={styles.sheet}>
+          <View style={[styles.sheet, isDesktopWeb && styles.webSheet]}>
             <View style={styles.sheetHandle} />
             <View style={styles.sheetHeader}>
               <Text style={styles.sheetTitle}>Liên hệ</Text>
@@ -999,7 +1004,7 @@ export default function AppointmentScreen() {
         animationType="fade"
         onRequestClose={() => setQrVisible(false)}
       >
-        <View style={styles.confirmOverlay}>
+        <View style={[styles.confirmOverlay, isDesktopWeb && styles.webModalFrame]}>
           <Pressable
             style={StyleSheet.absoluteFill}
             onPress={() => setQrVisible(false)}
@@ -1375,6 +1380,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "flex-end",
   },
+  webBottomSheetFrame: {
+    width: 390,
+    maxWidth: "100%",
+    height: 844,
+    maxHeight: "100%",
+    alignSelf: "center",
+    overflow: "hidden",
+  },
   sheet: {
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 20,
@@ -1382,6 +1395,12 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 0,
     width: "100%",
+  },
+  webSheet: {
+    width: 390,
+    maxWidth: "100%",
+    alignSelf: "center",
+    padding: 16,
   },
   sheetHandle: {
     alignSelf: "center",
@@ -1639,6 +1658,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 32,
   },
+  webModalFrame: {
+    width: 390,
+    maxWidth: "100%",
+    height: 844,
+    maxHeight: "100%",
+    alignSelf: "center",
+    overflow: "hidden",
+  },
   confirmCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 24,
@@ -1756,9 +1783,27 @@ const styles = StyleSheet.create({
   },
 
   /* ===== FULL SCREEN MODAL ===== */
+  webFullScreenBackdrop: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.45)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   fullScreenModal: {
     flex: 1,
     backgroundColor: COLORS.white,
+  },
+  webFullScreenModal: {
+    width: 390,
+    maxWidth: "100%",
+    height: 844,
+    maxHeight: "100%",
+    alignSelf: "center",
+    overflow: "hidden",
+  },
+  webFullScreenHeader: {
+    paddingTop: 18,
   },
   fullScreenHeader: {
     flexDirection: "row" as const,

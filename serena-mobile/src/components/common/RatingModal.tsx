@@ -9,6 +9,7 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
+    useWindowDimensions,
     View
 } from 'react-native';
 import { COLORS, TYPOGRAPHY } from '../../utils/theme';
@@ -23,6 +24,9 @@ interface RatingModalProps {
 export const RatingModal = ({ isVisible, onClose, onSubmit }: RatingModalProps) => {
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
+    const { width } = useWindowDimensions();
+    const isDesktopWeb = Platform.OS === 'web' && width > 480;
+
     useEffect(() => {
         if (isVisible) {
             setRating(0);
@@ -40,13 +44,13 @@ export const RatingModal = ({ isVisible, onClose, onSubmit }: RatingModalProps) 
             onRequestClose={onClose}
         >
             {/* Background mờ phía sau */}
-            <Pressable style={styles.overlay} onPress={onClose}>
+            <Pressable style={[styles.overlay, isDesktopWeb && styles.webOverlay]} onPress={onClose}>
 
                 <KeyboardAvoidingView
                     behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-                    style={{ flex: 1, justifyContent: 'flex-end' }}
+                    style={[styles.keyboardWrapper, isDesktopWeb && styles.webKeyboardWrapper]}
                 >
-                    <View style={styles.sheetContainer}>
+                    <View style={[styles.sheetContainer, isDesktopWeb && styles.webSheetContainer]}>
                         <Pressable style={styles.content} onPress={(e) => e.stopPropagation()}>
                             <View style={styles.handle} />
                             <View style={styles.header}>
@@ -105,22 +109,44 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'rgba(0,0,0,0.5)',
         justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    webOverlay: {
+        width: 390,
+        maxWidth: '100%',
+        height: 844,
+        maxHeight: '100%',
+        alignSelf: 'center',
+        borderRadius: 26,
+        overflow: 'hidden',
+    },
+    keyboardWrapper: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'flex-end',
+    },
+    webKeyboardWrapper: {
+        maxWidth: 390,
+        alignSelf: 'center',
     },
     sheetContainer: {
-        // maxHeight: '80%',
         width: '100%',
-        height: '60%',
+        maxHeight: '72%',
         backgroundColor: '#fff',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        padding: 16,
+        padding: 12,
+    },
+    webSheetContainer: {
+        height: 390,
+        maxHeight: 390,
     },
     content: {
         backgroundColor: 'white',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
-        padding: 20,
-        paddingBottom: Platform.OS === 'ios' ? 40 : 20,
+        padding: 16,
+        paddingBottom: Platform.OS === 'ios' ? 32 : 16,
     },
     handle: {
         width: 40,
@@ -145,8 +171,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#F0F7FF',
         borderRadius: 15,
-        paddingVertical: 20,
-        marginBottom: 20,
+        paddingVertical: 14,
+        marginBottom: 14,
     },
     starTouch: {
         paddingHorizontal: 5,
@@ -155,10 +181,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F9FF',
         borderRadius: 15,
         padding: 15,
-        height: 185,
+        height: 132,
         ...TYPOGRAPHY.body,
         color: '#333',
-        marginBottom: 20,
+        marginBottom: 14,
     },
     submitBtn: {
         width: '100%',
