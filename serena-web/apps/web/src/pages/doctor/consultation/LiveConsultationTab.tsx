@@ -20,6 +20,18 @@ export type ChatItem = {
   isNew?: boolean
   status: 'new' | 'active' | 'ended'
   messages: ChatMessage[]
+  aiExtract?: {
+    symptoms: string
+    history: string
+    diagnosis: string
+    severity: 'Khẩn cấp' | 'Cần khám' | 'Bình thường'
+    vitals?: {
+      bp?: string
+      hr?: number
+      temp?: number
+      spo2?: number
+    }
+  }
 }
 
 export const initialChats: ChatItem[] = [
@@ -37,7 +49,14 @@ export const initialChats: ChatItem[] = [
         sender: 'patient', 
         text: 'Bác sĩ ơi, dạo này tôi hay thấy chóng mặt và đau đầu kèm sốt nhẹ. Không biết đây là triệu chứng của bệnh gì vậy ạ?' 
       },
-    ]
+    ],
+    aiExtract: {
+      symptoms: 'Đau đầu, chóng mặt và sốt nhẹ về chiều diễn ra 3 ngày nay.',
+      history: 'Không ghi nhận tiền sử bệnh lý mãn tính.',
+      diagnosis: 'Theo dõi cơn đau đầu vận mạch / Sốt siêu vi đầu mùa.',
+      severity: 'Cần khám',
+      vitals: { bp: '120/80', hr: 82, temp: 37.8, spo2: 98 }
+    }
   },
   {
     id: '4',
@@ -53,7 +72,14 @@ export const initialChats: ChatItem[] = [
         sender: 'patient', 
         text: 'Xin chào bác sĩ, tôi đang gặp tình trạng đau đầu nhiều ngày qua.' 
       },
-    ]
+    ],
+    aiExtract: {
+      symptoms: 'Đau đầu âm ỉ kéo dài 3 ngày, mất ngủ, chóng mặt nhẹ.',
+      history: 'Tăng huyết áp vô căn.',
+      diagnosis: 'Cơn tăng huyết áp kịch phát / Đau đầu vận mạch.',
+      severity: 'Cần khám',
+      vitals: { bp: '145/95', hr: 88, temp: 36.6, spo2: 97 }
+    }
   },
   {
     id: '2',
@@ -65,7 +91,14 @@ export const initialChats: ChatItem[] = [
     status: 'new',
     messages: [
       { id: 'm1', sender: 'patient', text: 'Chào bác sĩ, tôi bị nhói đau ở vùng ngực bên trái từ sáng nay, cơn đau lan ra vai và sau lưng rất khó chịu.' }
-    ]
+    ],
+    aiExtract: {
+      symptoms: 'Đau nhói vùng ngực bên trái, đau lan ra sau vai và lưng.',
+      history: 'Chưa có tiền sử bệnh lý tim mạch.',
+      diagnosis: 'Theo dõi hội chứng vành cấp / Đau dây thần kinh liên sườn.',
+      severity: 'Khẩn cấp',
+      vitals: { bp: '110/70', hr: 104, temp: 36.8, spo2: 95 }
+    }
   },
   {
     id: '5',
@@ -96,7 +129,14 @@ export const initialChats: ChatItem[] = [
         sender: 'patient', 
         text: 'Chào bác sĩ, dạo này tôi hắt hơi liên tục, ngứa mũi dị ứng rất nhiều mỗi khi ngửi mùi phấn hoa.' 
       },
-    ]
+    ],
+    aiExtract: {
+      symptoms: 'Hắt hơi liên tục, ngứa mũi dị ứng nhiều khi tiếp xúc phấn hoa.',
+      history: 'Dị ứng phấn hoa mạn tính.',
+      diagnosis: 'Viêm mũi dị ứng do tác nhân ngoại cảnh.',
+      severity: 'Bình thường',
+      vitals: { bp: '118/75', hr: 76, temp: 36.5, spo2: 99 }
+    }
   },
   {
     id: '9',
@@ -112,7 +152,14 @@ export const initialChats: ChatItem[] = [
         sender: 'patient', 
         text: 'Chào bác sĩ, tôi muốn tư vấn tái khám định kỳ về bệnh tăng huyết áp và đái tháo đường ạ.' 
       },
-    ]
+    ],
+    aiExtract: {
+      symptoms: 'Tư vấn tái khám định kỳ bệnh mãn tính.',
+      history: 'Tăng huyết áp, đái tháo đường type 2.',
+      diagnosis: 'Tái khám định kỳ tăng huyết áp và đái tháo đường.',
+      severity: 'Bình thường',
+      vitals: { bp: '135/85', hr: 72, temp: 36.7, spo2: 98 }
+    }
   },
   {
     id: '3',
@@ -148,6 +195,7 @@ export function LiveConsultationTab({
 
   const [activeChatId, setActiveChatId] = useState<string | null>(initialActiveChatId || null)
   const [activeFilter, setActiveFilter] = useState<'pending' | 'history'>('pending')
+  const [showChatbotSummaryModal, setShowChatbotSummaryModal] = useState(false)
 
   useEffect(() => {
     if (initialActiveChatId) {
@@ -272,6 +320,8 @@ export function LiveConsultationTab({
       guidance: '',
     })
     setSavedNoteAt(null)
+    setExpandedSection('medical-info')
+    setShowChatbotSummaryModal(false)
   }, [activeChatId])
 
   const startConsultation = (chatId: string) => {
@@ -565,6 +615,38 @@ export function LiveConsultationTab({
       {/* Left Pane / Clinical Workspace Sidebar (Only shown in active chat mode) */}
       {isChatActiveMode && (
         <div className="clinical-workspace-sidebar">
+          {/* Tóm tắt từ Chatbot AI */}
+          {activeChat.aiExtract && (
+            <div className="workspace-accordion-section chatbot-summary-section" onClick={() => setShowChatbotSummaryModal(true)} style={{ cursor: 'pointer' }}>
+              <div className="workspace-accordion-header">
+                <span className="section-title-wrapper chatbot-summary-theme">
+                  <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#10B981' }}>
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  Tóm tắt từ Chatbot AI
+                </span>
+                <span className="summary-action-badge" style={{
+                  fontSize: '11px',
+                  background: '#E6F4EA',
+                  color: '#137333',
+                  padding: '4px 10px',
+                  borderRadius: '16px',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  Xem chi tiết
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '12px', height: '12px' }}>
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Thông tin y tế */}
           <div className={`workspace-accordion-section ${expandedSection === 'medical-info' ? 'expanded' : ''}`}>
             <div className="workspace-accordion-header" onClick={() => toggleSection('medical-info')}>
@@ -1022,6 +1104,168 @@ export function LiveConsultationTab({
                 onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
               >
                 Đóng lịch sử
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Chatbot AI Summary Modal Popup */}
+      {showChatbotSummaryModal && activeChat && activeChat.aiExtract && createPortal(
+        <div className="modal-overlay" onClick={() => setShowChatbotSummaryModal(false)}>
+          <div className="chatbot-summary-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="chatbot-modal-header">
+              <div className="chatbot-modal-title-group">
+                <div className="chatbot-modal-avatar-glow">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <h2>Báo cáo tóm tắt từ Chatbot AI</h2>
+                  <p>Phân tích lâm sàng sơ bộ • Bệnh nhân: {activeChat.name} ({activeChat.age} tuổi)</p>
+                </div>
+              </div>
+              <button className="close-modal-btn" onClick={() => setShowChatbotSummaryModal(false)}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+
+            <div className="chatbot-modal-body">
+              <div className="chatbot-modal-grid">
+                
+                {/* Panel 1: Triệu chứng */}
+                <div className="chatbot-modal-panel symp-panel">
+                  <div className="panel-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                      <line x1="12" y1="9" x2="12" y2="13" />
+                      <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    <h3>Triệu chứng ghi nhận</h3>
+                  </div>
+                  <div className="panel-content">
+                    <p className="clinical-text">{activeChat.aiExtract.symptoms}</p>
+                    <div className="clinical-timestamp-badge">Thời gian khởi phát: Khoảng 3 ngày trước</div>
+                  </div>
+                </div>
+
+                {/* Panel 2: Chỉ số sinh tồn */}
+                <div className="chatbot-modal-panel vitals-panel">
+                  <div className="panel-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg>
+                    <h3>Chỉ số sinh tồn khai báo</h3>
+                  </div>
+                  <div className="panel-content">
+                    {activeChat.aiExtract.vitals ? (
+                      <div className="vitals-badge-grid">
+                        <div className="vital-badge-pill">
+                          <span className="vital-label">Huyết áp (BP)</span>
+                          <span className="vital-value-group">
+                            <span className="vital-val">{activeChat.aiExtract.vitals.bp || '--'}</span>
+                            <span className="vital-unit">mmHg</span>
+                          </span>
+                        </div>
+                        <div className="vital-badge-pill">
+                          <span className="vital-label">Nhịp tim (HR)</span>
+                          <span className="vital-value-group">
+                            <span className="vital-val">{activeChat.aiExtract.vitals.hr || '--'}</span>
+                            <span className="vital-unit">nhịp/phút</span>
+                          </span>
+                        </div>
+                        <div className="vital-badge-pill">
+                          <span className="vital-label">Nhiệt độ (Temp)</span>
+                          <span className="vital-value-group">
+                            <span className="vital-val">{activeChat.aiExtract.vitals.temp || '--'}</span>
+                            <span className="vital-unit">°C</span>
+                          </span>
+                        </div>
+                        <div className="vital-badge-pill">
+                          <span className="vital-label">Nồng độ oxy (SpO2)</span>
+                          <span className="vital-value-group">
+                            <span className="vital-val">{activeChat.aiExtract.vitals.spo2 || '--'}</span>
+                            <span className="vital-unit">%</span>
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="no-vitals-text">Không ghi nhận chỉ số sinh tồn khai báo.</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Panel 3: Tiền sử & Dị ứng */}
+                <div className="chatbot-modal-panel history-panel">
+                  <div className="panel-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                      <line x1="16" y1="13" x2="8" y2="13" />
+                      <line x1="16" y1="17" x2="8" y2="17" />
+                      <polyline points="10 9 9 9 8 9" />
+                    </svg>
+                    <h3>Tiền sử & Dị ứng</h3>
+                  </div>
+                  <div className="panel-content">
+                    <div className="history-info-list">
+                      <div className="history-info-row">
+                        <span className="row-label">Tiền sử bệnh lý:</span>
+                        <span className="row-value">{activeChat.aiExtract.history}</span>
+                      </div>
+                      <div className="history-info-row">
+                        <span className="row-label">Dị ứng:</span>
+                        <span className="row-value-badge red">Penicillin (ghi nhận)</span>
+                      </div>
+                      <div className="history-info-row">
+                        <span className="row-label">Thuốc đang dùng:</span>
+                        <span className="row-value">Chưa khai báo</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Panel 4: Dự đoán & Khuyến nghị */}
+                <div className="chatbot-modal-panel ai-panel">
+                  <div className="panel-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg>
+                    <h3>Dự đoán & Khuyến nghị từ AI</h3>
+                  </div>
+                  <div className="panel-content">
+                    <div className="ai-severity-row">
+                      <span className="ai-severity-label">Mức độ nguy cơ:</span>
+                      <span className={`ai-severity-badge-large ${
+                        activeChat.aiExtract.severity === 'Khẩn cấp' ? 'red' : 
+                        activeChat.aiExtract.severity === 'Cần khám' ? 'orange' : 'gray'
+                      }`}>
+                        {activeChat.aiExtract.severity}
+                      </span>
+                    </div>
+                    <div className="ai-diagnosis-block">
+                      <span className="block-label">Chẩn đoán sơ bộ từ chatbot:</span>
+                      <p className="diagnosis-val">{activeChat.aiExtract.diagnosis}</p>
+                    </div>
+                    <div className="ai-triage-block">
+                      <span className="block-label">Khuyến nghị phân luồng:</span>
+                      <p className="triage-val">
+                        {activeChat.aiExtract.severity === 'Khẩn cấp' ? 'Cần bác sĩ tiếp nhận và khám khẩn cấp qua phòng cấp cứu.' : 
+                         activeChat.aiExtract.severity === 'Cần khám' ? 'Có thể tư vấn trực tuyến và kê đơn ngoại trú theo dõi.' : 
+                         'Theo dõi sức khỏe tại nhà, tư vấn thay đổi lối sống.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div className="chatbot-modal-footer">
+              <button className="chatbot-close-action-btn" onClick={() => setShowChatbotSummaryModal(false)}>
+                Đóng báo cáo
               </button>
             </div>
           </div>

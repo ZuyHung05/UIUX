@@ -83,6 +83,7 @@
   margin-top: 36px;
   margin-bottom: 16px;
   padding: 0 6px 0 6px;
+  overflow-x: hidden;
   overflow-y: auto;
   scrollbar-color: rgba(36, 74, 107, 0.14) transparent;
   scrollbar-width: thin;
@@ -131,21 +132,32 @@
 .nav-item {
   position: relative;
   isolation: isolate;
+  width: 100%;
+  min-width: 0;
   min-height: 24px;
   display: flex;
   align-items: center;
   gap: 8px;
   border-radius: 24px;
-  padding: 8px 12px;
+  padding: 7px 10px;
   color: #244a6b;
   text-decoration: none;
   font-size: 13px;
   font-weight: 500;
   line-height: 1.4;
-  white-space: nowrap;
+  overflow: hidden;
   transition:
     color 160ms ease,
     transform 160ms ease;
+}
+
+.nav-item span {
+  min-width: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  line-height: 1.25;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .nav-item::before {
@@ -163,7 +175,7 @@
 }
 
 .nav-item:hover {
-  transform: translateX(2px);
+  transform: translateX(1px);
 }
 
 .nav-item:hover::before {
@@ -172,7 +184,7 @@
 }
 
 .nav-item.active {
-  font-weight: 800;
+  font-weight: 650;
 }
 
 .nav-item.active::before {

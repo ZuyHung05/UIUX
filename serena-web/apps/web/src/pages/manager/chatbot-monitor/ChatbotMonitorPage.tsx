@@ -7,6 +7,7 @@ import { FilterSelect } from '../../../components/ui/FilterSelect'
 import { MetricCard } from '../../../components/ui/MetricCard'
 import { CalendarMetricIcon, CheckMetricIcon, MessageMetricIcon, StarMetricIcon } from '../../../components/ui/metricIcons'
 import { Pagination } from '../../../components/ui/Pagination'
+import { PageSizeSelect } from '../../../components/ui/PageSizeSelect'
 import type { ChatConversation, ChatMessage, ChatSender } from '../../../components/chat/chatTypes'
 import { managerSidebarConfig } from '../managerSidebarConfig'
 import { chatbotMonitorConversations } from './chatbotMonitorMockData'
@@ -131,20 +132,12 @@ function getRatingLabel(rating?: number) {
   return typeof rating === 'number' ? `${rating}/5` : 'Chưa đánh giá'
 }
 
-function getFeedbackText(conversation: ChatConversation) {
-  if (conversation.feedback) {
-    return readableText(conversation.feedback)
-  }
+function getChatbotFeedbackText(conversation: ChatConversation) {
+  return readableText(conversation.chatbotFeedback ?? conversation.feedback ?? 'Chưa có phản hồi riêng cho chatbot.')
+}
 
-  if (!conversation.rating) {
-    return 'Phiên tư vấn này chưa có phản hồi từ người dùng.'
-  }
-
-  if (conversation.rating <= 2) {
-    return 'Người dùng chưa hài lòng với câu trả lời và cần hỗ trợ rõ hơn.'
-  }
-
-  return 'Người dùng đánh giá phiên tư vấn rõ ràng và phù hợp với nhu cầu.'
+function getDoctorFeedbackText(conversation: ChatConversation) {
+  return readableText(conversation.doctorFeedback ?? 'Chưa có phản hồi riêng cho bác sĩ.')
 }
 
 function getFirstDoctorReply(messages: ChatMessage[]) {
@@ -309,21 +302,15 @@ export function ChatbotMonitorPage() {
           <div className="chatbot-monitor-layout">
             <aside className="chatbot-conversation-panel" aria-label="Danh sách hội thoại">
               <div className="chatbot-list-toolbar">
-                <label className="chatbot-page-size">
-                  Hiển thị
-                  <select
-                    value={rowsPerPage}
-                    onChange={(event) => {
-                      setRowsPerPage(Number(event.target.value))
-                      setCurrentPage(1)
-                    }}
-                  >
-                    {pageSizeOptions.map((size) => (
-                      <option value={size} key={size}>{size}</option>
-                    ))}
-                  </select>
-                  dòng
-                </label>
+                <PageSizeSelect
+                  value={rowsPerPage}
+                  options={pageSizeOptions}
+                  suffix="dòng"
+                  onChange={(value) => {
+                    setRowsPerPage(value)
+                    setCurrentPage(1)
+                  }}
+                />
                 <Pagination
                   className="chatbot-pagination"
                   currentPage={safeCurrentPage}
@@ -442,11 +429,20 @@ export function ChatbotMonitorPage() {
                       <span>Đánh giá người dùng</span>
                       <h3>Phản hồi sau phiên</h3>
                     </div>
-                    <div className="chatbot-rating-score">
-                      <span>★</span>
-                      <strong>{getRatingLabel(activeConversation.rating)}</strong>
+                    <div className="chatbot-rating-breakdown">
+                      <div>
+                        <span>Chatbot</span>
+                        <strong>{getRatingLabel(activeConversation.chatbotRating ?? activeConversation.rating)}</strong>
+                        <p>{getChatbotFeedbackText(activeConversation)}</p>
+                      </div>
+                      {activeConversation.handlerType === 'doctor' ? (
+                        <div>
+                          <span>Bác sĩ</span>
+                          <strong>{getRatingLabel(activeConversation.doctorRating ?? activeConversation.rating)}</strong>
+                          <p>{getDoctorFeedbackText(activeConversation)}</p>
+                        </div>
+                      ) : null}
                     </div>
-                    <p>{getFeedbackText(activeConversation)}</p>
                   </article>
                 </div>
               </section>

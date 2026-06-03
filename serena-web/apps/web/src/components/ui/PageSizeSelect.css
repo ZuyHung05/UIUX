@@ -1,0 +1,30 @@
+.page-size-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #6c8197;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.page-size-select-control {
+  flex: 0 0 auto;
+}
+
+/* Compact pill so the number selector matches the filter buttons without the
+   wide default min-width. */
+.page-size-select-control .date-filter-button {
+  min-width: 64px;
+  gap: 6px;
+  padding: 0 10px;
+}
+
+.page-size-select-control .date-filter-menu-icon {
+  display: none;
+}
+
+.page-size-select-control .filter-select-menu {
+  width: max(100%, 84px);
+  min-width: 64px;
+}

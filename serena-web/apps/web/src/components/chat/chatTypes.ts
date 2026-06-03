@@ -24,6 +24,10 @@ export type ChatConversation = {
   riskLevel: RiskLevel
   rating?: number
   feedback?: string
+  chatbotRating?: number
+  chatbotFeedback?: string
+  doctorRating?: number
+  doctorFeedback?: string
   doctorName?: string
   takeoverTime?: string
   lastMessage: string

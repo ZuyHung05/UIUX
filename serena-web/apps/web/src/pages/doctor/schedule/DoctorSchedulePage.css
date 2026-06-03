@@ -2,19 +2,19 @@
   background: #FFFFFF;
   border-radius: 24px;
   margin: 12px;
-  min-height: calc(100% - 24px);
-  padding-bottom: 16px;
+  height: calc(100% - 24px);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .schedule-header {
-  position: sticky;
-  top: 0;
-  z-index: 5;
   padding: 18px 20px 12px;
   margin-bottom: 12px;
-  background: rgba(255, 255, 255, 0.96);
+  background: #FFFFFF;
   border-bottom: 1px solid #EBF3FC;
-  backdrop-filter: blur(8px);
+  flex: 0 0 auto;
 }
 
 .schedule-day-summary {
@@ -41,26 +41,47 @@
 }
 
 .schedule-content {
-  padding: 0 18px;
+  padding: 0 18px 16px;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .calendar-style-layout {
   display: grid;
   grid-template-columns: minmax(250px, 286px) minmax(0, 1fr);
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .schedule-sidebar {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.schedule-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.schedule-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(36, 74, 107, 0.18);
+  border-radius: 999px;
 }
 
 .schedule-mini-calendar.calendar-container {
   padding: 14px;
   border-radius: 16px;
   border: 1px solid #DCEBFF;
-  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.04);
+  box-shadow: none;
 }
 
 .schedule-mini-calendar .calendar-header {
@@ -94,7 +115,7 @@
   background: #FFFFFF;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.03);
+  box-shadow: none;
 }
 
 .schedule-section-heading {
@@ -235,8 +256,12 @@
   border: 1px solid #DCEBFF;
   border-radius: 20px;
   background: #FFFFFF;
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.035);
+  box-shadow: none;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
 }
 
 .week-calendar-header {
@@ -279,14 +304,16 @@
   display: grid;
   grid-template-columns: 56px repeat(7, minmax(112px, 1fr));
   grid-template-rows: 66px repeat(4, 1fr) repeat(3, 18px) repeat(4, 1fr);
-  overflow-y: hidden;
+  overflow-y: auto;
+  flex: 1 1 0;
+  min-height: 0;
 }
 
 @media (min-width: 1101px) {
   .week-calendar-grid {
-    height: calc(100vh - 240px);
-    max-height: 700px;
-    min-height: 520px;
+    height: auto;
+    max-height: none;
+    min-height: 0;
   }
 }
 
@@ -373,7 +400,7 @@
 .week-day-header.selected strong {
   background: #3B82F6;
   color: #FFFFFF;
-  box-shadow: 0 8px 18px rgba(59, 130, 246, 0.24);
+  box-shadow: none;
 }
 
 .week-row-fragment {
@@ -446,17 +473,17 @@
   text-align: left;
   font-family: inherit;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   justify-content: center;
   box-sizing: border-box;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition: transform 0.1s ease;
 }
 
 .week-appointment:hover {
   transform: translateY(-0.5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: none;
 }
 
 .week-appointment + .week-appointment {
@@ -514,12 +541,29 @@
 }
 
 @media (max-width: 1100px) {
+  .schedule-page {
+    height: auto;
+    overflow: visible;
+  }
+
+  .schedule-content {
+    height: auto;
+    overflow: visible;
+  }
+
   .calendar-style-layout {
     grid-template-columns: 1fr;
+    height: auto;
+    overflow: visible;
+  }
+
+  .week-calendar-board {
+    height: auto;
+    overflow: visible;
   }
 
   .week-calendar-grid {
-    max-height: none;
+    height: 520px;
     overflow-x: auto;
     overflow-y: auto;
     grid-template-rows: 66px repeat(4, 72px) repeat(3, 18px) repeat(4, 72px);
