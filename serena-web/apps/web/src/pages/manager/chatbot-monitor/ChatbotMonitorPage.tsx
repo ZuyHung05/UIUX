@@ -14,10 +14,10 @@ import { chatbotMonitorConversations } from './chatbotMonitorMockData'
 import './ChatbotMonitorPage.css'
 
 type OutcomeFilter = 'all' | 'ai' | 'doctor' | 'booking'
-type RatingFilter = 'all' | 'low' | '3' | '4' | '5'
+type RatingFilter = 'all' | '1' | '2' | '3' | '4' | '5'
 type ConversationOutcome = Exclude<OutcomeFilter, 'all'>
 
-const pageSizeOptions = [3, 4, 5]
+const pageSizeOptions = [5, 10, 15]
 
 const cp1252ByteMap = new Map<string, number>([
   ['€', 0x80],
@@ -87,7 +87,8 @@ const outcomeOptions: Array<{ value: OutcomeFilter; label: string }> = [
 
 const ratingOptions: Array<{ value: RatingFilter; label: string }> = [
   { value: 'all', label: 'Tất cả điểm đánh giá' },
-  { value: 'low', label: 'Đánh giá thấp' },
+  { value: '1', label: '1 sao' },
+  { value: '2', label: '2 sao' },
   { value: '3', label: '3 sao' },
   { value: '4', label: '4 sao' },
   { value: '5', label: '5 sao' },
@@ -121,15 +122,23 @@ function matchesRatingFilter(conversation: ChatConversation, ratingFilter: Ratin
     return true
   }
 
-  if (ratingFilter === 'low') {
-    return typeof conversation.rating === 'number' && conversation.rating <= 2
-  }
-
   return conversation.rating === Number(ratingFilter)
 }
 
 function getRatingLabel(rating?: number) {
   return typeof rating === 'number' ? `${rating}/5` : 'Chưa đánh giá'
+}
+
+function getRatingScoreLabel(rating?: number) {
+  return typeof rating === 'number' ? `${rating}/5` : '--'
+}
+
+function StarIcon() {
+  return (
+    <svg className="chatbot-rating-star" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m12 3.4 2.6 5.25 5.8.84-4.2 4.1.99 5.77L12 16.63 6.81 19.36l.99-5.77-4.2-4.1 5.8-.84L12 3.4Z" />
+    </svg>
+  )
 }
 
 function getChatbotFeedbackText(conversation: ChatConversation) {
@@ -140,8 +149,24 @@ function getDoctorFeedbackText(conversation: ChatConversation) {
   return readableText(conversation.doctorFeedback ?? 'Chưa có phản hồi riêng cho bác sĩ.')
 }
 
-function getFirstDoctorReply(messages: ChatMessage[]) {
-  return messages.find((message) => message.sender === 'doctor')?.time ?? 'Chưa có'
+function getDoctorAssignment(conversation: ChatConversation) {
+  if (conversation.handlerType !== 'doctor' || !conversation.doctorName) {
+    return 'Không áp dụng'
+  }
+
+  return `${readableText(conversation.doctorName)} - BS-${conversation.sessionCode}`
+}
+
+function getProcessingResult(outcome: ConversationOutcome) {
+  if (outcome === 'booking') {
+    return 'Đã đặt lịch hẹn thành công'
+  }
+
+  if (outcome === 'doctor') {
+    return 'Đã chuyển tư vấn chuyên sâu bác sĩ'
+  }
+
+  return 'AI tự xử lý thành công'
 }
 
 function getSenderLabel(sender: ChatSender, message: ChatMessage) {
@@ -176,7 +201,7 @@ export function ChatbotMonitorPage() {
   const [ratingFilter, setRatingFilter] = useState<RatingFilter>('all')
   const [activeConversationId, setActiveConversationId] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  const [rowsPerPage, setRowsPerPage] = useState(pageSizeOptions[1])
+  const [rowsPerPage, setRowsPerPage] = useState(pageSizeOptions[0])
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
 
   const branchOptions = useMemo(
@@ -272,28 +297,24 @@ export function ChatbotMonitorPage() {
             <MetricCard
               label="Tổng số hội thoại"
               value={filteredConversations.length}
-              delta="Theo bộ lọc hiện tại"
               icon={<MessageMetricIcon />}
               iconClassName="metric-icon-blue"
             />
             <MetricCard
               label="Tỷ lệ AI tự xử lý"
               value={`${aiSelfHandledRate}%`}
-              delta="Không cần bác sĩ"
               icon={<CheckMetricIcon />}
               iconClassName="metric-icon-green"
             />
             <MetricCard
               label="Tỷ lệ chuyển bác sĩ"
               value={`${doctorTransferRate}%`}
-              delta="Có bác sĩ tiếp nhận"
               icon={<CalendarMetricIcon />}
               iconClassName="metric-icon-yellow"
             />
             <MetricCard
-              label="Điểm hài lòng trung bình"
+              label="Điểm hài lòng trung bình (CSAT)"
               value={averageRating ? averageRating.toFixed(1) : '0.0'}
-              delta="CSAT / 5"
               icon={<StarMetricIcon />}
               iconClassName="metric-icon-pink"
             />
@@ -388,60 +409,94 @@ export function ChatbotMonitorPage() {
                     <span>Chuyên khoa</span>
                     <strong>{readableText(activeConversation.specialty)}</strong>
                   </article>
-                  <article className="chatbot-info-card">
+                  <article
+                    className={[
+                      'chatbot-info-card',
+                      typeof activeConversation.rating === 'number' && activeConversation.rating <= 2 ? 'chatbot-info-card-warning' : '',
+                    ].filter(Boolean).join(' ')}
+                  >
                     <span>Điểm đánh giá</span>
                     <strong>{getRatingLabel(activeConversation.rating)}</strong>
                   </article>
-                  <article className="chatbot-info-card chatbot-info-card-wide">
+                  <article className={`chatbot-info-card chatbot-info-card-wide chatbot-info-card-outcome outcome-${activeOutcome}`}>
                     <span>Loại xử lý cuối cùng</span>
                     <strong>{getOutcomeLabel(activeOutcome)}</strong>
+                  </article>
+                  <article className="chatbot-info-card chatbot-info-card-full">
+                    <span>Bác sĩ phụ trách</span>
+                    <strong>{getDoctorAssignment(activeConversation)}</strong>
                   </article>
                 </div>
 
                 <article className="chatbot-summary-card">
                   <div className="chatbot-card-title">
                     <span>Tóm tắt do AI sinh tự động</span>
-                    <h3>Diễn giải nhanh nội dung phiên</h3>
+                    <h3>Theo thứ tự xử lý</h3>
                   </div>
                   <div className="chatbot-summary-list">
-                    <p>{readableText(activeConversation.botSummary)}</p>
-                    <p>Triệu chứng hoặc nhu cầu: {activeConversation.symptoms.map(readableText).join(', ')}.</p>
-                    <p>Kết luận xử lý: {getOutcomeLabel(activeOutcome)}.</p>
+                    <section>
+                      <span>1. Triệu chứng/Nhu cầu</span>
+                      <ul>
+                        {activeConversation.symptoms.map((symptom) => (
+                          <li key={symptom}>{readableText(symptom)}</li>
+                        ))}
+                      </ul>
+                    </section>
+                    <section>
+                      <span>2. Nhận định</span>
+                      <p>{readableText(activeConversation.botSummary)}</p>
+                    </section>
+                    <section>
+                      <span>3. Kết quả xử lý</span>
+                      <p>{getProcessingResult(activeOutcome)}.</p>
+                    </section>
                   </div>
                 </article>
 
                 <div className="chatbot-detail-bottom">
-                  <article className="chatbot-timeline-card">
-                    <div className="chatbot-card-title">
-                      <span>Thông tin xử lý</span>
-                      <h3>Các mốc thời gian</h3>
-                    </div>
-                    <div className="chatbot-timeline">
-                      <div><span>Bắt đầu hội thoại</span><strong>{activeConversation.messages[0]?.time ?? 'Chưa có'}</strong></div>
-                      <div><span>Chatbot chuyển bác sĩ</span><strong>{activeConversation.takeoverTime ?? 'Không có'}</strong></div>
-                      <div><span>Bác sĩ tiếp nhận</span><strong>{activeConversation.takeoverTime ?? 'Không có'}</strong></div>
-                      <div><span>Phản hồi đầu tiên</span><strong>{getFirstDoctorReply(activeConversation.messages)}</strong></div>
-                    </div>
-                  </article>
-
                   <article className="chatbot-user-rating-card">
                     <div className="chatbot-card-title">
                       <span>Đánh giá người dùng</span>
                       <h3>Phản hồi sau phiên</h3>
                     </div>
                     <div className="chatbot-rating-breakdown">
-                      <div>
-                        <span>Chatbot</span>
-                        <strong>{getRatingLabel(activeConversation.chatbotRating ?? activeConversation.rating)}</strong>
+                      <div
+                        className={
+                          typeof (activeConversation.chatbotRating ?? activeConversation.rating) === 'number' &&
+                          (activeConversation.chatbotRating ?? activeConversation.rating ?? 0) <= 2
+                            ? 'is-low-rating'
+                            : undefined
+                        }
+                      >
+                        <header className="chatbot-rating-item-header">
+                          <span>Chatbot</span>
+                          <strong>
+                            <StarIcon />
+                            {getRatingScoreLabel(activeConversation.chatbotRating ?? activeConversation.rating)}
+                          </strong>
+                        </header>
                         <p>{getChatbotFeedbackText(activeConversation)}</p>
                       </div>
-                      {activeConversation.handlerType === 'doctor' ? (
-                        <div>
+                      <div
+                        className={
+                          activeConversation.handlerType === 'doctor' &&
+                          typeof (activeConversation.doctorRating ?? activeConversation.rating) === 'number' &&
+                          (activeConversation.doctorRating ?? activeConversation.rating ?? 0) <= 2
+                            ? 'is-low-rating'
+                            : undefined
+                        }
+                      >
+                        <header className="chatbot-rating-item-header">
                           <span>Bác sĩ</span>
-                          <strong>{getRatingLabel(activeConversation.doctorRating ?? activeConversation.rating)}</strong>
-                          <p>{getDoctorFeedbackText(activeConversation)}</p>
-                        </div>
-                      ) : null}
+                          <strong>
+                            <StarIcon />
+                            {activeConversation.handlerType === 'doctor'
+                              ? getRatingScoreLabel(activeConversation.doctorRating ?? activeConversation.rating)
+                              : '--'}
+                          </strong>
+                        </header>
+                        <p>{activeConversation.handlerType === 'doctor' ? getDoctorFeedbackText(activeConversation) : 'Không áp dụng'}</p>
+                      </div>
                     </div>
                   </article>
                 </div>
