@@ -3,9 +3,8 @@ import { DataTable, type DataTableColumn } from '../../../components/ui/DataTabl
 import { FilterSelect } from '../../../components/ui/FilterSelect'
 import { IconButton, PrimaryButton } from '../../../components/ui/ActionButton'
 import { MetricCard } from '../../../components/ui/MetricCard'
-import { ClockMetricIcon, MessageMetricIcon, PulseMetricIcon, UsersMetricIcon, StarMetricIcon, CalendarMetricIcon, CheckMetricIcon } from '../../../components/ui/metricIcons'
+import { ClockMetricIcon, PulseMetricIcon, UsersMetricIcon, CalendarMetricIcon, CheckMetricIcon } from '../../../components/ui/metricIcons'
 import { SearchInput } from '../../../components/ui/SearchInput'
-import { ReturnButton } from '../../../components/ui/ReturnButton'
 import { Pagination } from '../../../components/ui/Pagination'
 import { PageSizeSelect } from '../../../components/ui/PageSizeSelect'
 import { StatusBadge } from '../../../components/ui/StatusBadge'
@@ -1567,6 +1566,26 @@ function InfoItem({ label, value, icon, className }: { label: string; value: Rea
   )
 }
 
+type PatientServiceFilter = 'Tất cả' | 'Cả hai' | 'Khám trực tiếp' | 'Tư vấn chuyên sâu'
+type PatientStatusFilter = 'Tất cả' | 'Đang tư vấn' | 'Chờ tiếp nhận' | 'Đang xử lý' | 'Đã hoàn thành'
+
+function getPatientServiceLabel(service: string) {
+  return service === 'Tư vấn' ? 'Tư vấn chuyên sâu' : service
+}
+
+function getPatientStatusLabel(status: string, service?: string) {
+  if (status === 'Đang chờ') return 'Chờ tiếp nhận'
+  if (status === 'Đang khám') return service === 'Tư vấn' ? 'Đang tư vấn' : 'Đang xử lý'
+  if (status === 'Đã kết thúc' || status === 'Đã khám') return 'Đã hoàn thành'
+  return status
+}
+
+function getPatientBadgeStatus(statusLabel: string): 'online' | 'busy' | 'completed' {
+  if (statusLabel === 'Đang tư vấn' || statusLabel === 'Đang xử lý') return 'busy'
+  if (statusLabel === 'Đã hoàn thành') return 'completed'
+  return 'online'
+}
+
 export function PatientListTab({
   onBackToDashboard,
   initialActivePatientId,
@@ -1586,12 +1605,11 @@ export function PatientListTab({
   const [activePatientId, setActivePatientId] = useState<string | null>(initialActivePatientId || null)
   const [selectedEncounterIdx, setSelectedEncounterIdx] = useState<number>(0)
   const [searchTerm, setSearchTerm] = useState('')
-  const [serviceFilter, setServiceFilter] = useState<'Tất cả' | 'Tư vấn' | 'Khám trực tiếp' | 'Cả hai'>('Tất cả')
-  const [statusFilter, setStatusFilter] = useState<'Tất cả' | 'Đang chờ' | 'Đang khám' | 'Đã kết thúc'>('Tất cả')
+  const [serviceFilter, setServiceFilter] = useState<PatientServiceFilter>('Tất cả')
+  const [statusFilter, setStatusFilter] = useState<PatientStatusFilter>('Tất cả')
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [pageSize, setPageSize] = useState<number>(5)
-  const [timeFilter, setTimeFilter] = useState<'Hôm nay' | 'Tuần này' | 'Tháng này'>('Hôm nay')
 
   // When navigated from another tab with a pre-selected patient ID, open that patient
   useEffect(() => {
@@ -1624,31 +1642,25 @@ export function PatientListTab({
     }, 3000)
   }
 
-  // Calculate statistics for the 4 wireframe summary cards
-  const filterMultiplier = timeFilter === 'Tuần này' ? 5 : timeFilter === 'Tháng này' ? 20 : 1
+  const patientStatusLabels = patients.map((patient) => getPatientStatusLabel(patient.status, patient.appointmentType))
   const stats = {
-    total: 50 * filterMultiplier,      // Total patients (Tổng số bệnh nhân: 50)
-    waiting: 12 * filterMultiplier,    // Waiting (Đang chờ: 12)
-    processing: 5 * filterMultiplier,  // In progress (Đang xử lý: 5)
-    urgent: 2 * filterMultiplier,      // High priority (Ưu tiên cao: 2)
-  }
-
-  const getDeltaText = (baseDelta: string) => {
-    if (timeFilter === 'Hôm nay') return `${baseDelta} so với hôm qua`
-    if (timeFilter === 'Tuần này') return `${baseDelta} so với tuần trước`
-    if (timeFilter === 'Tháng này') return `${baseDelta} so với tháng trước`
-    return baseDelta
+    total: patients.length,
+    waiting: patientStatusLabels.filter((status) => status === 'Chờ tiếp nhận').length,
+    processing: patientStatusLabels.filter((status) => status === 'Đang xử lý').length,
+    completed: patientStatusLabels.filter((status) => status === 'Đã hoàn thành').length,
   }
 
   // Filter & Search logic
   const filteredPatients = patients.filter(p => {
+    const serviceLabel = getPatientServiceLabel(p.appointmentType)
+    const statusLabel = getPatientStatusLabel(p.status, p.appointmentType)
     const matchesSearch =
       p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.phone.includes(searchTerm)
 
-    const matchesService = serviceFilter === 'Tất cả' || p.appointmentType === serviceFilter
-    const matchesStatus = statusFilter === 'Tất cả' || p.status === statusFilter
+    const matchesService = serviceFilter === 'Tất cả' || serviceLabel === serviceFilter
+    const matchesStatus = statusFilter === 'Tất cả' || statusLabel === statusFilter
 
     return matchesSearch && matchesService && matchesStatus
   })
@@ -1721,11 +1733,16 @@ export function PatientListTab({
                 </div>
                 <div className="doctor-detail-info-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '8px' }}>
                   <InfoItem label="Mã bệnh nhân" value={p.code} icon={<IdCardIcon />} />
-                  <InfoItem label="Dịch vụ hiện tại" value={p.appointmentType} icon={<BriefcaseIcon />} />
+                  <InfoItem label="Dịch vụ hiện tại" value={getPatientServiceLabel(p.appointmentType)} icon={<BriefcaseIcon />} />
                   <InfoItem label="Phân loại khám" value={p.triage} icon={<LocationIcon />} />
                   <InfoItem
                     label="Trạng thái hoạt động"
-                    value={<StatusBadge status={p.status === 'Đang khám' ? 'busy' : p.status === 'Đang chờ' ? 'online' : 'completed'} label={p.status} />}
+                    value={
+                      <StatusBadge
+                        status={getPatientBadgeStatus(getPatientStatusLabel(p.status, p.appointmentType))}
+                        label={getPatientStatusLabel(p.status, p.appointmentType)}
+                      />
+                    }
                     icon={<ClockMetricIcon />}
                     className="doctor-profile-status-item"
                   />
@@ -1949,7 +1966,7 @@ export function PatientListTab({
       header: 'Loại hình',
       width: '140px',
       align: 'center',
-      render: (item) => item.appointmentType
+      render: (item) => getPatientServiceLabel(item.appointmentType)
     },
     {
       key: 'status',
@@ -1957,13 +1974,8 @@ export function PatientListTab({
       width: '130px',
       align: 'center',
       render: (item) => {
-        const badgeStatus =
-          item.status === 'Đang chờ'
-            ? 'online'
-            : item.status === 'Đang khám'
-            ? 'busy'
-            : 'completed'
-        return <StatusBadge status={badgeStatus} label={item.status} />
+        const statusLabel = getPatientStatusLabel(item.status, item.appointmentType)
+        return <StatusBadge status={getPatientBadgeStatus(statusLabel)} label={statusLabel} />
       }
     },
     {
@@ -1992,7 +2004,7 @@ export function PatientListTab({
 
   // Dashboard / Table View Render (Perfect Wireframe representation + Clinically Valued Fields)
   return (
-    <div className="doctor-page-content patient-page-content">
+    <div className="doctor-page-content doctor-management-page patient-page-content patient-management-page">
       {toastMessage && <div className="emr-toast">{toastMessage}</div>}
 
       {/* Wireframe Metric Stats Summary Bar */}
@@ -2000,17 +2012,6 @@ export function PatientListTab({
         <div className="tab-titles">
           <h1>Quản lý Bệnh nhân</h1>
           <p>Trang quản lý hồ sơ bệnh nhân trong chuỗi phòng khám.</p>
-        </div>
-        <div className="header-right-filter">
-          <FilterSelect
-            value={timeFilter}
-            options={[
-              { label: 'Hôm nay', value: 'Hôm nay' },
-              { label: 'Tuần này', value: 'Tuần này' },
-              { label: 'Tháng này', value: 'Tháng này' }
-            ]}
-            onChange={e => setTimeFilter(e.target.value as any)}
-          />
         </div>
       </header>
 
@@ -2023,22 +2024,22 @@ export function PatientListTab({
           iconClassName="metric-icon-blue"
         />
         <MetricCard
-          label="Đang chờ"
+          label="Đang chờ tiếp nhận"
           value={stats.waiting}
           icon={<ClockMetricIcon />}
           iconClassName="metric-icon-yellow"
         />
         <MetricCard
-          label="Đang khám"
+          label="Đang xử lý"
           value={stats.processing}
           icon={<PulseMetricIcon />}
           iconClassName="metric-icon-green"
         />
         <MetricCard
-          label="Ưu tiên cao"
-          value={stats.urgent}
-          icon={<MessageMetricIcon />}
-          iconClassName="metric-icon-yellow"
+          label="Đã hoàn thành"
+          value={stats.completed}
+          icon={<CheckMetricIcon />}
+          iconClassName="metric-icon-green"
         />
       </div>
 
@@ -2048,26 +2049,27 @@ export function PatientListTab({
           <SearchInput
             value={searchTerm}
             onChange={setSearchTerm}
-            placeholder="VD: Nhập mã BN (BN-2026-001) hoặc số điện thoại..."
+            placeholder="Tìm bằng tên hoặc số điện thoại bệnh nhân"
           />
           <FilterSelect
             value={serviceFilter}
-            onChange={e => setServiceFilter(e.target.value as any)}
+            onChange={e => setServiceFilter(e.target.value as PatientServiceFilter)}
             options={[
               { value: 'Tất cả', label: 'Dịch vụ' },
-              { value: 'Tư vấn', label: 'Tư vấn' },
-              { value: 'Khám trực tiếp', label: 'Khám trực tiếp' },
               { value: 'Cả hai', label: 'Cả hai' },
+              { value: 'Khám trực tiếp', label: 'Khám trực tiếp' },
+              { value: 'Tư vấn chuyên sâu', label: 'Tư vấn chuyên sâu' },
             ]}
           />
           <FilterSelect
             value={statusFilter}
-            onChange={e => setStatusFilter(e.target.value as any)}
+            onChange={e => setStatusFilter(e.target.value as PatientStatusFilter)}
             options={[
               { value: 'Tất cả', label: 'Trạng thái' },
-              { value: 'Đang chờ', label: 'Đang chờ' },
-              { value: 'Đang khám', label: 'Đang khám' },
-              { value: 'Đã kết thúc', label: 'Đã kết thúc' },
+              { value: 'Đang tư vấn', label: 'Đang tư vấn' },
+              { value: 'Chờ tiếp nhận', label: 'Chờ tiếp nhận' },
+              { value: 'Đang xử lý', label: 'Đang xử lý' },
+              { value: 'Đã hoàn thành', label: 'Đã hoàn thành' },
             ]}
           />
         </div>

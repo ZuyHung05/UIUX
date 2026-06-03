@@ -1677,3 +1677,211 @@
   min-height: 0;
   overflow-y: auto;
 }
+
+/* Manager Doctor Management parity for the Doctor patient list screen. */
+.doctor-dashboard-main:has(.patient-management-page),
+.doctor-dashboard-main:has(.doctor-patient-detail-main) {
+  overflow: hidden;
+  box-shadow: none;
+  scrollbar-gutter: auto;
+}
+
+.patient-management-page {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  gap: clamp(14px, 2.1vh, 22px);
+  padding: clamp(16px, 2vh, 22px) clamp(14px, 1.7vw, 22px) clamp(12px, 1.4vh, 16px);
+  background: #ffffff;
+}
+
+.patient-management-page *,
+.doctor-patient-detail-main * {
+  box-shadow: none !important;
+  background-image: none !important;
+}
+
+.patient-management-page .patient-tab-header {
+  min-height: 34px;
+  padding-top: 4px;
+  margin-bottom: 0;
+}
+
+.patient-management-page .patient-tab-header .tab-titles p {
+  margin-top: 4px;
+}
+
+.patient-management-page .doctor-metrics-grid {
+  flex: 0 0 auto;
+  gap: clamp(12px, 1.2vw, 18px);
+  margin-top: 0;
+}
+
+.patient-management-page .metric-card {
+  min-height: clamp(56px, 6.8vh, 68px);
+  border-color: #e2ecf6;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+.patient-management-page .metric-card:hover {
+  border-color: #c9ddf1;
+  background: #f7fbff;
+  transform: none;
+}
+
+.patient-management-page .patient-toolbar,
+.patient-management-page .patient-table-controls {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.patient-management-page .patient-toolbar {
+  gap: 16px;
+}
+
+.patient-management-page .patient-toolbar-filters {
+  gap: 14px;
+  flex: 1 1 auto;
+}
+
+.patient-management-page .search-input {
+  width: min(34vw, 360px);
+  min-width: 250px;
+}
+
+.patient-management-page .date-filter-button {
+  background: #f3f6ff;
+}
+
+.patient-management-page .filter-select-menu {
+  background: #ffffff;
+  backdrop-filter: none;
+}
+
+.patient-management-page .data-table-wrap {
+  flex: 1 1 0;
+  min-height: 0;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.patient-management-page .data-table th {
+  height: 40px;
+  background: #eaf3fb;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.patient-management-page .data-table td {
+  height: 58px;
+  padding: 0 12px;
+  color: #244a6b;
+  font-size: 13px;
+}
+
+.patient-management-page .data-table tbody tr:nth-child(even) {
+  background: #f7fbf9;
+}
+
+.patient-management-page .data-table tbody tr:hover {
+  background: #edf6ff;
+}
+
+.patient-management-page .doctor-cell {
+  gap: 10px;
+}
+
+.patient-management-page .doctor-avatar {
+  width: 36px;
+  height: 36px;
+  background: #dcebff !important;
+}
+
+.patient-management-page .table-actions {
+  justify-content: center;
+  gap: 7px;
+}
+
+.patient-management-page .ui-icon-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: #e8f3ff;
+  color: #336b9f;
+}
+
+.patient-management-page .ui-icon-button:hover {
+  border-color: #b9d7f1;
+  background: #dcecff;
+}
+
+@media (max-height: 780px) {
+  .patient-management-page {
+    gap: 13px;
+    padding: 12px 14px 8px;
+  }
+
+  .patient-management-page .metric-card {
+    min-height: 56px;
+    padding: 9px 10px;
+  }
+
+  .patient-management-page .patient-tab-header {
+    min-height: 30px;
+    padding-top: 2px;
+  }
+
+  .patient-management-page .patient-tab-header .tab-titles h1 {
+    font-size: clamp(18px, 1.75vw, 22px);
+  }
+
+  .patient-management-page .patient-tab-header .tab-titles p {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.25;
+  }
+
+  .patient-management-page .patient-toolbar,
+  .patient-management-page .patient-table-controls,
+  .patient-management-page .patient-toolbar-filters {
+    gap: 11px;
+  }
+
+  .patient-management-page .doctor-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .patient-management-page .doctor-cell {
+    gap: 8px;
+  }
+
+  .patient-management-page .doctor-cell strong,
+  .patient-management-page .doctor-cell span {
+    font-size: 12.5px;
+  }
+
+  .patient-management-page .data-table th {
+    height: 38px;
+    padding: 0 10px;
+    font-size: 12.5px;
+  }
+
+  .patient-management-page .data-table td {
+    height: 54px;
+    padding: 0 10px;
+    font-size: 12.5px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .patient-management-page .patient-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .patient-management-page .patient-toolbar-filters {
+    flex-wrap: wrap;
+  }
+}
