@@ -1,17 +1,18 @@
 .doctor-management-main {
   background: #fff;
+  overflow: hidden;
 }
 
 .doctor-page-content {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  min-height: 100%;
-  padding: clamp(10px, 1.8vh, 10px) clamp(10px, 1.6vw, 18px);
+  gap: clamp(14px, 1.6vh, 18px);
+  min-height: 0;
+  padding: clamp(14px, 1.8vh, 18px) clamp(14px, 1.7vw, 22px) clamp(10px, 1.2vh, 14px);
   color: #244a6b;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow: hidden;
-  padding-bottom: 2px;
 }
 
 .doctor-heading-row,
@@ -32,6 +33,7 @@
 }
 
 .doctor-heading-row {
+  flex: 0 0 auto;
   min-height: 36px;
   padding-top: 4px;
   margin-bottom: 2px;
@@ -65,6 +67,7 @@
 }
 
 .doctor-toolbar {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -91,6 +94,7 @@
 
 .doctor-management-page .doctor-heading-row {
   min-height: 34px;
+  margin-bottom: 0;
 }
 
 .doctor-management-page .doctor-heading-row p {
@@ -98,15 +102,22 @@
 }
 
 .doctor-management-page .doctor-metrics-grid {
+  flex: 0 0 auto;
   margin-top: 0;
 }
 
+.doctor-management-page .metric-card {
+  min-height: clamp(56px, 6.8vh, 68px);
+}
+
 .doctor-management-page .doctor-toolbar {
-  gap: 12px;
+  gap: 16px;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .doctor-management-page .doctor-toolbar-filters {
-  gap: 10px;
+  gap: 14px;
 }
 
 .doctor-cell {
@@ -203,12 +214,12 @@
 }
 
 .doctor-table-controls {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 12px;
-  margin-top: clamp(4px, 1vh, 10px);
-  margin-bottom: clamp(2px, 0.6vh, 6px);
+  gap: 16px;
+  margin: 0;
 }
 
 .doctor-table-controls .ui-pagination {
@@ -306,11 +317,25 @@
 }
 
 .doctor-management-page .data-table-wrap {
+  flex: 1 1 0;
+  min-height: 0;
   border-radius: 12px;
 }
 
 .doctor-management-page .doctor-cell {
   gap: 10px;
+}
+
+.doctor-management-page .data-table th {
+  height: 38px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.doctor-management-page .data-table td {
+  height: 52px;
+  padding: 0 12px;
+  font-size: 13px;
 }
 
 .doctor-management-page .ui-icon-button {
@@ -421,6 +446,17 @@
   border-radius: 32px;
   background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
   padding: clamp(22px, 2.6vw, 32px);
+}
+
+.doctor-edit-main .doctor-page-content {
+  overflow: hidden;
+}
+
+.doctor-page-content > .doctor-edit-shell,
+.doctor-edit-main .doctor-edit-shell {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
 }
 
 .doctor-edit-shell .doctor-detail-title {
@@ -2344,6 +2380,106 @@
 
   .doctor-detail-profile-panel .doctor-detail-profile-copy h1 {
     font-size: clamp(21px, 1.65vw, 24px);
+  }
+}
+
+@media (max-height: 780px) {
+  .doctor-page-content {
+    gap: 11px;
+    padding: 12px 14px 8px;
+  }
+
+  .doctor-heading-row {
+    min-height: 30px;
+    padding-top: 2px;
+    margin-bottom: 0;
+  }
+
+  .doctor-heading-row h1,
+  .doctor-form-title-row h1,
+  .doctor-detail-title h1 {
+    font-size: clamp(18px, 1.75vw, 22px);
+  }
+
+  .doctor-heading-row p,
+  .doctor-form-title-row p,
+  .doctor-detail-title p {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.25;
+  }
+
+  .doctor-management-page .metric-card {
+    min-height: 56px;
+    padding: 9px 10px;
+  }
+
+  .doctor-toolbar,
+  .doctor-table-controls {
+    gap: 11px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .doctor-toolbar-filters,
+  .doctor-toolbar-actions {
+    gap: 11px;
+  }
+
+  .doctor-management-page .doctor-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .doctor-cell {
+    gap: 8px;
+  }
+
+  .doctor-cell strong,
+  .doctor-cell span {
+    font-size: 12.5px;
+  }
+
+  .doctor-management-page .data-table th {
+    height: 36px;
+    padding: 0 10px;
+    font-size: 12.5px;
+  }
+
+  .doctor-management-page .data-table td {
+    height: 48px;
+    padding: 0 10px;
+    font-size: 12.5px;
+  }
+
+  .doctor-edit-shell {
+    gap: 14px;
+    border-radius: 24px;
+    padding: 16px;
+  }
+
+  .doctor-form-sections {
+    gap: 12px;
+  }
+
+  .doctor-form-section {
+    border-radius: 22px;
+    padding: 16px;
+  }
+
+  .doctor-form-section h2 {
+    margin-bottom: 14px;
+    font-size: 18px;
+  }
+
+  .doctor-form-grid {
+    gap: 12px;
+  }
+
+  .doctor-form-field input,
+  .doctor-form-field select,
+  .doctor-form-field textarea {
+    min-height: 38px;
   }
 }
 

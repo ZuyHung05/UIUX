@@ -7,6 +7,7 @@ import { FilterSelect } from '../../../components/ui/FilterSelect'
 import { MetricCard } from '../../../components/ui/MetricCard'
 import { CalendarMetricIcon, CheckMetricIcon, MessageMetricIcon, StarMetricIcon } from '../../../components/ui/metricIcons'
 import { Pagination } from '../../../components/ui/Pagination'
+import { PageSizeSelect } from '../../../components/ui/PageSizeSelect'
 import type { ChatConversation, ChatMessage, ChatSender } from '../../../components/chat/chatTypes'
 import { managerSidebarConfig } from '../managerSidebarConfig'
 import { chatbotMonitorConversations } from './chatbotMonitorMockData'
@@ -301,21 +302,15 @@ export function ChatbotMonitorPage() {
           <div className="chatbot-monitor-layout">
             <aside className="chatbot-conversation-panel" aria-label="Danh sách hội thoại">
               <div className="chatbot-list-toolbar">
-                <label className="chatbot-page-size">
-                  Hiển thị
-                  <select
-                    value={rowsPerPage}
-                    onChange={(event) => {
-                      setRowsPerPage(Number(event.target.value))
-                      setCurrentPage(1)
-                    }}
-                  >
-                    {pageSizeOptions.map((size) => (
-                      <option value={size} key={size}>{size}</option>
-                    ))}
-                  </select>
-                  dòng
-                </label>
+                <PageSizeSelect
+                  value={rowsPerPage}
+                  options={pageSizeOptions}
+                  suffix="dòng"
+                  onChange={(value) => {
+                    setRowsPerPage(value)
+                    setCurrentPage(1)
+                  }}
+                />
                 <Pagination
                   className="chatbot-pagination"
                   currentPage={safeCurrentPage}
