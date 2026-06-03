@@ -2105,6 +2105,472 @@
   }
 }
 
+/* Restored live consultation refinements: pastel theme, chatbot handoff flow, compact notes. */
+.consultation-tab-outer,
+.consultation-tab-container,
+.consultation-main-pane,
+.consultation-sidebar-pane,
+.clinical-workspace-sidebar,
+.live-consultation-container {
+  background: #FFFFFF !important;
+}
+
+.consultation-tab-container.active-chat-mode,
+.consultation-tab-container.active-chat-mode .consultation-main-pane,
+.consultation-tab-container.active-chat-mode .active-chat-state {
+  height: calc(100vh - 74px);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.consultation-tab-container.active-chat-mode .chat-header-card,
+.consultation-tab-container.active-chat-mode .chat-action-tags,
+.consultation-tab-container.active-chat-mode .chat-input-form,
+.consultation-tab-container.active-chat-mode .chat-footer-ended,
+.consultation-tab-container.active-chat-mode .chat-footer-new {
+  flex: 0 0 auto;
+}
+
+.consultation-tab-container.active-chat-mode .chat-messages-area {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 18px;
+}
+
+.consultation-card,
+.case-queue-card,
+.chat-header-card,
+.chat-message-bubble,
+.chat-input-pill-wrapper,
+.workspace-accordion-section,
+.info-item-card,
+.preconsult-ai-summary,
+.chatbot-summary-modal-card,
+.chatbot-modal-panel,
+.chatbot-handoff-panel,
+.note-textarea {
+  box-shadow: none !important;
+}
+
+.consultation-card,
+.case-queue-card,
+.chat-header-card,
+.workspace-accordion-section,
+.chat-input-pill-wrapper,
+.preconsult-ai-summary {
+  border-color: #DCEBFF !important;
+}
+
+.consultation-card:hover,
+.case-queue-card:hover,
+.workspace-accordion-section:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  background: #FAFDFF !important;
+}
+
+.consultation-card.active,
+.case-queue-card.active {
+  background: #F8FBFF !important;
+  border-color: #9EC5FE !important;
+  box-shadow: none !important;
+}
+
+.patient-avatar-large,
+.chat-header-avatar,
+.consultation-card-avatar,
+.empty-avatar-circle {
+  background: #EAF3FF !important;
+  background-image: none !important;
+  color: #244A6B !important;
+}
+
+.chat-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.view-record-btn,
+.start-consultation-btn,
+.end-consultation-btn,
+.send-msg-button,
+.book-appointment-btn,
+.chatbot-close-action-btn,
+.save-note-btn,
+.modal-confirm-btn,
+.chatbot-modal-footer .chatbot-close-action-btn.secondary {
+  background: #7CB9F4 !important;
+  border-color: #7CB9F4 !important;
+  color: #FFFFFF !important;
+  box-shadow: none !important;
+}
+
+.view-record-btn:hover,
+.start-consultation-btn:hover,
+.end-consultation-btn:hover,
+.send-msg-button:hover,
+.book-appointment-btn:hover,
+.chatbot-close-action-btn:hover,
+.save-note-btn:hover:not(:disabled),
+.modal-confirm-btn:hover,
+.chatbot-modal-footer .chatbot-close-action-btn.secondary:hover {
+  background: #5FA7EE !important;
+  border-color: #5FA7EE !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.chatbot-summary-header-btn {
+  background: #EAF8EF !important;
+  border: 1px solid #BFE8CC !important;
+  color: #2F7D4B !important;
+  padding: 10px 18px;
+  border-radius: 24px;
+  font-size: 12.5px;
+  font-weight: 750;
+  cursor: pointer;
+  box-shadow: none !important;
+}
+
+.chatbot-summary-header-btn:hover {
+  background: #DFF3E7 !important;
+  border-color: #A9DDBC !important;
+}
+
+.preconsult-ai-summary {
+  width: min(560px, calc(100% - 48px));
+  margin: 24px auto 0;
+  padding: 18px 20px;
+  border: 1px solid #CFEED9;
+  border-radius: 18px;
+  background: #F6FCF8;
+  color: #245B37;
+}
+
+.preconsult-ai-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #EAF8EF;
+  color: #2F7D4B;
+  font-size: 11.5px;
+  font-weight: 850;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.preconsult-ai-summary p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 700;
+}
+
+.preconsult-ai-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.preconsult-ai-meta span {
+  padding: 5px 9px;
+  border-radius: 9px;
+  background: #FFFFFF;
+  border: 1px solid #D8F0E0;
+  color: #2F7D4B;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.chat-message-row.system,
+.chat-message-row.ai {
+  width: 100%;
+  justify-content: center;
+}
+
+.chat-message-row.system .chat-message-bubble,
+.chat-message-row.ai .chat-message-bubble {
+  position: relative;
+  width: min(640px, calc(100% - 48px));
+  max-width: 640px;
+  margin-inline: auto;
+  padding: 10px 14px 10px 44px;
+  border-radius: 14px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  box-shadow: none !important;
+}
+
+.chat-message-row.system .chat-message-bubble::before,
+.chat-message-row.ai .chat-message-bubble::before {
+  position: absolute;
+  left: 14px;
+  top: 10px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  box-shadow: none !important;
+}
+
+.chat-message-row.system .chat-message-bubble {
+  background: #FAFDFF !important;
+  border: 1px dashed #BFD8F5 !important;
+  color: #466581 !important;
+  text-align: left;
+}
+
+.chat-message-row.system .chat-message-bubble::before {
+  content: "i";
+  width: 20px;
+  height: 20px;
+  background: #EAF3FF;
+  color: #5FA7EE;
+  font-size: 12px;
+}
+
+.chat-message-row.ai .chat-message-bubble {
+  background: #F6FCF8 !important;
+  border: 1px solid #CFEED9 !important;
+  color: #245B37 !important;
+  text-align: left;
+}
+
+.chat-message-row.ai .chat-message-bubble::before {
+  content: "AI";
+  width: 24px;
+  height: 20px;
+  background: #EAF8EF;
+  color: #2F7D4B;
+  font-size: 10px;
+}
+
+.chat-message-row.patient .chat-message-bubble {
+  background: #FFFFFF !important;
+  border: 1px solid #DCEBFF !important;
+}
+
+.chat-message-row.doctor .chat-message-bubble {
+  background: #F8FBFF !important;
+  border: 1px solid #DCEBFF !important;
+  color: #244A6B !important;
+}
+
+.chat-input-form {
+  align-items: flex-end;
+}
+
+.chat-input-pill-wrapper {
+  align-items: flex-end;
+  border-radius: 22px;
+}
+
+.chat-input-pill-wrapper input,
+.chat-input-pill-wrapper textarea {
+  flex: 1;
+  border: none !important;
+  background: transparent !important;
+  padding: 8px 4px !important;
+  font-size: 13.5px;
+  outline: none;
+  color: #1E293B;
+}
+
+.chat-input-pill-wrapper textarea {
+  min-height: 38px;
+  max-height: 104px;
+  line-height: 1.45;
+  resize: none;
+  overflow-y: auto;
+  font-family: inherit;
+  white-space: pre-wrap;
+}
+
+.chat-input-pill-wrapper .input-icon-btn,
+.chat-input-pill-wrapper .send-msg-button {
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
+
+.clinical-workspace-sidebar {
+  gap: 8px;
+  padding: 16px 14px;
+}
+
+.workspace-accordion-section {
+  padding: 11px 12px;
+  border-color: #DCEBFF;
+  border-radius: 10px;
+}
+
+.workspace-accordion-section.notes-section,
+.workspace-accordion-section.notes-section:hover {
+  background: #FFFCF5 !important;
+  border-color: #F5E2B9 !important;
+}
+
+.workspace-accordion-header {
+  cursor: pointer;
+}
+
+.workspace-accordion-content,
+.notes-content-wrapper {
+  margin-top: 10px;
+  gap: 8px;
+}
+
+.info-item-card {
+  background: #FFFFFF !important;
+  border: 1px solid #E6EFFA;
+  padding: 9px 11px;
+  border-radius: 8px;
+}
+
+.empty-data-card {
+  background: #FAFDFF !important;
+  border-style: dashed;
+  color: #718096;
+}
+
+.workspace-accordion-section.notes-section.expanded {
+  padding-bottom: 10px;
+}
+
+.workspace-accordion-section.notes-section .notes-content-wrapper {
+  gap: 7px;
+}
+
+.workspace-accordion-section.notes-section .note-input-label {
+  font-size: 11.5px;
+}
+
+.workspace-accordion-section.notes-section .note-textarea {
+  min-height: 44px;
+  max-height: 54px;
+  padding: 7px 9px;
+  line-height: 1.32;
+}
+
+.workspace-accordion-section.notes-section .note-footer-bar {
+  margin-top: 2px;
+  gap: 8px;
+}
+
+.workspace-accordion-section.notes-section .save-note-btn {
+  min-height: 32px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.clinical-timestamp-badge,
+.chatbot-summary-note {
+  background: #FAFDFF !important;
+  border: none !important;
+  border-left: 3px solid #94A3B8 !important;
+  border-radius: 0 8px 8px 0 !important;
+  color: #64748B !important;
+  padding: 5px 9px !important;
+  cursor: default !important;
+  font-style: italic;
+}
+
+.chatbot-summary-note {
+  border-left-color: #5FA7EE !important;
+}
+
+.vitals-inline-row span {
+  background: transparent !important;
+  border: none !important;
+  border-left: 3px solid #93C5FD !important;
+  border-radius: 0 !important;
+  padding: 4px 8px !important;
+  text-align: left !important;
+  color: #244A6B !important;
+  cursor: default !important;
+  box-shadow: none !important;
+}
+
+.handoff-severity-badge {
+  background: #FFF7ED !important;
+  border: 1px solid #FED7AA !important;
+  color: #C2410C !important;
+  border-radius: 999px !important;
+  padding: 5px 10px !important;
+  cursor: default !important;
+  box-shadow: none !important;
+}
+
+.chatbot-handoff-panel,
+.chatbot-handoff-panel.warning,
+.chatbot-handoff-panel.urgent {
+  background: #FAFDFF !important;
+  border-color: #DCEBFF !important;
+}
+
+.modal-overlay {
+  background: rgba(36, 74, 107, 0.18) !important;
+}
+
+.chatbot-modal-avatar-glow,
+.ai-panel-status-icon {
+  background: #EAF8EF !important;
+  color: #2F7D4B !important;
+  box-shadow: none !important;
+}
+
+.start-consultation-btn,
+.end-consultation-btn,
+.send-msg-button {
+  background: #4F8ED8 !important;
+  border-color: #4F8ED8 !important;
+  color: #FFFFFF !important;
+}
+
+.start-consultation-btn:hover,
+.end-consultation-btn:hover,
+.send-msg-button:hover {
+  background: #3F7FC8 !important;
+  border-color: #3F7FC8 !important;
+}
+
+.chatbot-summary-header-btn {
+  background: #DFF3E7 !important;
+  border-color: #79C895 !important;
+  color: #1F6A3C !important;
+}
+
+.chatbot-summary-header-btn:hover {
+  background: #D1EEDC !important;
+  border-color: #61B982 !important;
+  color: #185932 !important;
+}
+
+.save-note-btn {
+  background: #F59E0B !important;
+  border-color: #F59E0B !important;
+  color: #FFFFFF !important;
+}
+
+.save-note-btn:hover:not(:disabled) {
+  background: #D97706 !important;
+  border-color: #D97706 !important;
+  color: #FFFFFF !important;
+}
+
+.save-note-btn:disabled {
+  background: #FDE7C5 !important;
+  border-color: #F8C979 !important;
+  color: #B7791F !important;
+}
+
 @media (max-width: 760px), (max-height: 720px) {
   .chatbot-summary-modal-card {
     max-height: calc(100vh - 32px);

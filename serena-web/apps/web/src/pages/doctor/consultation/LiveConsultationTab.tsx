@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import '../patients/PatientListTab.css'
 import './LiveConsultationTab.css'
@@ -7,7 +7,7 @@ import { initialPatients } from '../patients/PatientListTab'
 
 export type ChatMessage = {
   id: string
-  sender: 'patient' | 'doctor'
+  sender: 'patient' | 'doctor' | 'system' | 'ai'
   text: string
 }
 
@@ -42,14 +42,14 @@ export const initialChats: ChatItem[] = [
     name: 'Nguyễn Văn A',
     age: 22,
     time: '10:30',
-    message: 'Bác sĩ ơi, dạo này tôi hay thấy chóng...',
+    message: 'AI sàng lọc: Đau đầu, chóng mặt và sốt nhẹ về chiều...',
     isNew: true,
     status: 'new',
     messages: [
       { 
         id: 'm1', 
         sender: 'patient', 
-        text: 'Bác sĩ ơi, dạo này tôi hay thấy chóng mặt và đau đầu kèm sốt nhẹ. Không biết đây là triệu chứng của bệnh gì vậy ạ?' 
+        text: 'Tư vấn trực tiếp với bác sĩ' 
       },
     ],
     aiExtract: {
@@ -65,14 +65,14 @@ export const initialChats: ChatItem[] = [
     name: 'Nguyễn Thị N',
     age: 29,
     time: '09:36',
-    message: 'Xin chào bác sĩ, tôi đang gặp tình trạng đau...',
+    message: 'AI sàng lọc: Đau đầu âm ỉ kéo dài 3 ngày...',
     isNew: true,
     status: 'new',
     messages: [
       { 
         id: 'm1', 
         sender: 'patient', 
-        text: 'Xin chào bác sĩ, tôi đang gặp tình trạng đau đầu nhiều ngày qua.' 
+        text: 'Tư vấn trực tiếp với bác sĩ' 
       },
     ],
     aiExtract: {
@@ -88,11 +88,11 @@ export const initialChats: ChatItem[] = [
     name: 'Trần Thu Thảo',
     age: 28,
     time: '09:00',
-    message: 'Chào bác sĩ, tôi bị nhói đau ở vùng ngực trái...',
+    message: 'AI sàng lọc: Đau nhói vùng ngực bên trái...',
     isNew: true,
     status: 'new',
     messages: [
-      { id: 'm1', sender: 'patient', text: 'Chào bác sĩ, tôi bị nhói đau ở vùng ngực bên trái từ sáng nay, cơn đau lan ra vai và sau lưng rất khó chịu.' }
+      { id: 'm1', sender: 'patient', text: 'Tư vấn trực tiếp với bác sĩ' }
     ],
     aiExtract: {
       symptoms: 'Đau nhói vùng ngực bên trái, đau lan ra sau vai và lưng.',
@@ -122,14 +122,14 @@ export const initialChats: ChatItem[] = [
     name: 'Nguyễn Hoàng G',
     age: 34,
     time: '14:30',
-    message: 'Tôi bị hắt hơi và ngứa mũi dị ứng phấn hoa...',
+    message: 'AI sàng lọc: Hắt hơi liên tục, ngứa mũi...',
     isNew: true,
     status: 'new',
     messages: [
       { 
         id: 'm1', 
         sender: 'patient', 
-        text: 'Chào bác sĩ, dạo này tôi hắt hơi liên tục, ngứa mũi dị ứng rất nhiều mỗi khi ngửi mùi phấn hoa.' 
+        text: 'Tư vấn trực tiếp với bác sĩ' 
       },
     ],
     aiExtract: {
@@ -145,14 +145,14 @@ export const initialChats: ChatItem[] = [
     name: 'Lê Hoàng Nam',
     age: 45,
     time: '17:00',
-    message: 'Tái khám định kỳ tăng huyết áp...',
+    message: 'AI sàng lọc: Tư vấn tái khám định kỳ...',
     isNew: true,
     status: 'new',
     messages: [
       { 
         id: 'm1', 
         sender: 'patient', 
-        text: 'Chào bác sĩ, tôi muốn tư vấn tái khám định kỳ về bệnh tăng huyết áp và đái tháo đường ạ.' 
+        text: 'Tư vấn trực tiếp với bác sĩ' 
       },
     ],
     aiExtract: {
@@ -217,6 +217,8 @@ export function LiveConsultationTab({
     return true
   })
   const [inputMessage, setInputMessage] = useState('')
+  const inputTextareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const messagesEndRef = useRef<HTMLDivElement | null>(null)
   const [expandedSection, setExpandedSection] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
@@ -375,21 +377,51 @@ export function LiveConsultationTab({
     setShowChatbotSummaryModal(false)
   }, [activeChatId])
 
+  useEffect(() => {
+    const textarea = inputTextareaRef.current
+    if (!textarea) return
+    textarea.style.height = 'auto'
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 104)}px`
+  }, [inputMessage])
+
+  useEffect(() => {
+    if (!activeChat) return
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+  }, [activeChat?.messages.length, activeChat?.status, inputMessage])
+
   const startConsultation = (chatId: string) => {
+    let preparedMessage = ''
+
     setChats(prev => prev.map(c => {
       if (c.id === chatId) {
+        const handoffMessages: ChatMessage[] = c.aiExtract ? [
+          {
+            id: 'handoff-system',
+            sender: 'system',
+            text: `Chatbot đã chuyển cuộc trò chuyện đến bác sĩ Nguyễn Minh Anh lúc ${c.time}.`,
+          },
+          {
+            id: 'handoff-ai-summary',
+            sender: 'ai',
+            text: `AI sàng lọc: ${c.aiExtract.symptoms} Mức độ: ${c.aiExtract.severity}.`,
+          },
+        ] : []
+        preparedMessage = `Tôi là bác sĩ Nguyễn Minh Anh, tôi đã tiếp nhận ca tư vấn triệu chứng ${c.aiExtract?.symptoms || c.message} từ Chatbot. Để xác nhận lại, bác có thể mô tả rõ hơn thời điểm xuất hiện triệu chứng và mức độ hiện tại được không?`
+
         return { 
           ...c, 
           status: 'active', 
           isNew: false,
           messages: [
             ...c.messages,
-            { id: 'm2', sender: 'doctor', text: 'Chào bác, bác có thể mô tả rõ hơn về cơn đau đầu được không?' }
+            ...handoffMessages,
           ]
         }
       }
       return c
     }))
+
+    setInputMessage(preparedMessage)
   }
 
   const endConsultation = (chatId: string) => {
@@ -399,13 +431,24 @@ export function LiveConsultationTab({
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault()
     if (!inputMessage.trim() || !activeChatId) return
+    const sentText = inputMessage.trim()
+    const currentChat = chats.find(chat => chat.id === activeChatId)
+    const doctorMessageCount = currentChat?.messages.filter(msg => msg.sender === 'doctor').length ?? 0
+    const demoReplies = [
+      'Dạ triệu chứng bắt đầu khoảng 3 ngày trước. Hiện tại tôi vẫn thấy khá mệt và khó chịu, nhất là về chiều.',
+      'Dạ tôi chưa dùng thuốc gì ngoài uống nhiều nước. Tôi không thấy khó thở, nhưng hạn chế vận động vì sợ tình trạng nặng hơn.',
+    ]
+    const doctorSuggestions = [
+      'Bác tiếp tục theo dõi nhiệt độ, uống đủ nước và nghỉ ngơi. Nếu sốt cao, đau tăng hoặc xuất hiện khó thở thì cần đi khám ngay. Tôi sẽ hướng dẫn thêm một số dấu hiệu cần theo dõi.',
+      'Tôi ghi nhận thông tin của bác. Hiện tại bác nên đặt lịch khám sớm để bác sĩ kiểm tra trực tiếp; trong thời gian chờ khám, tránh tự dùng thuốc nếu chưa có chỉ định.',
+    ]
 
     setChats(prev => prev.map(chat => {
       if (chat.id === activeChatId) {
         const newMsg: ChatMessage = {
           id: `m-${Date.now()}`,
           sender: 'doctor',
-          text: inputMessage.trim()
+          text: sentText
         }
         return {
           ...chat,
@@ -416,6 +459,25 @@ export function LiveConsultationTab({
       return chat
     }))
     setInputMessage('')
+
+    if (doctorMessageCount < demoReplies.length) {
+      window.setTimeout(() => {
+        setChats(prev => prev.map(chat => {
+          if (chat.id !== activeChatId) return chat
+          const patientReply: ChatMessage = {
+            id: `p-${Date.now()}`,
+            sender: 'patient',
+            text: demoReplies[doctorMessageCount],
+          }
+          return {
+            ...chat,
+            messages: [...chat.messages, patientReply],
+            message: patientReply.text,
+          }
+        }))
+        setInputMessage(doctorSuggestions[doctorMessageCount] || '')
+      }, 1000)
+    }
   }
 
   const handleSaveNote = () => {
@@ -493,7 +555,7 @@ export function LiveConsultationTab({
                         </div>
                         <div className="consultation-card-message-row">
                           <div className="consultation-card-message">
-                            {chat.message}
+                            {chat.aiExtract ? `AI sàng lọc: ${chat.aiExtract.symptoms}` : chat.message}
                           </div>
                           {chat.isNew && (
                             <span className="consultation-card-unread-dot"></span>
@@ -562,9 +624,16 @@ export function LiveConsultationTab({
                 </div>
               </div>
               {activeChat.status === 'active' ? (
-                <button className="end-consultation-btn" onClick={() => endConsultation(activeChat.id)}>
-                  Kết thúc tư vấn
-                </button>
+                <div className="chat-header-actions">
+                  {activeChat.aiExtract && (
+                    <button className="chatbot-summary-header-btn" type="button" onClick={() => setShowChatbotSummaryModal(true)}>
+                      Xem tóm tắt Chatbot
+                    </button>
+                  )}
+                  <button className="end-consultation-btn" onClick={() => endConsultation(activeChat.id)}>
+                    Kết thúc tư vấn
+                  </button>
+                </div>
               ) : activeChat.status !== 'new' ? (
                 <button 
                   className="view-record-btn"
@@ -577,13 +646,25 @@ export function LiveConsultationTab({
 
             {/* Chat Messages */}
             <div className="chat-messages-area">
-              {activeChat.messages.map(msg => (
-                <div key={msg.id} className={`chat-message-row ${msg.sender}`}>
-                  <div className="chat-message-bubble">
-                    {msg.text}
+              {activeChat.status === 'new' && activeChat.aiExtract ? (
+                <div className="preconsult-ai-summary">
+                  <div className="preconsult-ai-label">AI tóm tắt trước tư vấn</div>
+                  <p>{activeChat.aiExtract.symptoms}</p>
+                  <div className="preconsult-ai-meta">
+                    <span>{activeChat.aiExtract.severity}</span>
+                    <span>{activeChat.aiExtract.diagnosis}</span>
                   </div>
                 </div>
-              ))}
+              ) : (
+                activeChat.messages.map(msg => (
+                  <div key={msg.id} className={`chat-message-row ${msg.sender}`}>
+                    <div className="chat-message-bubble">
+                      {msg.text}
+                    </div>
+                  </div>
+                ))
+              )}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Actions tag above input (Only when active and has autocomplete suggestions) */}
@@ -627,8 +708,9 @@ export function LiveConsultationTab({
                   <button type="button" className="input-icon-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><line x1="12" y1="19" x2="12" y2="23" /></svg>
                   </button>
-                  <input 
-                    type="text" 
+                  <textarea
+                    ref={inputTextareaRef}
+                    rows={1}
                     placeholder="VD: Bác mô tả thêm thời điểm đau và mức độ đau giúp tôi..." 
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
@@ -666,23 +748,6 @@ export function LiveConsultationTab({
       {/* Left Pane / Clinical Workspace Sidebar (Only shown in active chat mode) */}
       {isChatActiveMode && (
         <div className="clinical-workspace-sidebar">
-          {/* Tóm tắt từ Chatbot AI */}
-          {activeChat.aiExtract && (
-            <div className="workspace-accordion-section chatbot-summary-section" onClick={() => setShowChatbotSummaryModal(true)} style={{ cursor: 'pointer' }}>
-              <div className="workspace-accordion-header">
-                <span className="section-title-wrapper chatbot-summary-theme">
-                  <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                  </svg>
-                  Xem tóm tắt Chatbot
-                </span>
-                <svg className="chevron-icon summary-open-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="9 18 15 12 9 6"/>
-                </svg>
-              </div>
-            </div>
-          )}
-
           {/* Thông tin y tế */}
           <div className={`workspace-accordion-section ${expandedSection === 'medical-info' ? 'expanded' : ''}`}>
             <div className="workspace-accordion-header" onClick={() => toggleSection('medical-info')}>
@@ -696,18 +761,26 @@ export function LiveConsultationTab({
             </div>
             {expandedSection === 'medical-info' && (
               <div className="workspace-accordion-content">
-                <div className="info-item-card">
-                  <span className="info-item-label">Nhóm máu</span>
-                  <span className="info-item-value">O+</span>
-                </div>
-                <div className="info-item-card">
-                  <span className="info-item-label">Dị ứng</span>
-                  <span className="info-item-value">Penicillin</span>
-                </div>
-                <div className="info-item-card">
-                  <span className="info-item-label">Thuốc đang dùng</span>
-                  <span className="info-item-value">Không</span>
-                </div>
+                {matchingPatient ? (
+                  <>
+                    <div className="info-item-card">
+                      <span className="info-item-label">Nhóm máu</span>
+                      <span className="info-item-value">{matchingPatient.bloodType || 'Chưa khai báo'}</span>
+                    </div>
+                    <div className="info-item-card">
+                      <span className="info-item-label">Dị ứng</span>
+                      <span className="info-item-value">{matchingPatient.allergies?.length ? matchingPatient.allergies.join(', ') : 'Chưa ghi nhận dị ứng'}</span>
+                    </div>
+                    <div className="info-item-card">
+                      <span className="info-item-label">Số điện thoại</span>
+                      <span className="info-item-value">{matchingPatient.phone || 'Chưa khai báo'}</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="info-item-card empty-data-card">
+                    <span className="info-item-value">Không có dữ liệu</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -725,18 +798,16 @@ export function LiveConsultationTab({
             </div>
             {expandedSection === 'medical-history' && (
               <div className="workspace-accordion-content scrollable-content">
-                <div className="info-item-card">
-                  <span className="info-item-value">Cao huyết áp</span>
-                  <span className="info-item-label">Từ năm 2020</span>
-                </div>
-                <div className="info-item-card">
-                  <span className="info-item-value">Tiểu đường type 2</span>
-                  <span className="info-item-label">Từ năm 2018</span>
-                </div>
-                <div className="info-item-card">
-                  <span className="info-item-value">Tiểu đường type 2</span>
-                  <span className="info-item-label">Từ năm 2018</span>
-                </div>
+                {activeChat.aiExtract?.history ? (
+                  <div className="info-item-card">
+                    <span className="info-item-value">{activeChat.aiExtract.history}</span>
+                    <span className="info-item-label">Nguồn: Chatbot sàng lọc</span>
+                  </div>
+                ) : (
+                  <div className="info-item-card empty-data-card">
+                    <span className="info-item-value">Không có dữ liệu</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -837,16 +908,12 @@ export function LiveConsultationTab({
             </div>
             {expandedSection === 'notes' && (
               <div className="workspace-accordion-content notes-content-wrapper">
-                <div className="note-intro-card">
-                  <strong>Ghi chú nội bộ cho bác sĩ</strong>
-                  <p>Phần này dùng để tóm tắt triệu chứng, nhận định sơ bộ và dặn dò. Ghi chú không gửi trực tiếp cho bệnh nhân.</p>
-                </div>
                 <div className="note-input-group">
                   <label className="note-input-label">Triệu chứng bệnh nhân mô tả</label>
                   <textarea
                     className="note-textarea"
-                    placeholder="VD: Đau đầu âm ỉ 3 ngày, sốt nhẹ về chiều..."
-                    rows={3}
+                    placeholder="Nhập triệu chứng chính"
+                    rows={2}
                     value={noteDraft.symptoms}
                     onChange={(e) => setNoteDraft(prev => ({ ...prev, symptoms: e.target.value }))}
                   />
@@ -855,8 +922,8 @@ export function LiveConsultationTab({
                   <label className="note-input-label">Nhận định sơ bộ</label>
                   <textarea
                     className="note-textarea"
-                    placeholder="VD: Theo dõi viêm đường hô hấp trên, cần tái khám nếu sốt cao..."
-                    rows={3}
+                    placeholder="Nhập nhận định sơ bộ"
+                    rows={2}
                     value={noteDraft.assessment}
                     onChange={(e) => setNoteDraft(prev => ({ ...prev, assessment: e.target.value }))}
                   />
@@ -865,16 +932,18 @@ export function LiveConsultationTab({
                   <label className="note-input-label">Dặn dò / hướng xử lý</label>
                   <textarea
                     className="note-textarea"
-                    placeholder="VD: Paracetamol 500mg - uống khi sốt trên 38.5 độ..."
-                    rows={3}
+                    placeholder="Nhập dặn dò hoặc hướng xử lý"
+                    rows={2}
                     value={noteDraft.guidance}
                     onChange={(e) => setNoteDraft(prev => ({ ...prev, guidance: e.target.value }))}
                   />
                 </div>
                 <div className="note-footer-bar">
-                  <div className="note-save-status">
-                    {savedNoteAt ? `Đã lưu nội bộ lúc ${savedNoteAt}` : 'Chưa lưu ghi chú tư vấn'}
-                  </div>
+                  {savedNoteAt && (
+                    <div className="note-save-status">
+                      Đã lưu nội bộ lúc {savedNoteAt}
+                    </div>
+                  )}
                   <button
                     type="button"
                     className="save-note-btn"
@@ -1269,9 +1338,6 @@ export function LiveConsultationTab({
             <div className="chatbot-modal-footer">
               <button className="chatbot-close-action-btn secondary" onClick={() => setShowChatbotSummaryModal(false)}>
                 Đóng
-              </button>
-              <button className="chatbot-close-action-btn" onClick={() => setShowChatbotSummaryModal(false)}>
-                Đã hiểu, tiếp tục tư vấn
               </button>
             </div>
           </div>
