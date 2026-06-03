@@ -22,13 +22,14 @@ const ConsultationItem = ({ item, onOpenRating }: { item: any; onOpenRating: () 
                 <View style={styles.iconCircle}>
                     <Image source={require('../../assets/SerenaIcon.png')} style={{ width: 24, height: 24 }} />
                 </View>
-                <View style={{ flex: 1, marginLeft: 12 }}>
-                    <Text style={styles.itemTitle}>{item.title}</Text>
-                    {item.doctor && <Text style={styles.itemDoctor}>{item.doctor}</Text>}
+                <View style={{ flex: 1, marginLeft: 12, ...(item.isNew && { fontWeight: 'bold' }) }}>
+                    <Text style={[styles.itemTitle]}>{item.title}</Text>
+                    {item.doctorName && <Text style={styles.itemDoctor}>{item.doctorName}</Text>}
                     <Text style={styles.itemSub} numberOfLines={1}>{item.sub}</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
                         <Text style={styles.itemDate}>{item.date}</Text>
-                        {item.isNew && <View style={styles.newBadge}><Text style={styles.newBadgeText}>Mới</Text></View>}
+                        {/* {item.isNew && <View style={styles.newBadge}><Text style={styles.newBadgeText}>Mới</Text></View>} */}
+
                     </View>
                 </View>
                 <View style={styles.rightSection}>

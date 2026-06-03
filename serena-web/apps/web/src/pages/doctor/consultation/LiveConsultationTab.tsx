@@ -179,6 +179,12 @@ export function LiveConsultationTab({
     patientName: string;
     messages: { sender: 'patient' | 'doctor'; text: string; time: string }[];
   } | null>(null)
+  const [noteDraft, setNoteDraft] = useState({
+    symptoms: '',
+    assessment: '',
+    guidance: '',
+  })
+  const [savedNoteAt, setSavedNoteAt] = useState<string | null>(null)
 
   const activeChat = chats.find(c => c.id === activeChatId)
   const isChatActiveMode = activeChat && activeChat.status === 'active'
@@ -259,6 +265,15 @@ export function LiveConsultationTab({
     setExpandedSection(prev => prev === section ? null : section)
   }
 
+  useEffect(() => {
+    setNoteDraft({
+      symptoms: '',
+      assessment: '',
+      guidance: '',
+    })
+    setSavedNoteAt(null)
+  }, [activeChatId])
+
   const startConsultation = (chatId: string) => {
     setChats(prev => prev.map(c => {
       if (c.id === chatId) {
@@ -300,6 +315,19 @@ export function LiveConsultationTab({
       return chat
     }))
     setInputMessage('')
+  }
+
+  const handleSaveNote = () => {
+    if (!noteDraft.symptoms.trim() && !noteDraft.assessment.trim() && !noteDraft.guidance.trim()) {
+      return
+    }
+
+    const timeLabel = new Intl.DateTimeFormat('vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(new Date())
+
+    setSavedNoteAt(timeLabel)
   }
 
   return (
@@ -683,7 +711,7 @@ export function LiveConsultationTab({
             <div className="workspace-accordion-header" onClick={() => toggleSection('notes')}>
               <span className="section-title-wrapper notes-theme">
                 <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                Ghi chú
+                Ghi chú tư vấn
               </span>
               <svg className={`chevron-icon ${expandedSection === 'notes' ? 'rotate-up' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="6 9 12 15 18 9"/>
@@ -691,17 +719,52 @@ export function LiveConsultationTab({
             </div>
             {expandedSection === 'notes' && (
               <div className="workspace-accordion-content notes-content-wrapper">
-                <div className="note-input-group">
-                  <label className="note-input-label">Triệu chứng</label>
-                  <textarea className="note-textarea" placeholder="VD: Đau đầu âm ỉ 3 ngày, sốt nhẹ về chiều..." rows={3} />
+                <div className="note-intro-card">
+                  <strong>Ghi chú nội bộ cho bác sĩ</strong>
+                  <p>Phần này dùng để tóm tắt triệu chứng, nhận định sơ bộ và dặn dò. Ghi chú không gửi trực tiếp cho bệnh nhân.</p>
                 </div>
                 <div className="note-input-group">
-                  <label className="note-input-label">Chẩn đoán sơ bộ</label>
-                  <textarea className="note-textarea" placeholder="VD: Theo dõi viêm đường hô hấp trên, cần tái khám nếu sốt cao..." rows={3} />
+                  <label className="note-input-label">Triệu chứng bệnh nhân mô tả</label>
+                  <textarea
+                    className="note-textarea"
+                    placeholder="VD: Đau đầu âm ỉ 3 ngày, sốt nhẹ về chiều..."
+                    rows={3}
+                    value={noteDraft.symptoms}
+                    onChange={(e) => setNoteDraft(prev => ({ ...prev, symptoms: e.target.value }))}
+                  />
                 </div>
                 <div className="note-input-group">
-                  <label className="note-input-label">Đơn thuốc</label>
-                  <textarea className="note-textarea" placeholder="VD: Paracetamol 500mg - uống khi sốt trên 38.5 độ..." rows={3} />
+                  <label className="note-input-label">Nhận định sơ bộ</label>
+                  <textarea
+                    className="note-textarea"
+                    placeholder="VD: Theo dõi viêm đường hô hấp trên, cần tái khám nếu sốt cao..."
+                    rows={3}
+                    value={noteDraft.assessment}
+                    onChange={(e) => setNoteDraft(prev => ({ ...prev, assessment: e.target.value }))}
+                  />
+                </div>
+                <div className="note-input-group">
+                  <label className="note-input-label">Dặn dò / hướng xử lý</label>
+                  <textarea
+                    className="note-textarea"
+                    placeholder="VD: Paracetamol 500mg - uống khi sốt trên 38.5 độ..."
+                    rows={3}
+                    value={noteDraft.guidance}
+                    onChange={(e) => setNoteDraft(prev => ({ ...prev, guidance: e.target.value }))}
+                  />
+                </div>
+                <div className="note-footer-bar">
+                  <div className="note-save-status">
+                    {savedNoteAt ? `Đã lưu nội bộ lúc ${savedNoteAt}` : 'Chưa lưu ghi chú tư vấn'}
+                  </div>
+                  <button
+                    type="button"
+                    className="save-note-btn"
+                    onClick={handleSaveNote}
+                    disabled={!noteDraft.symptoms.trim() && !noteDraft.assessment.trim() && !noteDraft.guidance.trim()}
+                  >
+                    Lưu ghi chú tư vấn
+                  </button>
                 </div>
               </div>
             )}

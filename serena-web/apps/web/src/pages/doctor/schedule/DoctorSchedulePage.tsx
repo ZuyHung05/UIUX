@@ -1,12 +1,72 @@
 import { useEffect, useMemo, useState } from 'react';
-import AppointmentList from '../../../components/doctor-schedule/AppointmentList';
 import CalendarMonth from '../../../components/doctor-schedule/CalendarMonth';
-import ShiftCard from '../../../components/doctor-schedule/ShiftCard';
-import { SCHEDULE_DATA, Shift } from '../../../data/scheduleData';
+import { Patient, SCHEDULE_DATA, Shift } from '../../../data/scheduleData';
+import { initialPatients } from '../patients/PatientListTab';
 import '../patients/PatientListTab.css';
 import './DoctorSchedulePage.css';
 
-const SchedulePage = ({ onBackToDashboard }: { onBackToDashboard?: () => void }) => {
+const timeSlots = ['07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+const weekDayLabels = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
+
+const getPatientStartTime = (time: string) => time.split(' - ')[0];
+const getPatientEndTime = (time: string) => time.split(' - ')[1] || '';
+
+const getShiftTone = (title: string) => title === 'Ca sáng' ? 'morning' : 'afternoon';
+
+const isCollapsedSlot = (slot: string) => ['11:00', '12:00', '13:00'].includes(slot);
+
+
+const parseDateKey = (dateKey: string) => {
+  const [year, month, day] = dateKey.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const formatDateKey = (date: Date) => {
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const dd = String(date.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+};
+
+const getWeekStart = (date: Date) => {
+  const start = new Date(date);
+  const day = start.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  start.setDate(start.getDate() + diff);
+  return start;
+};
+
+const getHourSlot = (time: string) => {
+  const [hour] = getPatientStartTime(time).split(':');
+  return `${hour}:00`;
+};
+
+const getAppointmentOffset = (time: string) => {
+  const minute = Number(getPatientStartTime(time).split(':')[1] || 0);
+  return minute >= 30 ? 50 : 0;
+};
+
+const getAppointmentDuration = (time: string) => {
+  const start = getPatientStartTime(time);
+  const end = getPatientEndTime(time);
+
+  if (!end) {
+    return 30;
+  }
+
+  const [startHour, startMinute] = start.split(':').map(Number);
+  const [endHour, endMinute] = end.split(':').map(Number);
+  const duration = (endHour * 60 + endMinute) - (startHour * 60 + startMinute);
+  return Math.max(30, Math.min(duration, 60));
+};
+
+const SchedulePage = ({
+  onBackToDashboard,
+  onViewPatientProfile,
+}: {
+  onBackToDashboard?: () => void
+  onViewPatientProfile?: (patientId: string) => void
+}) => {
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -24,6 +84,55 @@ const SchedulePage = ({ onBackToDashboard }: { onBackToDashboard?: () => void })
     return `${day}/${month}/${year}`;
   }, [selectedDate]);
 
+  const weekDays = useMemo(() => {
+    const weekStart = getWeekStart(parseDateKey(selectedDate));
+    return Array.from({ length: 7 }, (_, index) => {
+      const date = new Date(weekStart);
+      date.setDate(weekStart.getDate() + index);
+      const dateKey = formatDateKey(date);
+      const shifts = SCHEDULE_DATA[dateKey] || [];
+      const appointmentCount = shifts.reduce((total, shift) => total + shift.count, 0);
+
+      return {
+        date,
+        dateKey,
+        dayNumber: date.getDate(),
+        label: weekDayLabels[index],
+        shifts,
+        appointmentCount,
+      };
+    });
+  }, [selectedDate]);
+
+  const weekRangeLabel = useMemo(() => {
+    const firstDay = weekDays[0].date;
+    const lastDay = weekDays[6].date;
+    const sameMonth = firstDay.getMonth() === lastDay.getMonth();
+    const monthPart = sameMonth
+      ? `Tháng ${firstDay.getMonth() + 1}/${firstDay.getFullYear()}`
+      : `${firstDay.getMonth() + 1}/${firstDay.getFullYear()} - ${lastDay.getMonth() + 1}/${lastDay.getFullYear()}`;
+
+    return `${String(firstDay.getDate()).padStart(2, '0')} - ${String(lastDay.getDate()).padStart(2, '0')} ${monthPart}`;
+  }, [weekDays]);
+
+  const weeklyAppointments = useMemo(() => {
+    return weekDays.reduce<Record<string, Record<string, Array<Patient & { shiftTitle: string; dateKey: string }>>>>((acc, day) => {
+      acc[day.dateKey] = {};
+      day.shifts.forEach((shift) => {
+        shift.patients.forEach((patient) => {
+          const hourSlot = getHourSlot(patient.time);
+          acc[day.dateKey][hourSlot] = acc[day.dateKey][hourSlot] || [];
+          acc[day.dateKey][hourSlot].push({ ...patient, shiftTitle: shift.title, dateKey: day.dateKey });
+        });
+      });
+      return acc;
+    }, {});
+  }, [weekDays]);
+
+  const totalAppointments = useMemo(() => {
+    return shiftsOfDay.reduce((total, shift) => total + shift.count, 0);
+  }, [shiftsOfDay]);
+
   useEffect(() => {
     if (shiftsOfDay.length === 0) {
       setSelectedShift(null);
@@ -40,6 +149,45 @@ const SchedulePage = ({ onBackToDashboard }: { onBackToDashboard?: () => void })
     setSelectedDate(dateStr);
   };
 
+  const handleAppointmentOpen = (patient: Patient & { dateKey: string }) => {
+    const normalizedScheduleCode = patient.id.replace(/^#/, '').trim().toLowerCase();
+    const matchedPatient = initialPatients.find((item) => {
+      const normalizedPatientCode = item.code.trim().toLowerCase();
+      const normalizedPatientCodeNumber = normalizedPatientCode.replace('bn-2026-', '');
+      return (
+        item.name === patient.name ||
+        normalizedPatientCode === normalizedScheduleCode ||
+        normalizedPatientCodeNumber === normalizedScheduleCode
+      );
+    });
+
+    setSelectedDate(patient.dateKey);
+    onViewPatientProfile?.(matchedPatient?.id || '15');
+  };
+
+  const renderShiftSummary = (shift: Shift) => {
+    const isSelected = selectedShift?.id === shift.id;
+    const tone = getShiftTone(shift.title);
+
+    return (
+      <button
+        key={shift.id}
+        type="button"
+        className={`shift-summary-card ${tone} ${isSelected ? 'selected' : ''}`}
+        onClick={() => setSelectedShift(shift)}
+      >
+        <div>
+          <strong>{shift.title}</strong>
+          <span>{shift.time}</span>
+        </div>
+        <div className="shift-summary-count">
+          <strong>{shift.count}</strong>
+          <span>lịch khám</span>
+        </div>
+      </button>
+    );
+  };
+
   return (
     <div className="schedule-page">
 
@@ -54,48 +202,97 @@ const SchedulePage = ({ onBackToDashboard }: { onBackToDashboard?: () => void })
         </div>
       </header>
 
-      <main className="schedule-content">
-        <div className="left-column">
+      <main className="schedule-content calendar-style-layout">
+        <aside className="schedule-sidebar">
           <CalendarMonth
             selectedDate={selectedDate}
             onDateSelect={handleDateChange}
+            className="schedule-mini-calendar"
           />
-        </div>
 
-        <div className="right-column">
-          <div className="section-card">
+          <section className="section-card shift-summary-section">
             <div className="schedule-section-heading">
-              <h3>Ca làm việc trong ngày</h3>
-              <span>{shiftsOfDay.reduce((total, shift) => total + shift.count, 0)} lịch khám</span>
+              <h3>Ca làm việc</h3>
+              <span>{totalAppointments} lịch khám</span>
             </div>
             {shiftsOfDay.length > 0 ? (
-              shiftsOfDay.map((shift) => (
-                <ShiftCard
-                  key={shift.id}
-                  title={shift.title}
-                  time={shift.time}
-                  count={shift.count}
-                  status={shift.status || (shift.title === 'Ca sáng' ? 'Đang diễn ra' : undefined)}
-                  onViewDetail={() => setSelectedShift(shift)}
-                  isSelected={selectedShift?.id === shift.id}
-                />
-              ))
+              <div className="shift-summary-list">
+                {shiftsOfDay.map(renderShiftSummary)}
+              </div>
             ) : (
               <div className="schedule-empty-inline">
                 Không có ca làm việc
               </div>
             )}
+          </section>
+        </aside>
+
+        <section className="week-calendar-board">
+          <div className="week-calendar-header">
+            <div>
+              <h2>Lịch khám theo tuần</h2>
+              <p>{weekRangeLabel}</p>
+            </div>
+            <span>{totalAppointments} lịch khám ngày chọn</span>
           </div>
 
-          {selectedShift && (
-            <AppointmentList
-              shiftTitle={selectedShift.title}
-              timeRange={selectedShift.time}
-              count={selectedShift.count}
-              patients={selectedShift.patients}
-            />
-          )}
-        </div>
+          <div className="week-calendar-grid">
+            <div className="week-time-corner">Giờ</div>
+            {weekDays.map((day) => {
+              const isSelected = day.dateKey === selectedDate;
+              return (
+                <button
+                  key={day.dateKey}
+                  type="button"
+                  className={`week-day-header ${isSelected ? 'selected' : ''}`}
+                  onClick={() => setSelectedDate(day.dateKey)}
+                >
+                  <span>{day.label}</span>
+                  <strong>{day.dayNumber}</strong>
+                </button>
+              );
+            })}
+
+            {timeSlots.map((slot) => {
+              const isCollapsed = isCollapsedSlot(slot);
+              return (
+                <div className="week-row-fragment" key={slot}>
+                  <div className={`week-time-label ${isCollapsed ? 'collapsed' : ''}`}>{slot}</div>
+                  {isCollapsed ? (
+                    <div className="week-day-cell collapsed-span-cell" style={{ gridColumn: 'span 7' }}>
+                      {slot === '12:00' ? 'KHUNG GIỜ NGHỈ TRƯA' : ''}
+                    </div>
+                  ) : (
+                    weekDays.map((day) => {
+                      const appointments = weeklyAppointments[day.dateKey]?.[slot] || [];
+                      const isSelected = day.dateKey === selectedDate;
+
+                      return (
+                        <div className={`week-day-cell ${isSelected ? 'selected' : ''}`} key={`${day.dateKey}-${slot}`}>
+                          {appointments.map((patient) => (
+                            <button
+                              type="button"
+                              className={`week-appointment ${getShiftTone(patient.shiftTitle)}`}
+                              key={`${patient.id}-${patient.time}`}
+                              onClick={() => handleAppointmentOpen(patient)}
+                              style={{
+                                top: `${getAppointmentOffset(patient.time)}%`,
+                                height: `${(getAppointmentDuration(patient.time) / 60) * 100}%`,
+                              }}
+                            >
+                              <strong>{patient.name}</strong>
+                              <span>{patient.time}</span>
+                            </button>
+                          ))}
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
       </main>
     </div>
   );
