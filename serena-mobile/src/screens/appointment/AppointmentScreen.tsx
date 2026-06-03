@@ -1068,7 +1068,7 @@ export default function AppointmentScreen() {
           </View>
         </View>
       </Modal>
-    </MainLayout>
+    </SafeAreaView>
   );
 }
 
