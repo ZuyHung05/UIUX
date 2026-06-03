@@ -776,3 +776,747 @@
     grid-template-columns: minmax(218px, 248px) minmax(0, 1fr);
   }
 }
+
+/* Manager schedule parity overrides for the Doctor schedule page. */
+.doctor-dashboard-main:has(.doctor-schedule-page) {
+  overflow: hidden;
+  box-shadow: none;
+  scrollbar-gutter: auto;
+}
+
+.doctor-schedule-page.schedule-page {
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 0;
+  background: #ffffff;
+  color: #244a6b;
+}
+
+.doctor-schedule-page .schedule-header {
+  flex: 0 0 auto;
+  min-height: 34px;
+  margin: 0;
+  border-bottom: 0;
+  padding: clamp(16px, 2vh, 22px) clamp(14px, 1.7vw, 22px) 0;
+  background: #ffffff;
+}
+
+.doctor-schedule-page .schedule-header .tab-titles h1 {
+  margin: 0;
+  color: #1a365d;
+  font-size: clamp(20px, 2vw, 24px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.doctor-schedule-page .schedule-header .tab-titles p {
+  margin: 5px 0 0;
+  color: rgba(74, 85, 104, 0.7);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.doctor-schedule-page .schedule-day-summary {
+  min-height: 32px;
+  border-color: #dcebff;
+  border-radius: 999px;
+  background: #f3f6ff;
+  color: #244a6b;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.doctor-schedule-page .schedule-day-summary span,
+.doctor-schedule-page .schedule-day-summary strong {
+  color: #244a6b;
+  font-weight: 600;
+}
+
+.doctor-schedule-page .schedule-content {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: clamp(14px, 2.1vh, 22px) clamp(14px, 1.7vw, 22px) clamp(12px, 1.4vh, 16px);
+}
+
+.doctor-schedule-page .calendar-style-layout {
+  height: 100%;
+  min-height: 0;
+  grid-template-columns: minmax(236px, 278px) minmax(0, 1fr);
+  gap: 14px;
+  overflow: hidden;
+}
+
+.doctor-schedule-page .schedule-sidebar {
+  min-height: 0;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.doctor-schedule-page .section-card,
+.doctor-schedule-page .schedule-mini-calendar.calendar-container,
+.doctor-schedule-page .week-calendar-board {
+  border-color: rgba(220, 235, 255, 0.92);
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.doctor-schedule-page .section-card {
+  min-height: 0;
+  border-radius: 18px;
+  padding: 12px;
+}
+
+.doctor-schedule-page .schedule-mini-calendar.calendar-container {
+  flex: 0 0 auto;
+  border-radius: 18px;
+  padding: 12px;
+}
+
+.doctor-schedule-page .schedule-mini-calendar .calendar-header {
+  margin-bottom: 12px;
+}
+
+.doctor-schedule-page .schedule-mini-calendar .calendar-header h2 {
+  color: #244a6b;
+  font-size: 14px !important;
+  font-weight: 650 !important;
+  letter-spacing: 0;
+}
+
+.doctor-schedule-page .schedule-mini-calendar .date-filter-button {
+  min-width: 104px;
+  background: #f3f6ff;
+  font-weight: 500;
+}
+
+.doctor-schedule-page .schedule-mini-calendar .day-name {
+  color: #5e7893;
+  font-size: 10.8px;
+  font-weight: 600;
+}
+
+.doctor-schedule-page .schedule-mini-calendar .calendar-day {
+  border-radius: 10px;
+  color: #244a6b;
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+.doctor-schedule-page .schedule-mini-calendar .calendar-day.has-schedule {
+  border-color: #dcebff;
+  background: #f8fbff;
+}
+
+.doctor-schedule-page .schedule-mini-calendar .calendar-day.selected {
+  border-color: #91c3ff;
+  background: #dcebff;
+  color: #244a6b;
+}
+
+.doctor-schedule-page .schedule-section-heading {
+  margin-bottom: 10px;
+}
+
+.doctor-schedule-page .schedule-section-heading h3 {
+  color: #244a6b;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.doctor-schedule-page .schedule-section-heading span {
+  border-color: #dcebff;
+  background: #f8fbff;
+  color: #244a6b;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.doctor-schedule-page .shift-summary-section {
+  flex: 1 1 0;
+  overflow: hidden;
+}
+
+.doctor-schedule-page .shift-summary-list {
+  min-height: 0;
+  overflow-y: auto;
+  gap: 8px;
+}
+
+.doctor-schedule-page .shift-summary-card {
+  border: 1px solid #dcecff;
+  border-left-width: 3px;
+  border-radius: 13px;
+  background: #ffffff;
+  padding: 9px 10px;
+  transform: none;
+}
+
+.doctor-schedule-page .shift-summary-card:hover,
+.doctor-schedule-page .shift-summary-card.selected {
+  transform: none;
+}
+
+.doctor-schedule-page .shift-summary-card.morning {
+  border-color: #d6ead9;
+  border-left-color: #3f7a56;
+  background: #eef8f0;
+}
+
+.doctor-schedule-page .shift-summary-card.morning:hover,
+.doctor-schedule-page .shift-summary-card.morning.selected {
+  border-color: #c6dfcb;
+  background: #e5f4e8;
+}
+
+.doctor-schedule-page .shift-summary-card.afternoon {
+  border-color: #ead8e6;
+  border-left-color: #7a4c6d;
+  background: #f8eef6;
+}
+
+.doctor-schedule-page .shift-summary-card.afternoon:hover,
+.doctor-schedule-page .shift-summary-card.afternoon.selected {
+  border-color: #dcc8d7;
+  background: #f4e6f1;
+}
+
+.doctor-schedule-page .shift-summary-card strong,
+.doctor-schedule-page .shift-summary-card.morning strong,
+.doctor-schedule-page .shift-summary-card.afternoon strong {
+  color: #244a6b;
+  font-size: 12.5px;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.doctor-schedule-page .shift-summary-card span {
+  color: #6d8298;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.doctor-schedule-page .shift-summary-count {
+  min-width: 58px;
+  border-color: #dcecff;
+  border-radius: 11px;
+  background: #ffffff;
+  padding: 7px 8px;
+}
+
+.doctor-schedule-page .shift-summary-count strong,
+.doctor-schedule-page .shift-summary-card.morning .shift-summary-count strong,
+.doctor-schedule-page .shift-summary-card.afternoon .shift-summary-count strong {
+  color: #244a6b;
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.doctor-schedule-page .shift-summary-count span {
+  color: #718096;
+  font-size: 10.5px;
+  font-weight: 500;
+}
+
+.doctor-schedule-page .schedule-empty-inline {
+  border-color: #e7f0fb;
+  background: #fafdff;
+  color: #6d8298;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.doctor-schedule-page .week-calendar-board {
+  min-height: 0;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.doctor-schedule-page .week-calendar-header {
+  flex: 0 0 auto;
+  gap: 12px;
+  border-bottom-color: #e7f0fb;
+  background: #fafdff;
+  padding: 10px 12px;
+}
+
+.doctor-schedule-page .week-calendar-header h2 {
+  color: #244a6b;
+  font-size: clamp(16px, 1.4vw, 19px);
+  font-weight: 650;
+}
+
+.doctor-schedule-page .week-calendar-header p {
+  color: #7b90a5;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: none;
+}
+
+.doctor-schedule-page .week-calendar-header > span {
+  border-color: #dcebff;
+  border-radius: 999px;
+  background: #f3f6ff;
+  color: #244a6b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.doctor-schedule-page .week-calendar-grid {
+  flex: 1 1 0;
+  min-height: 0;
+  grid-template-columns: 50px repeat(7, minmax(86px, 1fr));
+  grid-template-rows: 48px repeat(4, minmax(58px, 1fr)) repeat(3, 15px) repeat(4, minmax(58px, 1fr));
+  overflow: auto;
+  border-top: 0;
+}
+
+.doctor-schedule-page .week-time-corner,
+.doctor-schedule-page .week-day-header,
+.doctor-schedule-page .week-time-label,
+.doctor-schedule-page .week-day-cell {
+  border-color: #e7f0fb;
+}
+
+.doctor-schedule-page .week-time-corner,
+.doctor-schedule-page .week-time-label {
+  color: #7b90a5;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.doctor-schedule-page .week-day-header span {
+  color: #7b90a5;
+  font-size: 10.8px;
+  font-weight: 600;
+}
+
+.doctor-schedule-page .week-day-header strong {
+  width: 30px;
+  height: 30px;
+  color: #244a6b;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.doctor-schedule-page .week-day-header.selected {
+  background: #f3f8ff;
+}
+
+.doctor-schedule-page .week-day-header.selected span {
+  color: #244a6b;
+}
+
+.doctor-schedule-page .week-day-header.selected strong {
+  background: #dcebff;
+  color: #244a6b;
+}
+
+.doctor-schedule-page .week-day-cell.selected {
+  background: #fafdff;
+}
+
+.doctor-schedule-page .week-time-label.collapsed,
+.doctor-schedule-page .week-day-cell.collapsed-span-cell {
+  background: #f3f6ff;
+  color: #6d8298;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.doctor-schedule-page .week-appointment {
+  border-radius: 8px;
+  box-shadow: none;
+  padding: 3px 6px;
+}
+
+.doctor-schedule-page .week-appointment:hover {
+  transform: none;
+}
+
+.doctor-schedule-page .week-appointment.morning {
+  border: 1px solid #d6ead9;
+  border-left: 3px solid #3f7a56;
+  background: #eef8f0;
+}
+
+.doctor-schedule-page .week-appointment.afternoon {
+  border: 1px solid #ead8e6;
+  border-left: 3px solid #7a4c6d;
+  background: #f8eef6;
+}
+
+.doctor-schedule-page .week-appointment strong,
+.doctor-schedule-page .week-appointment.morning strong,
+.doctor-schedule-page .week-appointment.afternoon strong {
+  color: #244a6b;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.18;
+}
+
+.doctor-schedule-page .week-appointment span,
+.doctor-schedule-page .week-appointment.morning span,
+.doctor-schedule-page .week-appointment.afternoon span {
+  color: #6d8298;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+@media (max-height: 780px) {
+  .doctor-schedule-page .schedule-header {
+    padding: 12px 14px 0;
+  }
+
+  .doctor-schedule-page .schedule-content {
+    padding: 13px 14px 8px;
+  }
+
+  .doctor-schedule-page .calendar-style-layout {
+    gap: 10px;
+    grid-template-columns: minmax(220px, 248px) minmax(0, 1fr);
+  }
+
+  .doctor-schedule-page .schedule-mini-calendar.calendar-container,
+  .doctor-schedule-page .section-card {
+    padding: 9px;
+  }
+
+  .doctor-schedule-page .week-calendar-grid {
+    grid-template-rows: 42px repeat(4, minmax(50px, 1fr)) repeat(3, 14px) repeat(4, minmax(50px, 1fr));
+  }
+
+  .doctor-schedule-page .shift-summary-card {
+    padding: 7px 8px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .doctor-schedule-page {
+    overflow: auto;
+  }
+
+  .doctor-schedule-page .schedule-content,
+  .doctor-schedule-page .calendar-style-layout {
+    height: auto;
+    overflow: visible;
+  }
+
+  .doctor-schedule-page .calendar-style-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .doctor-schedule-page .schedule-sidebar {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+    overflow: visible;
+  }
+
+  .doctor-schedule-page .week-calendar-grid {
+    height: 540px;
+    grid-template-columns: 50px repeat(7, minmax(112px, 1fr));
+  }
+}
+
+/* Appointment card and mini calendar refinements. */
+.doctor-schedule-page .schedule-mini-calendar .calendar-day {
+  box-shadow: none !important;
+  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.doctor-schedule-page .schedule-mini-calendar .calendar-day:hover,
+.doctor-schedule-page .schedule-mini-calendar .calendar-day.has-schedule:hover,
+.doctor-schedule-page .schedule-mini-calendar .calendar-day.selected:hover {
+  border-color: #91c3ff !important;
+  box-shadow: none !important;
+  transform: scale(1.04) !important;
+}
+
+.doctor-schedule-page .schedule-mini-calendar .calendar-day.has-schedule {
+  border-color: #a9d4ff;
+  background: #eaf5ff;
+  color: #244a6b;
+}
+
+.doctor-schedule-page .schedule-mini-calendar .calendar-day.has-schedule:hover {
+  background: #dff0ff;
+}
+
+.doctor-schedule-page .schedule-mini-calendar .calendar-day.selected,
+.doctor-schedule-page .schedule-mini-calendar .calendar-day.has-schedule.selected {
+  border-color: #91c3ff;
+  background: #d7ecff;
+  color: #244a6b;
+}
+
+.doctor-schedule-page .week-calendar-grid {
+  width: 100%;
+  min-width: 1240px;
+  grid-template-columns: 56px repeat(7, minmax(172px, 1fr));
+  grid-template-rows: 40px repeat(4, minmax(120px, 1fr)) 0 26px 0 repeat(4, minmax(120px, 1fr));
+  overflow: auto;
+}
+
+.doctor-schedule-page .week-calendar-header {
+  min-height: 0;
+  padding: 7px 10px;
+}
+
+.doctor-schedule-page .week-calendar-header h2 {
+  font-size: clamp(14px, 1.2vw, 16px);
+  line-height: 1.1;
+}
+
+.doctor-schedule-page .week-calendar-header p {
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.doctor-schedule-page .week-calendar-header > span {
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #6d8298;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.doctor-schedule-page .week-time-corner {
+  left: 0;
+  z-index: 8;
+  justify-content: center;
+  padding-right: 0;
+  background: #ffffff;
+}
+
+.doctor-schedule-page .week-time-label {
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  background: #ffffff;
+}
+
+.doctor-schedule-page .week-day-header.selected {
+  background: #f6fbff;
+}
+
+.doctor-schedule-page .week-day-header.selected strong {
+  background: #d7ecff;
+  color: #244a6b;
+}
+
+.doctor-schedule-page .week-day-cell.selected {
+  background: #f1f8ff;
+}
+
+.doctor-schedule-page .week-day-cell {
+  padding: 3px;
+}
+
+.doctor-schedule-page .week-day-cell:not(.collapsed-span-cell) {
+  overflow: hidden;
+}
+
+.doctor-schedule-page .collapsed-span-cell {
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-right: 0;
+  background: #f1f5ff;
+  color: #6d8298;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.doctor-schedule-page .collapsed-span-cell:empty {
+  overflow: hidden;
+  border-bottom: 0;
+}
+
+.doctor-schedule-page .week-appointment {
+  min-height: 54px;
+  display: grid;
+  grid-template-rows: minmax(0, auto) auto;
+  gap: 4px;
+  border-left-width: 1px !important;
+  border-radius: 12px;
+  padding: 6px 7px;
+  line-height: 1.12;
+}
+
+.doctor-schedule-page .week-appointment.morning {
+  border-color: #d6ead9;
+  background: #eef8f0;
+  color: #3f7a56;
+}
+
+.doctor-schedule-page .week-appointment.afternoon {
+  border-color: #ead8e6;
+  background: #f8eef6;
+  color: #7a4c6d;
+}
+
+.doctor-schedule-page .week-appointment strong,
+.doctor-schedule-page .week-appointment.morning strong,
+.doctor-schedule-page .week-appointment.afternoon strong {
+  color: #244a6b;
+  font-size: 12.6px;
+  font-weight: 600;
+  line-height: 1.18;
+}
+
+.doctor-schedule-page .week-appointment span,
+.doctor-schedule-page .week-appointment.morning span,
+.doctor-schedule-page .week-appointment.afternoon span,
+.doctor-schedule-page .week-appointment span {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  color: rgba(36, 74, 107, 0.72);
+  font-size: 11.2px;
+  font-weight: 500;
+  line-height: 1.12;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doctor-schedule-page .detail-modal {
+  width: min(520px, calc(100vw - 36px));
+  height: auto;
+  max-height: min(560px, calc(100vh - 48px));
+  border-radius: 22px;
+}
+
+.doctor-schedule-page .detail-modal-header {
+  padding: 18px 20px 14px;
+}
+
+.doctor-schedule-page .detail-modal-header h2 {
+  font-size: 19px;
+  font-weight: 650;
+}
+
+.doctor-schedule-page .detail-modal-header p {
+  font-weight: 500;
+}
+
+.doctor-schedule-page .detail-modal-body {
+  padding: 18px;
+}
+
+.doctor-appointment-modal {
+  width: min(520px, calc(100vw - 36px));
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: none;
+}
+
+.doctor-appointment-close {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #dcebff;
+  border-radius: 10px;
+  background: #f3f6ff;
+  color: #244a6b;
+  cursor: pointer;
+}
+
+.doctor-appointment-close:hover {
+  background: #dcebff;
+}
+
+.doctor-appointment-close svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.doctor-appointment-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.doctor-appointment-detail-item {
+  min-height: 52px;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid #dcecff;
+  border-radius: 14px;
+  background: #f8fbff;
+  padding: 9px 10px;
+}
+
+.doctor-appointment-detail-wide {
+  grid-column: 1 / -1;
+}
+
+.doctor-appointment-detail-item span {
+  overflow: hidden;
+  color: #718096;
+  font-size: 11px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doctor-appointment-detail-item strong {
+  display: block;
+  min-width: 0;
+  margin-top: 3px;
+  overflow: hidden;
+  color: #244a6b;
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doctor-appointment-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+@media (max-height: 780px) {
+  .doctor-schedule-page .week-calendar-grid {
+    min-width: 1160px;
+    grid-template-columns: 52px repeat(7, minmax(160px, 1fr));
+    grid-template-rows: 36px repeat(4, minmax(108px, 1fr)) 0 22px 0 repeat(4, minmax(108px, 1fr));
+  }
+
+  .doctor-schedule-page .week-appointment {
+    min-height: 50px;
+    border-radius: 10px;
+    padding: 5px 6px;
+  }
+
+  .doctor-schedule-page .week-appointment strong {
+    font-size: 12px;
+  }
+
+  .doctor-schedule-page .week-appointment span {
+    font-size: 10.8px;
+  }
+}

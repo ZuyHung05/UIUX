@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import CalendarMonth from '../../../components/doctor-schedule/CalendarMonth';
+import { PrimaryButton } from '../../../components/ui/ActionButton';
+import { DetailModal } from '../../../components/ui/DetailModal';
 import { Patient, SCHEDULE_DATA, Shift } from '../../../data/scheduleData';
 import { initialPatients } from '../patients/PatientListTab';
 import '../patients/PatientListTab.css';
@@ -67,6 +69,7 @@ const SchedulePage = ({
   onBackToDashboard?: () => void
   onViewPatientProfile?: (patientId: string) => void
 }) => {
+  type CalendarAppointment = Patient & { shiftTitle: string; dateKey: string };
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -75,6 +78,7 @@ const SchedulePage = ({
     return `${yyyy}-${mm}-${dd}`;
   });
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<CalendarAppointment | null>(null);
   const shiftsOfDay = useMemo(() => {
     return SCHEDULE_DATA[selectedDate] || [];
   }, [selectedDate]);
@@ -116,7 +120,7 @@ const SchedulePage = ({
   }, [weekDays]);
 
   const weeklyAppointments = useMemo(() => {
-    return weekDays.reduce<Record<string, Record<string, Array<Patient & { shiftTitle: string; dateKey: string }>>>>((acc, day) => {
+    return weekDays.reduce<Record<string, Record<string, CalendarAppointment[]>>>((acc, day) => {
       acc[day.dateKey] = {};
       day.shifts.forEach((shift) => {
         shift.patients.forEach((patient) => {
@@ -149,7 +153,7 @@ const SchedulePage = ({
     setSelectedDate(dateStr);
   };
 
-  const handleAppointmentOpen = (patient: Patient & { dateKey: string }) => {
+  const findPatientProfileId = (patient: Patient) => {
     const normalizedScheduleCode = patient.id.replace(/^#/, '').trim().toLowerCase();
     const matchedPatient = initialPatients.find((item) => {
       const normalizedPatientCode = item.code.trim().toLowerCase();
@@ -161,8 +165,12 @@ const SchedulePage = ({
       );
     });
 
+    return matchedPatient?.id || '15';
+  };
+
+  const handleAppointmentOpen = (patient: CalendarAppointment) => {
     setSelectedDate(patient.dateKey);
-    onViewPatientProfile?.(matchedPatient?.id || '15');
+    setSelectedAppointment(patient);
   };
 
   const renderShiftSummary = (shift: Shift) => {
@@ -189,7 +197,7 @@ const SchedulePage = ({
   };
 
   return (
-    <div className="schedule-page">
+    <div className="schedule-page doctor-schedule-page">
 
       <header className="patient-tab-header schedule-header">
         <div className="tab-titles">
@@ -231,9 +239,8 @@ const SchedulePage = ({
           <div className="week-calendar-header">
             <div>
               <h2>Lịch khám theo tuần</h2>
-              <p>{weekRangeLabel}</p>
             </div>
-            <span>{totalAppointments} lịch khám ngày chọn</span>
+            <span>{weekRangeLabel}</span>
           </div>
 
           <div className="week-calendar-grid">
@@ -257,36 +264,38 @@ const SchedulePage = ({
               const isCollapsed = isCollapsedSlot(slot);
               return (
                 <div className="week-row-fragment" key={slot}>
-                  <div className={`week-time-label ${isCollapsed ? 'collapsed' : ''}`}>{slot}</div>
                   {isCollapsed ? (
-                    <div className="week-day-cell collapsed-span-cell" style={{ gridColumn: 'span 7' }}>
+                    <div className="week-day-cell collapsed-span-cell" style={{ gridColumn: '1 / -1' }}>
                       {slot === '12:00' ? 'KHUNG GIỜ NGHỈ TRƯA' : ''}
                     </div>
                   ) : (
-                    weekDays.map((day) => {
-                      const appointments = weeklyAppointments[day.dateKey]?.[slot] || [];
-                      const isSelected = day.dateKey === selectedDate;
+                    <>
+                      <div className="week-time-label">{slot}</div>
+                      {weekDays.map((day) => {
+                        const appointments = weeklyAppointments[day.dateKey]?.[slot] || [];
+                        const isSelected = day.dateKey === selectedDate;
 
-                      return (
-                        <div className={`week-day-cell ${isSelected ? 'selected' : ''}`} key={`${day.dateKey}-${slot}`}>
-                          {appointments.map((patient) => (
-                            <button
-                              type="button"
-                              className={`week-appointment ${getShiftTone(patient.shiftTitle)}`}
-                              key={`${patient.id}-${patient.time}`}
-                              onClick={() => handleAppointmentOpen(patient)}
-                              style={{
-                                top: `${getAppointmentOffset(patient.time)}%`,
-                                height: `${(getAppointmentDuration(patient.time) / 60) * 100}%`,
-                              }}
+                        return (
+                          <div className={`week-day-cell ${isSelected ? 'selected' : ''}`} key={`${day.dateKey}-${slot}`}>
+                            {appointments.map((patient) => (
+                              <button
+                                type="button"
+                                className={`week-appointment ${getShiftTone(patient.shiftTitle)}`}
+                                key={`${patient.id}-${patient.time}`}
+                                onClick={() => handleAppointmentOpen(patient)}
+                                style={{
+                                  top: `${getAppointmentOffset(patient.time)}%`,
+                                  height: `${(getAppointmentDuration(patient.time) / 60) * 100}%`,
+                                }}
                             >
-                              <strong>{patient.name}</strong>
+                              <strong>{patient.name} - {patient.id}</strong>
                               <span>{patient.time}</span>
                             </button>
-                          ))}
-                        </div>
-                      );
-                    })
+                            ))}
+                          </div>
+                        );
+                      })}
+                    </>
                   )}
                 </div>
               );
@@ -294,6 +303,54 @@ const SchedulePage = ({
           </div>
         </section>
       </main>
+      <DetailModal
+        open={Boolean(selectedAppointment)}
+        onClose={() => setSelectedAppointment(null)}
+        title="Chi tiết lịch hẹn"
+        subtitle={selectedAppointment ? `${selectedAppointment.time} · ${selectedAppointment.shiftTitle}` : undefined}
+      >
+        {selectedAppointment ? (
+          <>
+            <div className="doctor-appointment-detail-grid">
+              <div className="doctor-appointment-detail-item doctor-appointment-detail-wide">
+                <span>Bệnh nhân</span>
+                <strong>{selectedAppointment.name}</strong>
+              </div>
+              <div className="doctor-appointment-detail-item">
+                <span>Mã lịch hẹn</span>
+                <strong>{selectedAppointment.id}</strong>
+              </div>
+              <div className="doctor-appointment-detail-item">
+                <span>Ngày khám</span>
+                <strong>{selectedDateLabel}</strong>
+              </div>
+              <div className="doctor-appointment-detail-item">
+                <span>Loại hình</span>
+                <strong>{selectedAppointment.examType || 'Khám trực tiếp'}</strong>
+              </div>
+              <div className="doctor-appointment-detail-item">
+                <span>Số điện thoại</span>
+                <strong>{selectedAppointment.phone || 'Chưa cập nhật'}</strong>
+              </div>
+            </div>
+
+            <div className="doctor-appointment-modal-actions">
+              <PrimaryButton variant="ghost" onClick={() => setSelectedAppointment(null)}>
+                Đóng
+              </PrimaryButton>
+              <PrimaryButton
+                onClick={() => {
+                  const patientProfileId = findPatientProfileId(selectedAppointment);
+                  setSelectedAppointment(null);
+                  onViewPatientProfile?.(patientProfileId);
+                }}
+              >
+                Xem hồ sơ bệnh nhân
+              </PrimaryButton>
+            </div>
+          </>
+        ) : null}
+      </DetailModal>
     </div>
   );
 };
