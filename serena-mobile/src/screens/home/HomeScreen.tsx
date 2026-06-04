@@ -22,7 +22,7 @@ import { COLORS, TYPOGRAPHY } from '../../utils/theme';
 export default function HomeScreen() {
     const navigation = useNavigation<any>();
     return (
-        <MainLayout title="Serena Health" subtitle="Serena - Trợ lý y tế thông minh" isScrollable={false}>
+        <MainLayout title="Serena Health" subtitle="Serena - Trợ lý y tế thông minh" isScrollable={true}>
             <TouchableOpacity style={styles.appointmentCard}
                 onPress={() => navigation.navigate('Appointment')}
             >
