@@ -2290,6 +2290,39 @@
   font-weight: 750;
 }
 
+/* Urgent (Red pastel) AI Summary theme */
+.preconsult-ai-summary.severity-urgent {
+  background: #ffeff3;
+  border-color: #ffcdd8;
+  color: #c93452;
+}
+.preconsult-ai-summary.severity-urgent .preconsult-ai-label {
+  background: #ffdee5;
+  color: #c93452;
+}
+.preconsult-ai-summary.severity-urgent .preconsult-ai-meta span {
+  border-color: #ffcdd8;
+  color: #c93452;
+}
+
+/* Warning/Normal (Yellow/Amber pastel) AI Summary theme */
+.preconsult-ai-summary.severity-warning,
+.preconsult-ai-summary.severity-normal {
+  background: #fff8e1;
+  border-color: #ffe0b2;
+  color: #9a6a00;
+}
+.preconsult-ai-summary.severity-warning .preconsult-ai-label,
+.preconsult-ai-summary.severity-normal .preconsult-ai-label {
+  background: #fff1c7;
+  color: #9a6a00;
+}
+.preconsult-ai-summary.severity-warning .preconsult-ai-meta span,
+.preconsult-ai-summary.severity-normal .preconsult-ai-meta span {
+  border-color: #fde68a;
+  color: #9a6a00;
+}
+
 .chat-message-row.system,
 .chat-message-row.ai {
   width: 100%;
@@ -2351,6 +2384,30 @@
   background: #EAF8EF;
   color: #2F7D4B;
   font-size: 10px;
+}
+
+/* Urgent (Red pastel) AI Message bubble theme */
+.chat-message-row.ai.severity-urgent .chat-message-bubble {
+  background: #ffeff3 !important;
+  border-color: #ffcdd8 !important;
+  color: #c93452 !important;
+}
+.chat-message-row.ai.severity-urgent .chat-message-bubble::before {
+  background: #ffdee5 !important;
+  color: #c93452 !important;
+}
+
+/* Warning/Normal (Yellow/Amber pastel) AI Message bubble theme */
+.chat-message-row.ai.severity-warning .chat-message-bubble,
+.chat-message-row.ai.severity-normal .chat-message-bubble {
+  background: #fff8e1 !important;
+  border-color: #ffe0b2 !important;
+  color: #9a6a00 !important;
+}
+.chat-message-row.ai.severity-warning .chat-message-bubble::before,
+.chat-message-row.ai.severity-normal .chat-message-bubble::before {
+  background: #fff1c7 !important;
+  color: #9a6a00 !important;
 }
 
 .chat-message-row.patient .chat-message-bubble {

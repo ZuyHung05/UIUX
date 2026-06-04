@@ -647,7 +647,7 @@ export function LiveConsultationTab({
             {/* Chat Messages */}
             <div className="chat-messages-area">
               {activeChat.status === 'new' && activeChat.aiExtract ? (
-                <div className="preconsult-ai-summary">
+                <div className={`preconsult-ai-summary severity-${getSeverityClass(activeChat.aiExtract.severity)}`}>
                   <div className="preconsult-ai-label">AI tóm tắt trước tư vấn</div>
                   <p>{activeChat.aiExtract.symptoms}</p>
                   <div className="preconsult-ai-meta">
@@ -656,13 +656,18 @@ export function LiveConsultationTab({
                   </div>
                 </div>
               ) : (
-                activeChat.messages.map(msg => (
-                  <div key={msg.id} className={`chat-message-row ${msg.sender}`}>
-                    <div className="chat-message-bubble">
-                      {msg.text}
+                activeChat.messages.map(msg => {
+                  const severityClass = (msg.sender === 'ai' && activeChat.aiExtract) 
+                    ? `severity-${getSeverityClass(activeChat.aiExtract.severity)}` 
+                    : '';
+                  return (
+                    <div key={msg.id} className={`chat-message-row ${msg.sender} ${severityClass}`}>
+                      <div className="chat-message-bubble">
+                        {msg.text}
+                      </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
               <div ref={messagesEndRef} />
             </div>
