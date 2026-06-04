@@ -27,7 +27,7 @@ export default function ConsultationScreen({ navigation }: any) {
 
     const [phase, setPhase] = useState<'SCREENING' | 'PAYMENT' | 'DOCTOR_CHAT'>('SCREENING');
     const [inputText, setInputText] = useState('');
-    const [placeholder, setPlaceholder] = useState('Chọn gợi ý hoặc nhập triệu chứng (vd: Đau đầu)...');
+    const [placeholder, setPlaceholder] = useState('Nhập triệu chứng VD: đau đầu, sốt, ho...');
 
     const [isPaymentVisible, setPaymentVisible] = useState(false);
     const [isVerifying, setIsVerifying] = useState(false);

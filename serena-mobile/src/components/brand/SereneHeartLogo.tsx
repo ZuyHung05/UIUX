@@ -1,14 +1,15 @@
-import { Image, StyleSheet } from 'react-native';
-
+import { StyleSheet } from 'react-native';
+import LogoSvg from '../../assets/serene_health_logo_blue_2.svg';
 type SereneHeartLogoProps = {
   size?: number;
 };
-
-const logoSource = require('../../assets/serene_health_logo_blue_2.svg');
+console.log(typeof LogoSvg);
+console.log(LogoSvg);
+// const logoSource = require('../../assets/serene_health_logo_blue_2.svg');
 
 export function SereneHeartLogo({ size = 45 }: SereneHeartLogoProps) {
   return (
-    <Image source={logoSource} style={[styles.logo, { width: size, height: size }]} />
+    <LogoSvg width={size} height={size} />
   );
 }
 
